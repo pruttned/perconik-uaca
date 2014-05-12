@@ -1,4 +1,4 @@
 perconik-uaca
 =============
 
-PerConIK Uaca
+PerConIK UserActivity central application
