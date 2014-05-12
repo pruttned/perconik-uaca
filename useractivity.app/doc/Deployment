@@ -1,0 +1,11 @@
+-WINDOWS
+	- mat takuto foldrovu strukturu:
+		+ 'UACA.jar'
+		+ <vsetky nativne sajrajty pre Sigar> - rovno pri 'UACA.jar'
+	- cez registre nastavit, aby sa spustal po spusteni Windowsu
+-LINUX
+	- mat takuto foldrovu strukturu:
+		+ 'UACA.jar' (cez pravy klik nastavit, aby bol spustitelny)
+		+ 'Run.sh' (upravit podla potreby a radsej cez pravy klik nastavit, aby bol spustitelny)
+		+ 'libs' (vsetky nativne sajrajty pre Sigar)
+	- aby sa spustalo 'UACA.jar' pri spusteni Linuxu, upravit a nakopirovat 'UserActivity.desktop' do '~/.config/autostart/'
