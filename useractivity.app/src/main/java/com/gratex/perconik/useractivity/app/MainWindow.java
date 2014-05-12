@@ -39,9 +39,14 @@ public class MainWindow extends JFrame {
 		JLabel titleLabel = new JLabel("User Activity");
 		titleLabel.setAlignmentX(CENTER_ALIGNMENT);
 		titleLabel.setFont(titleLabel.getFont().deriveFont(25.0f));
-		topPanel.add(titleLabel);
-		topPanel.add(Box.createRigidArea(new Dimension(0,  10)));
+		topPanel.add(titleLabel);		
 	
+		//version
+		JLabel versionLabel = new JLabel(String.format("Version: %s", Settings.getInstance().getVersion()));
+		versionLabel.setAlignmentX(CENTER_ALIGNMENT);		
+		topPanel.add(versionLabel);
+		topPanel.add(Box.createRigidArea(new Dimension(0,  10)));
+		
 		//'pause status' label
 		final JLabel pauseStatusLabel = new JLabel();
 		pauseStatusLabel.setAlignmentX(CENTER_ALIGNMENT);		

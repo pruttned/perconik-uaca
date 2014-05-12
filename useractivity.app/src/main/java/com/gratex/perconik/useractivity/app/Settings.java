@@ -57,4 +57,8 @@ public class Settings {
 			return "UNKNOWN"; //TODO: find a better solution
 		}
 	}
+	
+	public String getVersion() {
+		return "2.0"; //TODO: find a standard way
+	}
 }
