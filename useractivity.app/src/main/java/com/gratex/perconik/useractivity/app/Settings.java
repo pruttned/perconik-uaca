@@ -5,8 +5,9 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 
-public class Settings {
+public class Settings {	
 	private final static Settings INSTANCE = new Settings();
+	private final String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
 	private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
 	
 	private Settings() {
@@ -17,33 +18,33 @@ public class Settings {
 	}
 	
 	public long getEventCommitInterval() {
-		return Preferences.userRoot().getLong("EventCommitInterval", 60000 * 30); //default is 30 minutes
+		return getPreferencesNode().getLong("event_commit_interval", 60000 * 30); //default is 30 minutes
 	}
 	
 	public void setEventCommitInterval(long eventCommitInterval) {
-		Preferences.userRoot().putLong("EventCommitInterval", eventCommitInterval);
+		getPreferencesNode().putLong("event_commit_interval", eventCommitInterval);
 	}
 	
 	public long getEventAgeToCommit() {
-		return Preferences.userRoot().getLong("EventAgeToCommit", 60000 * 30); //default is 30 minutes
+		return getPreferencesNode().getLong("event_age_to_commit", 60000 * 30); //default is 30 minutes
 	}
 	
 	public void setEventAgeToCommit(long eventAgeToCommit) {
-		Preferences.userRoot().putLong("EventAgeToCommit", eventAgeToCommit);
+		getPreferencesNode().putLong("event_age_to_commit", eventAgeToCommit);
 	}
 	
 	public String getUserName() {
-		return Preferences.userRoot().get("UserName", System.getProperty("user.name"));
+		return getPreferencesNode().get("user_name", System.getProperty("user.name"));
 	}
 	
 	public void setUserName(String userName) {
 		ValidationHelper.checkStringArgNotNullOrWhitespace(userName, "userName");
 		
-		Preferences.userRoot().put("UserName", userName);
+		getPreferencesNode().put("user_name", userName);
 	}
 	
 	public void clearUserName() {
-		Preferences.userRoot().remove("UserName");
+		getPreferencesNode().remove("user_name");
 	}
 
 	public String getUserFolder() {
@@ -60,5 +61,9 @@ public class Settings {
 	
 	public String getVersion() {
 		return "2.0"; //TODO: find a standard way
+	}
+	
+	private Preferences getPreferencesNode() {
+		return Preferences.userRoot().node(preferencesPackageName);
 	}
 }
