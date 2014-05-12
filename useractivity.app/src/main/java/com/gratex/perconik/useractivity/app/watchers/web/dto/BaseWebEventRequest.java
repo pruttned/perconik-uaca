@@ -1,6 +1,9 @@
 package com.gratex.perconik.useractivity.app.watchers.web.dto;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 public class BaseWebEventRequest{
+	private XMLGregorianCalendar timestamp;
 	private String sessionId;
 	private String appName;
 	private String appVersion;
@@ -27,5 +30,12 @@ public class BaseWebEventRequest{
 
 	public void setAppVersion(String appVersion) {
 		this.appVersion = appVersion;
+	}
+	
+	public XMLGregorianCalendar getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(XMLGregorianCalendar timestamp) {
+		this.timestamp = timestamp;
 	}
 }

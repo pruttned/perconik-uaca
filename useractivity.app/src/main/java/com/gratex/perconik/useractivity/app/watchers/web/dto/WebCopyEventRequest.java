@@ -1,9 +1,9 @@
 package com.gratex.perconik.useractivity.app.watchers.web.dto;
 
-public class PostNavigateEventRequest extends BaseWebEventRequest{
+public class WebCopyEventRequest extends BaseWebEventRequest{
 	private String tabId;
 	private String url;
-	private String transitionType;
+	private String content;
 	
 	public String getTabId() {
 		return tabId;
@@ -21,11 +21,11 @@ public class PostNavigateEventRequest extends BaseWebEventRequest{
 		this.url = url;
 	}
 
-	public String getTransitionType() {
-		return transitionType;
+	public String getContent() {
+		return content;
 	}
 
-	public void setTransitionType(String type) {
-		this.transitionType = type;
+	public void setContent(String content) {
+		this.content = content;
 	}
 }

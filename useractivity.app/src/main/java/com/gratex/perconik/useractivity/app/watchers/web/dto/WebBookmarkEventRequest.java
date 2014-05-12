@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.web.dto;
 
-public class PostBookmarkEventRequest extends BaseWebEventRequest{
+public class WebBookmarkEventRequest extends BaseWebEventRequest{
 	private String url;
 	private String name;
 

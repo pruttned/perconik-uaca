@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.web.dto;
 
-public class PostSaveEventRequest extends BaseWebEventRequest{
+public class WebSaveEventRequest extends BaseWebEventRequest{
 	private String url;
 	private String name;
 
