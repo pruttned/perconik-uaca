@@ -60,6 +60,6 @@ public class EventDto {
 	}
 	
 	protected UriBuilder getDefaultEventTypeUri() {		
-		return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("Event");
+		return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("event");
 	}
 }
