@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import com.gratex.perconik.useractivity.app.dto.web.WebBookmarkEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebCopyEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebNavigateEventDto;
-import com.gratex.perconik.useractivity.app.dto.web.WebSaveEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebSaveDocumentEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebTabEventDto;
 
 @Path("/web")
@@ -31,7 +31,7 @@ public class WebWatcherSvc {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/save")
-	public void postSaveEvent(WebSaveEventDto dto) {
+	public void postSaveEvent(WebSaveDocumentEventDto dto) {
 		WebWatcher.getInstance().postSaveEvent(dto);
 	}
 	

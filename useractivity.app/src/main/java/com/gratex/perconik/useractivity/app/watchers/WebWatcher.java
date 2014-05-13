@@ -5,7 +5,7 @@ import com.gratex.perconik.useractivity.app.dto.web.WebBookmarkEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebCopyEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebNavigateEventDto;
-import com.gratex.perconik.useractivity.app.dto.web.WebSaveEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebSaveDocumentEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebTabEventDto;
 
 public class WebWatcher implements IWatcher {
@@ -48,7 +48,7 @@ public class WebWatcher implements IWatcher {
 		//TODO: pozri, ako je to v starom
 	}
 	
-	public void postSaveEvent(WebSaveEventDto dto) {
+	public void postSaveEvent(WebSaveDocumentEventDto dto) {
 		addEventIfRunning(dto);
 	}
 	
