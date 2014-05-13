@@ -19,6 +19,9 @@ public class WatcherManager {
 		
 		try {
 			watchers.add(new ProcessWatcher());
+			watchers.add(WebWatcher.getInstance());
+			watchers.add(IdeWatcher.getInstance());
+			
 		} catch(Exception ex) {
 			AppTracer.getInstance().writeError("Failed to create an instance of a watcher.", ex);
 		}

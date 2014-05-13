@@ -80,27 +80,4 @@ public class IdeWatcherSvc {
 		System.out.println(describe.describe(req));
 		System.out.println("===============");
 	}
-	
-	/*
-	private void printBaseProperties(BaseIdeEventRequest req){
-		System.out.format("SessionId = %s%n", req.getSessionId());
-		System.out.format("AppName = %s%n", req.getAppName());
-		System.out.format("AppVersion = %s%n", req.getAppVersion());
-		System.out.format("ProjectName = %s%n", req.getProjectName());
-		System.out.format("SolutionName = %s%n", req.getSolutionName());
-	}
-	
-	private void printRcsServer(RcsServer srv){
-		System.out.println("RcsServer = ");
-		System.out.format("\tTypeUri = %s%n", srv.getTypeUri());
-		System.out.format("\tUrl = %s%n", srv.getUrl());
-	}
-	
-	private void printIdeDocument(RcsServer srv){
-		System.out.println("RcsServer = ");
-		System.out.format("\tTypeUri = %s%n", srv.getTypeUri());
-		System.out.format("\tUrl = %s%n", srv.getUrl());
-	}
-	*/
-	
 }
