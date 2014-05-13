@@ -54,6 +54,10 @@ public class App {
 		return this.eventCommitJob;
 	}
 	
+	public UserActivityServiceProxy getUserActivityServiceProxy() {
+		return userActivityServiceProxy;
+	}
+	
 	private void onRun() {
 		hookToShutdown();
 		initCore();

@@ -76,6 +76,7 @@ public class MainWindow extends JFrame {
 				dialog.setVisible(true);
 				if(dialog.areChangesApplied()) {
 					MainWindow.this.app.getEventCommitJob().restartIfRunning();
+					MainWindow.this.app.getUserActivityServiceProxy().setSvcUrl(Settings.getInstance().getSvcUrl());
 				}
 			}
 		});		

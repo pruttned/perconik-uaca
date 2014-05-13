@@ -29,7 +29,7 @@ public class SettingsDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addControls();
 		pack();
-		setSize(500, getSize().height);
+		setSize(700, getSize().height);
 		setLocationRelativeTo(null);
 	}
 	
@@ -52,8 +52,12 @@ public class SettingsDialog extends JDialog {
 		JTextField userNameTextBox = new JTextField(Settings.getInstance().getUserName());
 		addField("User Name", userNameTextBox);
 		
+		//svc url
+		JTextField svcUrlTextBox = new JTextField(Settings.getInstance().getSvcUrl());
+		addField("Service URL", svcUrlTextBox);
+		
 		//'OK' and 'cancel' buttons
-		addCloseButtons(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox);
+		addCloseButtons(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox);
 	}
 	
 	private JSpinner createSpinner(long value) {
@@ -84,7 +88,7 @@ public class SettingsDialog extends JDialog {
 		add(control, controlConstraints);
 	}
 	
-	private void addCloseButtons(final JSpinner eventCommitIntervalSpinner, final JSpinner eventAgeToCommitSpinner, final JTextField userNameTextBox) {
+	private void addCloseButtons(final JSpinner eventCommitIntervalSpinner, final JSpinner eventAgeToCommitSpinner, final JTextField userNameTextBox, final JTextField svcUrlTextBox) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		GridBagConstraints panelConstraints = new GridBagConstraints();
 		panelConstraints.gridwidth = 2;
@@ -100,7 +104,7 @@ public class SettingsDialog extends JDialog {
 		okButton.setToolTipText("Accept changes");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(applyChanges(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox)) {
+				if(applyChanges(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox)) {
 					SettingsDialog.this.setVisible(false);
 				}
 			}
@@ -118,8 +122,9 @@ public class SettingsDialog extends JDialog {
 		panel.add(cancelButton);
 	}
 	
-	private boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox) {
-		if(ValidationHelper.isStringNullOrWhitespace(userNameTextBox.getText())) {
+	private boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox, JTextField svcUrlTextBox) {
+		if(ValidationHelper.isStringNullOrWhitespace(userNameTextBox.getText()) ||
+		   ValidationHelper.isStringNullOrWhitespace(svcUrlTextBox.getText())) {
 			MessageBox.showError(this, "Please fill all fields.", "Empty fields!");
 			return false;
 		}
@@ -127,6 +132,7 @@ public class SettingsDialog extends JDialog {
 		Settings.getInstance().setEventCommitInterval(getSpinnerValue(eventCommitIntervalSpinner) * 60000);
 		Settings.getInstance().setEventAgeToCommit(getSpinnerValue(eventAgeToCommitSpinner) * 60000);
 		Settings.getInstance().setUserName(userNameTextBox.getText());
+		Settings.getInstance().setSvcUrl(svcUrlTextBox.getText());
 		
 		this.areChangesApplied = true;
 		return true;		
