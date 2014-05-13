@@ -9,7 +9,7 @@ public class Settings {
 	private final static Settings INSTANCE = new Settings();
 	private final String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
 	private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
-	private final String svcUrl = "http://localhost:55592/api/UserActivity/"; //TODO: change to production service address
+	private final String svcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity"; 
 	
 	private Settings() {
 	}
