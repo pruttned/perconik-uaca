@@ -63,9 +63,9 @@ public class EventCache {
 	public void addEvent(EventDto event) throws SQLException, JsonProcessingException {
 		ValidationHelper.checkArgNotNull(event, "event");
 		
-		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIME, DATA) VALUES (?, ?, ?)", event.getEventId(), 
-																							 event.getTime().getTime(), 
-																							 this.eventSerializer.serialize(event));
+		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", event.getEventId(), 
+																							 	  XMLGregorianCalendarHelper.getMilliseconds(event.getTimestamp()), 
+																							 	  this.eventSerializer.serialize(event));
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class EventCache {
 	 */
 	public ArrayList<CachedEvent> getEventsToCommit() throws SQLException {
 		long lastEventTimeToCommit = new Date().getTime() - Settings.getInstance().getEventAgeToCommit();
-		ResultSet result = executeThreadSafeQuery(String.format("SELECT EVENTID, TIME, DATA FROM EVENTS WHERE TIME <= %s ORDER BY TIME ASC", lastEventTimeToCommit));
+		ResultSet result = executeThreadSafeQuery(String.format("SELECT EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
 		return convertToArrayList(result);
 	}
 
@@ -143,7 +143,7 @@ public class EventCache {
 	 * @throws SQLException 
 	 */
 	public ArrayList<CachedEvent> getEvents() throws SQLException {
-		ResultSet result = executeThreadSafeQuery("SELECT EVENTID, TIME, DATA FROM EVENTS ORDER BY TIME DESC");
+		ResultSet result = executeThreadSafeQuery("SELECT EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
 		return convertToArrayList(result);
 	}
 	
@@ -151,7 +151,7 @@ public class EventCache {
 		ArrayList<CachedEvent> cachedEvents = new ArrayList<CachedEvent>();
 		while(queryResult.next()) {
 			cachedEvents.add(new CachedEvent((UUID)queryResult.getObject("EVENTID"), 
-											 new Date(queryResult.getLong("TIME")), 
+											 XMLGregorianCalendarHelper.createUtc(queryResult.getLong("TIMESTAMP")), 
 											 queryResult.getString("DATA")));
 		}
 		return cachedEvents;
@@ -161,7 +161,7 @@ public class EventCache {
 		StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS EVENTS(");
 		builder.append("ID IDENTITY PRIMARY KEY NOT NULL,");
 		builder.append("EVENTID UUID NOT NULL,");
-		builder.append("TIME BIGINT NOT NULL,"); //TIMESTAMP not used because of problems with the conversion from java.util.Date 
+		builder.append("TIMESTAMP BIGINT NOT NULL,"); //milliseconds 
 		builder.append("DATA VARCHAR NOT NULL)");
 		this.connection.createStatement().executeUpdate(builder.toString());
 	}

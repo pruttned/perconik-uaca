@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -86,7 +85,7 @@ public class EventCacheDialog extends JDialog {
 		Object[][] rows = new Object[this.displayedEvents.size()][2];
 		for(int i = 0; i < this.displayedEvents.size(); i++) {
 			CachedEvent cachedEvent = this.displayedEvents.get(i);
-			rows[i] = new Object[] { SimpleDateFormat.getInstance().format(cachedEvent.getTime()), cachedEvent.getEventId() };
+			rows[i] = new Object[] { XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp()), cachedEvent.getEventId() };
 		}
 		((DefaultTableModel)this.eventsTable.getModel()).setDataVector(rows, new String[] { "Time", "ID"});
 		

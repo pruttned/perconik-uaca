@@ -1,17 +1,22 @@
 package com.gratex.perconik.useractivity.app.dto;
 
-import java.util.Date;
 import java.util.UUID;
 
-import com.gratex.perconik.useractivity.app.Settings;
+import javax.xml.datatype.XMLGregorianCalendar;
 
-public class EventDto {
-	private UUID eventId = UUID.randomUUID();
-	private Date time = new Date(); // UTC now
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.gratex.perconik.useractivity.app.Settings;
+import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
+
+public class EventDto {	 
+	@JsonSerialize(using = ToStringSerializer.class)
+	private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
+	private UUID eventId = UUID.randomUUID();	
 	private String user = Settings.getInstance().getUserName();
 	private String workstation = Settings.getInstance().getWorkstationName();
 	private String eventTypeUri;
-
+	
 	public UUID getEventId() {
 		return this.eventId;
 	}
@@ -20,12 +25,12 @@ public class EventDto {
 		this.eventId = eventId;
 	}
 
-	public Date getTime() {
-		return this.time;
+	public XMLGregorianCalendar getTimestamp() {
+		return this.timestamp;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setTimestamp(XMLGregorianCalendar timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public String getUser() {
