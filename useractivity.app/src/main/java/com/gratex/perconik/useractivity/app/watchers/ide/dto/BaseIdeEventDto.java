@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class BaseIdeEventRequest{
+public class BaseIdeEventDto{
 	private XMLGregorianCalendar timestamp;
 	/**
 	 * Application instance identifier (for instance pid)

@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 
-public class IdeCodeElementEventRequest extends BaseIdeEventRequest {
+public class IdeCodeElementEventDto extends BaseIdeEventDto {
 	/**
 	 * Type of code element.
 	 * It should be in form of:

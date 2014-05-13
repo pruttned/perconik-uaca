@@ -83,7 +83,7 @@ public class ProcessWatcher extends TimerWatcherBase {
 	
 	private void addEventToCache(List<ProcessDto> addedProcesses, List<ProcessDto> killedProcesses) throws JsonProcessingException, SQLException {
 		ProcessesChangedSinceCheckEventDto dto = new ProcessesChangedSinceCheckEventDto();
-		dto.setAddedProcesses(addedProcesses);
+		dto.setStartedProcesses(addedProcesses);
 		dto.setKilledProcesses(killedProcesses);
 		
 		getEventCache().addEvent(dto);

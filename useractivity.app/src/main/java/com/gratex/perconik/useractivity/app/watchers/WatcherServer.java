@@ -48,8 +48,7 @@ public class WatcherServer {
 				ServletContextHandler.SESSIONS);
 		servletContextHandler.addServlet(servletHolder, "/*");
 
-		server.start();
-		server.join();
+		server.start();		
 	}
 
 	public void stop() throws Exception {

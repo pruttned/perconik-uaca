@@ -1,24 +1,26 @@
 package com.gratex.perconik.useractivity.app.dto;
 
+import javax.ws.rs.core.UriBuilder;
+
 public class ApplicationEventDto extends EventDto {
-	private String applicationName;
-	private String applicationVersion;
+	private String appName;
+	private String appVersion;
 	private String sessionId;
 	
-	public String getApplicationName() {
-		return applicationName;
+	public String getAppName() {
+		return appName;
 	}
 	
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 	
-	public String getApplicationVersion() {
-		return applicationVersion;
+	public String getAppVersion() {
+		return appVersion;
 	}
 	
-	public void setApplicationVersion(String applicationVersion) {
-		this.applicationVersion = applicationVersion;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 	
 	public String getSessionId() {
@@ -27,5 +29,10 @@ public class ApplicationEventDto extends EventDto {
 	
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+	
+	@Override	
+	protected UriBuilder getDefaultEventTypeUri() {
+		return super.getDefaultEventTypeUri().path("application");
 	}
 }

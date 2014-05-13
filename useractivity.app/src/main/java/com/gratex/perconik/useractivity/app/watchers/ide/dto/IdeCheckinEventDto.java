@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 
-public class IdeCheckinEventRequest extends BaseIdeEventRequest{
+public class IdeCheckinEventDto extends BaseIdeEventDto{
 	/**
 	 * Changeset id as specified in a RCS
 	 */

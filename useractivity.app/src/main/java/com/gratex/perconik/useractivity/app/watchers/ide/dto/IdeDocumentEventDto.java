@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 
-public class IdeDocumentEventRequest extends BaseIdeEventRequest {
+public class IdeDocumentEventDto extends BaseIdeEventDto {
 	/**
 	 * Document that has been subject of this event
 	 */

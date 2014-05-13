@@ -31,8 +31,8 @@ import org.glassfish.jersey.client.ClientResponse;
 import com.gratex.perconik.useractivity.app.UserActivityServiceProxy;
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 import com.gratex.perconik.useractivity.app.watchers.WatcherServer;
-import com.gratex.perconik.useractivity.app.watchers.ide.IdeWatcherSvc;
-import com.gratex.perconik.useractivity.app.watchers.web.WebWatcherSvc;
+//import com.gratex.perconik.useractivity.app.watchers.ide.IdeWatcherSvc;
+//import com.gratex.perconik.useractivity.app.watchers.web.WebWatcherSvc;
 
 /**
  * Hello world!

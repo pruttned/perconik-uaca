@@ -1,11 +1,12 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
 import com.gratex.perconik.useractivity.app.EventCache;
-import com.gratex.perconik.useractivity.app.watchers.web.dto.WebBookmarkEventRequest;
-import com.gratex.perconik.useractivity.app.watchers.web.dto.WebCopyEventRequest;
-import com.gratex.perconik.useractivity.app.watchers.web.dto.WebNavigateEventRequest;
-import com.gratex.perconik.useractivity.app.watchers.web.dto.WebSaveEventRequest;
-import com.gratex.perconik.useractivity.app.watchers.web.dto.WebTabEventRequest;
+import com.gratex.perconik.useractivity.app.dto.web.WebBookmarkEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebCopyEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebNavigateEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebSaveEventDto;
+import com.gratex.perconik.useractivity.app.dto.web.WebTabEventDto;
 
 public class WebWatcher implements IWatcher {
 	// http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
@@ -13,46 +14,56 @@ public class WebWatcher implements IWatcher {
 		private static final WebWatcher INSTANCE = new WebWatcher();
 	}
 
-	private boolean isStarted = false;
+	private boolean isRunning = false;
+	private EventCache eventCache;
 
+	private WebWatcher() {
+	}
+	
 	public static WebWatcher getInstance() {
 		return LazyHolder.INSTANCE;
 	}
 
-	public boolean isStarted() {
-		return isStarted;
-	}
-	
-	public void postNavigateEvent(WebNavigateEventRequest req) {
-	}	
-	
-	public void postCopyEvent(WebCopyEventRequest req) {
-	}
-	
-	public void postSaveEvent(WebSaveEventRequest req) {
-	}
-	
-	public void postBookmarkEvent(WebBookmarkEventRequest req) {
-	}
-	
-	public void postTabEvent(WebTabEventRequest req, String eventType) {
-	}	
-
 	@Override
 	public String getDisplayName() {
-		return "WebBrowser";
+		return "Web";
 	}
-
+	
 	@Override
 	public void start(EventCache eventCache) {
-		isStarted = true;
+		this.eventCache = eventCache;
+		isRunning = true;
 	}
 
 	@Override
 	public void stop() {
-		isStarted = false;
+		isRunning = false;
 	}
 	
-	WebWatcher() {
+	public void postNavigateEvent(WebNavigateEventDto dto) {
+		addEventIfRunning(dto);
+	}
+	
+	public void postCopyEvent(WebCopyEventDto dto) {
+		//TODO: pozri, ako je to v starom
+	}
+	
+	public void postSaveEvent(WebSaveEventDto dto) {
+		addEventIfRunning(dto);
+	}
+	
+	public void postBookmarkEvent(WebBookmarkEventDto dto) {
+		addEventIfRunning(dto);
+	}
+	
+	public void postTabEvent(WebTabEventDto dto, String eventType) {
+		dto.setEventType(eventType);
+		addEventIfRunning(dto);
+	}
+	
+	private void addEventIfRunning(WebEventDto dto) {
+		if(isRunning) {
+			eventCache.addEventOrTrace(dto);
+		}
 	}
 }

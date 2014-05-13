@@ -3,7 +3,7 @@ package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 import java.util.List;
 import java.util.ArrayList;
 
-public class IdeFindEventRequest extends BaseIdeEventRequest {
+public class IdeFindEventDto extends BaseIdeEventDto {
 	/**
 	 * Search query
 	 */

@@ -5,7 +5,7 @@ package com.gratex.perconik.useractivity.app.watchers.ide.dto;
  * Cut
  * 
  */
-public class IdeCodeEventRequest extends BaseIdeEventRequest {
+public class IdeCodeEventDto extends BaseIdeEventDto {
 	/**
 	 * Text that was subject of a given event. For instance text that was pasted from the web.
 	 */

@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app.watchers.ide.dto;
 
-public class IdeStateChangeEventRequest extends BaseIdeEventRequest {
+public class IdeStateChangeEventDto extends BaseIdeEventDto {
 	/**
 	 * Uri specifying state/perspective to which has been IDE switched. 
 	 * It should be in form of:
