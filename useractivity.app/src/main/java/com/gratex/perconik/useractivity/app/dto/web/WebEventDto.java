@@ -5,7 +5,6 @@ import com.gratex.perconik.useractivity.app.dto.ApplicationEventDto;
 
 public class WebEventDto extends ApplicationEventDto {
 	private String url;
-	private String objectName;
 	
 	public String getUrl() {
 		return url;
@@ -13,14 +12,6 @@ public class WebEventDto extends ApplicationEventDto {
 	
 	public void setUrl(String url) {
 		this.url = url;
-	}
-	
-	public String getObjectName() {
-		return objectName;
-	}
-	
-	public void setObjectName(String objectName) {
-		this.objectName = objectName;
 	}
 	
 	@Override	
