@@ -9,6 +9,7 @@ public class Settings {
 	private final static Settings INSTANCE = new Settings();
 	private final String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
 	private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
+	private final String svcUrl = "http://localhost:55592/api/UserActivity/"; //TODO: change to production service address
 	
 	private Settings() {
 	}
@@ -57,6 +58,16 @@ public class Settings {
 		} catch (UnknownHostException ex) {
 			return "UNKNOWN"; //TODO: find a better solution
 		}
+	}
+	
+	public String getSvcUrl() {
+		return getPreferencesNode().get("svc_url", svcUrl);
+	}
+	
+	public void setSvcUrl(String url) {
+		ValidationHelper.checkStringArgNotNullOrWhitespace(url, "url");
+		
+		getPreferencesNode().put("svc_url", url);
 	}
 	
 	public String getVersion() {
