@@ -25,8 +25,7 @@ public class UserActivityServiceProxy {
 	public void commitEvent(CachedEvent cachedEvent) throws SvcException {
 		ValidationHelper.checkArgNotNull(cachedEvent, "cachedEvent");
 
-		AppTracer.getInstance().writeInfo(
-				"PROXY - sending: " + cachedEvent.getEventId());
+		//AppTracer.getInstance().writeInfo("PROXY - sending: " + cachedEvent.getEventId());
 
 		WebTarget fullTarget = baseSvcUrl.path(cachedEvent.getEventId()
 				.toString());
