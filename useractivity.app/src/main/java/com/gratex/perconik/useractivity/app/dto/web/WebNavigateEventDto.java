@@ -24,6 +24,6 @@ public class WebNavigateEventDto extends WebEventDto {
 
 	@Override	
 	protected UriBuilder getDefaultEventTypeUri() {
-		return super.getDefaultEventTypeUri().path("navigation");
+		return super.getDefaultEventTypeUri().path("navigate");
 	}
 }

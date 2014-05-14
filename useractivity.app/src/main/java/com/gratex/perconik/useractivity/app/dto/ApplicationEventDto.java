@@ -31,8 +31,8 @@ public class ApplicationEventDto extends EventDto {
 		this.sessionId = sessionId;
 	}
 	
-	@Override	
+	/*@Override	
 	protected UriBuilder getDefaultEventTypeUri() {
 		return super.getDefaultEventTypeUri().path("application");
-	}
+	}*/
 }

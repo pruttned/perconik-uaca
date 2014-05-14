@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.gratex.perconik.useractivity.app.AppTracer;
 import com.gratex.perconik.useractivity.app.EventCache;
 import com.gratex.perconik.useractivity.app.Settings;
-import com.gratex.perconik.useractivity.app.watchers.ide.IdeWatcherSvc;
 
 /**
  * Manages all watcher instances.

@@ -1,14 +1,14 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
-import javax.ws.rs.PathParam;
 import com.gratex.perconik.useractivity.app.EventCache;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeCheckinEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeCodeElementEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeCodeEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeDocumentEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeFindEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeProjectEventDto;
-import com.gratex.perconik.useractivity.app.watchers.ide.dto.IdeStateChangeEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCheckinEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeElementEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeDocumentEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeFindEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeProjectEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeStateChangeEventDto;
 
 public class IdeWatcher implements IWatcher {
 	// http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
@@ -16,52 +16,67 @@ public class IdeWatcher implements IWatcher {
 		private static final IdeWatcher INSTANCE = new IdeWatcher();
 	}
 
-	private boolean isStarted = false;
-
+	private boolean isRunning = false;
+	private EventCache eventCache;
+	
+	private IdeWatcher() {
+	}
+	
 	public static IdeWatcher getInstance() {
 		return LazyHolder.INSTANCE;
 	}
 
-	public boolean isStarted() {
-		return isStarted;
-	}
-	
-	public void postCheckinEvent(IdeCheckinEventDto req) {
-	}
-	
-	public void postFindEvent(IdeFindEventDto req) {
-	}
-	
-	public void postCodeEvent(IdeCodeEventDto req, String eventType) {
-	}
-	
-	public void postCodeElementEvent(IdeCodeElementEventDto req, String eventType) {
-	}
-	
-	public void postDocumentEvent(IdeDocumentEventDto req, String eventType) {
-	}
-	
-	public void postProjectEvent(IdeProjectEventDto req, @PathParam("eventType") String eventType) {
-	}
-	
-	public void postIdeStateChangeEvent(IdeStateChangeEventDto req) {
-	}
-
 	@Override
 	public String getDisplayName() {
-		return "WebBrowser";
+		return "IDE";
 	}
 
 	@Override
 	public void start(EventCache eventCache) {
-		isStarted = true;
+		this.eventCache = eventCache;
+		isRunning = true;
 	}
 
 	@Override
 	public void stop() {
-		isStarted = false;
+		isRunning = false;
 	}
 	
-	IdeWatcher() {
+	public void postCheckinEvent(IdeCheckinEventDto dto) {
+		addEventIfRunning(dto);
+	}
+	
+	public void postFindEvent(IdeFindEventDto dto) {
+		addEventIfRunning(dto);
+	}
+	
+	public void postCodeEvent(IdeCodeEventDto dto, String eventType) {
+		dto.setEventType(eventType);
+		addEventIfRunning(dto);
+	}
+	
+	public void postCodeElementEvent(IdeCodeElementEventDto dto, String eventType) {
+		dto.setEventType(eventType);
+		addEventIfRunning(dto);
+	}
+	
+	public void postDocumentEvent(IdeDocumentEventDto dto, String eventType) {
+		dto.setEventType(eventType);
+		addEventIfRunning(dto);
+	}
+	
+	public void postProjectEvent(IdeProjectEventDto dto, String eventType) {
+		dto.setEventType(eventType);
+		addEventIfRunning(dto);
+	}
+	
+	public void postIdeStateChangeEvent(IdeStateChangeEventDto dto) {		
+		addEventIfRunning(dto);
+	}
+
+	private void addEventIfRunning(IdeEventDto dto) {
+		if(isRunning) {
+			eventCache.addEventOrTrace(dto);
+		}
 	}
 }

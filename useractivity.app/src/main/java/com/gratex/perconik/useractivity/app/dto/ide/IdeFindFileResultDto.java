@@ -1,11 +1,11 @@
-package com.gratex.perconik.useractivity.app.watchers.ide.dto;
+package com.gratex.perconik.useractivity.app.dto.ide;
 
 import java.util.List;
 import java.util.ArrayList;
 
 public class IdeFindFileResultDto {
     public IdeDocumentDto file;
-    List<IdeFindResultRowDto> rows;
+    private List<IdeFindResultRowDto> rows;
     
     public IdeFindFileResultDto(){
     }

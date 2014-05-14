@@ -1,6 +1,8 @@
-package com.gratex.perconik.useractivity.app.watchers.ide.dto;
+package com.gratex.perconik.useractivity.app.dto.ide;
 
-public class IdeCheckinEventDto extends BaseIdeEventDto{
+import javax.ws.rs.core.UriBuilder;
+
+public class IdeCheckinEventDto extends IdeEventDto{
 	/**
 	 * Changeset id as specified in a RCS
 	 */
@@ -37,5 +39,10 @@ public class IdeCheckinEventDto extends BaseIdeEventDto{
 	 */
 	public void setRcsServer(RcsServerDto rcsServer) {
 		this.rcsServer = rcsServer;
+	}
+	
+	@Override
+	protected UriBuilder getDefaultEventTypeUri() {
+		return super.getDefaultEventTypeUri().path("checkin");
 	}
 }

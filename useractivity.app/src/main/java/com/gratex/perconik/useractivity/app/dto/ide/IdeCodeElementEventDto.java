@@ -1,6 +1,8 @@
-package com.gratex.perconik.useractivity.app.watchers.ide.dto;
+package com.gratex.perconik.useractivity.app.dto.ide;
 
-public class IdeCodeElementEventDto extends BaseIdeEventDto {
+import javax.ws.rs.core.UriBuilder;
+
+public class IdeCodeElementEventDto extends IdeEventDto {
 	/**
 	 * Type of code element.
 	 * It should be in form of:
@@ -8,6 +10,7 @@ public class IdeCodeElementEventDto extends BaseIdeEventDto {
 	 * where value is "class", "method", "property" ... 
 	 */
 	private String codeElementTypeUri;
+	
 	/**
 	 * Full name of the code element
 	 */
@@ -19,22 +22,34 @@ public class IdeCodeElementEventDto extends BaseIdeEventDto {
 	public String getCodeElementTypeUri() {
 		return codeElementTypeUri;
 	}
+	
 	/**
 	 * @param {@link #codeElementTypeUri}
 	 */
 	public void setCodeElementTypeUri(String codeElementTypeUri) {
 		this.codeElementTypeUri = codeElementTypeUri;
 	}
+	
 	/**
 	 * @return the {@link #elementFullName}
 	 */
 	public String getElementFullName() {
 		return elementFullName;
 	}
+	
 	/**
 	 * @param {@link #elementFullName}
 	 */
 	public void setElementFullName(String elementFullName) {
 		this.elementFullName = elementFullName;
+	}
+	
+	public void setEventType(String eventType) {
+		setEventTypeUri(UriBuilder.fromPath(getEventTypeUri()).path(eventType).build().toString());
+	}
+	
+	@Override
+	protected UriBuilder getDefaultEventTypeUri() {
+		return super.getDefaultEventTypeUri().path("codeelement");
 	}
 }

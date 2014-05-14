@@ -1,4 +1,4 @@
-package com.gratex.perconik.useractivity.app.watchers.ide.dto;
+package com.gratex.perconik.useractivity.app.dto.ide;
 
 public class RcsServerDto {
 	/**

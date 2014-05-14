@@ -1,6 +1,8 @@
-package com.gratex.perconik.useractivity.app.watchers.ide.dto;
+package com.gratex.perconik.useractivity.app.dto.ide;
 
-public class IdeStateChangeEventDto extends BaseIdeEventDto {
+import javax.ws.rs.core.UriBuilder;
+
+public class IdeStateChangeEventDto extends IdeEventDto {
 	/**
 	 * Uri specifying state/perspective to which has been IDE switched. 
 	 * It should be in form of:
@@ -21,5 +23,10 @@ public class IdeStateChangeEventDto extends BaseIdeEventDto {
 	 */
 	public void setStateTypeUri(String stateTypeUri) {
 		this.stateTypeUri = stateTypeUri;
+	}
+	
+	@Override
+	protected UriBuilder getDefaultEventTypeUri() {
+		return super.getDefaultEventTypeUri().path("statechange");
 	}
 }
