@@ -1,6 +1,7 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
 import com.gratex.perconik.useractivity.app.EventCache;
+import com.gratex.perconik.useractivity.app.ValidationHelper;
 import com.gratex.perconik.useractivity.app.dto.ide.IdeCheckinEventRequest;
 import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeElementEventRequest;
 import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeEventRequest;
@@ -51,6 +52,15 @@ public class IdeWatcher implements IWatcher {
 	}
 	
 	public void postCodeEvent(IdeCodeEventRequest dto, String eventType) {
+		//handling possible 'paste from web'
+		String copiedTextFromWeb = WebWatcher.getInstance().getLastCopyText();
+		String pastedTextIntoIde = dto.getText().trim();		
+		if(eventType.equals("paste") && !ValidationHelper.isStringNullOrWhitespace(copiedTextFromWeb) && copiedTextFromWeb.equals(pastedTextIntoIde)) {
+			eventType = "pastefromweb";
+			dto.setWebUrl(WebWatcher.getInstance().getLastCopyUrl());			
+		}
+		
+		//adding the event
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
 	}
