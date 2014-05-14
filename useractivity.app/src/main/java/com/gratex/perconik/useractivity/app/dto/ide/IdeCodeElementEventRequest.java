@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.dto.ide;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeCodeElementEventDto extends IdeEventDto {
+public class IdeCodeElementEventRequest extends IdeEventRequest {
 	/**
 	 * Type of code element.
 	 * It should be in form of:

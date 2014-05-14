@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeFindEventDto extends IdeEventDto {
+public class IdeFindEventRequest extends IdeEventRequest {
 	/**
 	 * Search query
 	 */

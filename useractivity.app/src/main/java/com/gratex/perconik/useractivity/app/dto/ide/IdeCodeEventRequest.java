@@ -7,7 +7,7 @@ import javax.ws.rs.core.UriBuilder;
  * Cut
  * 
  */
-public class IdeCodeEventDto extends IdeEventDto {
+public class IdeCodeEventRequest extends IdeEventRequest {
 	/**
 	 * Text that was subject of a given event. For instance text that was pasted from the web.
 	 */

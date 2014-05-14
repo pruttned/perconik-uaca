@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.dto.ide;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeCheckinEventDto extends IdeEventDto{
+public class IdeCheckinEventRequest extends IdeEventRequest{
 	/**
 	 * Changeset id as specified in a RCS
 	 */

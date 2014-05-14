@@ -1,14 +1,14 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
 import com.gratex.perconik.useractivity.app.EventCache;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeCheckinEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeElementEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeDocumentEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeFindEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeProjectEventDto;
-import com.gratex.perconik.useractivity.app.dto.ide.IdeStateChangeEventDto;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCheckinEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeElementEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeCodeEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeDocumentEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeFindEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeProjectEventRequest;
+import com.gratex.perconik.useractivity.app.dto.ide.IdeStateChangeEventRequest;
 
 public class IdeWatcher implements IWatcher {
 	// http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
@@ -42,39 +42,39 @@ public class IdeWatcher implements IWatcher {
 		isRunning = false;
 	}
 	
-	public void postCheckinEvent(IdeCheckinEventDto dto) {
+	public void postCheckinEvent(IdeCheckinEventRequest dto) {
 		addEventIfRunning(dto);
 	}
 	
-	public void postFindEvent(IdeFindEventDto dto) {
+	public void postFindEvent(IdeFindEventRequest dto) {
 		addEventIfRunning(dto);
 	}
 	
-	public void postCodeEvent(IdeCodeEventDto dto, String eventType) {
+	public void postCodeEvent(IdeCodeEventRequest dto, String eventType) {
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
 	}
 	
-	public void postCodeElementEvent(IdeCodeElementEventDto dto, String eventType) {
+	public void postCodeElementEvent(IdeCodeElementEventRequest dto, String eventType) {
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
 	}
 	
-	public void postDocumentEvent(IdeDocumentEventDto dto, String eventType) {
+	public void postDocumentEvent(IdeDocumentEventRequest dto, String eventType) {
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
 	}
 	
-	public void postProjectEvent(IdeProjectEventDto dto, String eventType) {
+	public void postProjectEvent(IdeProjectEventRequest dto, String eventType) {
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
 	}
 	
-	public void postIdeStateChangeEvent(IdeStateChangeEventDto dto) {		
+	public void postIdeStateChangeEvent(IdeStateChangeEventRequest dto) {		
 		addEventIfRunning(dto);
 	}
 
-	private void addEventIfRunning(IdeEventDto dto) {
+	private void addEventIfRunning(IdeEventRequest dto) {
 		if(isRunning) {
 			eventCache.addEventOrTrace(dto);
 		}

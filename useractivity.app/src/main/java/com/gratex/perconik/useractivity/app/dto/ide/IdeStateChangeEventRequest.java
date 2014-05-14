@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.dto.ide;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeStateChangeEventDto extends IdeEventDto {
+public class IdeStateChangeEventRequest extends IdeEventRequest {
 	/**
 	 * Uri specifying state/perspective to which has been IDE switched. 
 	 * It should be in form of:

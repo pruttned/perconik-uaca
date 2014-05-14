@@ -4,7 +4,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.gratex.perconik.useractivity.app.dto.ApplicationEventDto;
 
-public class IdeEventDto extends ApplicationEventDto {
+public class IdeEventRequest extends ApplicationEventDto {
 	/**
 	 * Name of the current project
 	 */

@@ -1,7 +1,5 @@
 package com.gratex.perconik.useractivity.app.dto;
 
-import javax.ws.rs.core.UriBuilder;
-
 public class ApplicationEventDto extends EventDto {
 	private String appName;
 	private String appVersion;

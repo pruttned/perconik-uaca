@@ -12,49 +12,49 @@ public class IdeWatcherSvc {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/checkin")
-	public void postCheckinEvent(IdeCheckinEventDto dto) {
+	public void postCheckinEvent(IdeCheckinEventRequest dto) {
 		IdeWatcher.getInstance().postCheckinEvent(dto);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/find")
-	public void postFindEvent(IdeFindEventDto dto) {
+	public void postFindEvent(IdeFindEventRequest dto) {
 		IdeWatcher.getInstance().postFindEvent(dto);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/code/{eventType:(selectionchanged|paste|copy|cut)}")
-	public void postCodeEvent(IdeCodeEventDto dto, @PathParam("eventType") String eventType) {
+	public void postCodeEvent(IdeCodeEventRequest dto, @PathParam("eventType") String eventType) {
 		IdeWatcher.getInstance().postCodeEvent(dto, eventType);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/codeelement/{eventType:(visiblestart|visibleend|editstart|editend)}")
-	public void postCodeElementEvent(IdeCodeElementEventDto dto, @PathParam("eventType") String eventType) {
+	public void postCodeElementEvent(IdeCodeElementEventRequest dto, @PathParam("eventType") String eventType) {
 		IdeWatcher.getInstance().postCodeElementEvent(dto, eventType);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/document/{eventType:(switchto|add|open|close|remove|rename|save)}")
-	public void postDocumentEvent(IdeDocumentEventDto dto, @PathParam("eventType") String eventType) {
+	public void postDocumentEvent(IdeDocumentEventRequest dto, @PathParam("eventType") String eventType) {
 		IdeWatcher.getInstance().postDocumentEvent(dto, eventType);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/project/{eventType:(switchto|add|remove|rename|open|close|refresh)}")
-	public void postProjectEvent(IdeProjectEventDto dto, @PathParam("eventType") String eventType) {
+	public void postProjectEvent(IdeProjectEventRequest dto, @PathParam("eventType") String eventType) {
 		IdeWatcher.getInstance().postProjectEvent(dto, eventType);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/idestatechange")
-	public void postIdeStateChangeEvent(IdeStateChangeEventDto dto) {
+	public void postIdeStateChangeEvent(IdeStateChangeEventRequest dto) {
 		IdeWatcher.getInstance().postIdeStateChangeEvent(dto);
 	}
 }

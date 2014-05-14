@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.dto.ide;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeDocumentEventDto extends IdeEventDto {
+public class IdeDocumentEventRequest extends IdeEventRequest {
 	/**
 	 * Document that has been subject of this event
 	 */

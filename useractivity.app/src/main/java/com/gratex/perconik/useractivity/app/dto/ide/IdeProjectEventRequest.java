@@ -2,7 +2,7 @@ package com.gratex.perconik.useractivity.app.dto.ide;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class IdeProjectEventDto extends IdeEventDto{
+public class IdeProjectEventRequest extends IdeEventRequest{
 	public void setEventType(String eventType) {
 		setEventTypeUri(UriBuilder.fromPath(getEventTypeUri()).path(eventType).build().toString());
 	}
