@@ -56,8 +56,11 @@ public class SettingsDialog extends JDialog {
 		JTextField svcUrlTextBox = new JTextField(Settings.getInstance().getSvcUrl());
 		addField("Service URL", svcUrlTextBox);
 		
+		//local svc port
+		JSpinner localSvcPortSpinner = addLocalSvcPortField();
+		
 		//'OK' and 'cancel' buttons
-		addCloseButtons(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox);
+		addCloseButtons(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox, localSvcPortSpinner);
 	}
 	
 	private JSpinner createSpinner(long value) {
@@ -88,7 +91,44 @@ public class SettingsDialog extends JDialog {
 		add(control, controlConstraints);
 	}
 	
-	private void addCloseButtons(final JSpinner eventCommitIntervalSpinner, final JSpinner eventAgeToCommitSpinner, final JTextField userNameTextBox, final JTextField svcUrlTextBox) {
+	private JSpinner addLocalSvcPortField() {
+		int topMargin = 30;
+		
+		//title
+		GridBagConstraints titleConstraints = new GridBagConstraints();		
+		titleConstraints.anchor = GridBagConstraints.LINE_START;
+		titleConstraints.gridx = 0;
+		titleConstraints.gridy = GridBagConstraints.RELATIVE;
+		titleConstraints.insets = new Insets(topMargin, 0, 0, 0);
+		add(new JLabel("Local Services Port:"), titleConstraints);
+		
+		//control
+		JSpinner control = createSpinner(Settings.getInstance().getLocalSvcPort());
+		GridBagConstraints controlConstraints = new GridBagConstraints();
+		controlConstraints.anchor = GridBagConstraints.LINE_START;
+		controlConstraints.gridx = 1;
+		controlConstraints.gridy = GridBagConstraints.RELATIVE;
+		controlConstraints.weightx = 1;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		controlConstraints.insets = new Insets(topMargin, 2, 0, 0);		
+		add(control, controlConstraints);
+		
+		//info		
+		JLabel infoLabel = new JLabel("<html>- Requires restart<br>- Must be set in each plug-in (web browser, IDE...) manually</html>");
+		GridBagConstraints infoLabelConstraints = new GridBagConstraints();
+		infoLabelConstraints.anchor = GridBagConstraints.LINE_START;
+		infoLabelConstraints.gridx = 1;
+		infoLabelConstraints.gridy = GridBagConstraints.RELATIVE;
+		infoLabelConstraints.weightx = 1;
+		infoLabelConstraints.fill = GridBagConstraints.HORIZONTAL;
+		infoLabelConstraints.insets = new Insets(0, 2, 0, 0);		
+		add(infoLabel, infoLabelConstraints);
+		
+		return control;
+	}
+	
+	private void addCloseButtons(final JSpinner eventCommitIntervalSpinner, final JSpinner eventAgeToCommitSpinner, final JTextField userNameTextBox, final JTextField svcUrlTextBox,
+			final JSpinner localSvcPortSpinner) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		GridBagConstraints panelConstraints = new GridBagConstraints();
 		panelConstraints.gridwidth = 2;
@@ -104,7 +144,7 @@ public class SettingsDialog extends JDialog {
 		okButton.setToolTipText("Accept changes");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(applyChanges(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox)) {
+				if(applyChanges(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox, localSvcPortSpinner)) {
 					SettingsDialog.this.setVisible(false);
 				}
 			}
@@ -122,7 +162,7 @@ public class SettingsDialog extends JDialog {
 		panel.add(cancelButton);
 	}
 	
-	private boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox, JTextField svcUrlTextBox) {
+	private boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox, JTextField svcUrlTextBox, JSpinner localSvcPortSpinner) {
 		if(ValidationHelper.isStringNullOrWhitespace(userNameTextBox.getText()) ||
 		   ValidationHelper.isStringNullOrWhitespace(svcUrlTextBox.getText())) {
 			MessageBox.showError(this, "Please fill all fields.", "Empty fields!");
@@ -133,9 +173,10 @@ public class SettingsDialog extends JDialog {
 		Settings.getInstance().setEventAgeToCommit(getSpinnerValue(eventAgeToCommitSpinner) * 60000);
 		Settings.getInstance().setUserName(userNameTextBox.getText());
 		Settings.getInstance().setSvcUrl(svcUrlTextBox.getText());
+		Settings.getInstance().setLocalSvcPort(getSpinnerValue(localSvcPortSpinner));
 		
 		this.areChangesApplied = true;
-		return true;		
+		return true;
 	}
 	
 	private int getSpinnerValue(JSpinner spinner) {

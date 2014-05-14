@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.gratex.perconik.useractivity.app.AppTracer;
 import com.gratex.perconik.useractivity.app.EventCache;
+import com.gratex.perconik.useractivity.app.Settings;
 import com.gratex.perconik.useractivity.app.watchers.ide.IdeWatcherSvc;
 
 /**
@@ -27,7 +28,7 @@ public class WatcherManager {
 		}
 				
 		try {
-			WatcherServer watcherServer = new WatcherServer(16375); //TODO: add port to settings  
+			WatcherServer watcherServer = new WatcherServer(Settings.getInstance().getLocalSvcPort());  
 			watcherServer.setServiceClasses(IdeWatcherSvc.class, WebWatcherSvc.class);
 			watcherServer.start(); //TODO: stop at app shutdown
 		} catch (Exception ex) {

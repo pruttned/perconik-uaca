@@ -9,7 +9,8 @@ public class Settings {
 	private final static Settings INSTANCE = new Settings();
 	private final String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
 	private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
-	private final String svcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity"; 
+	private final String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity"; 
+	private final int defaultLocalSvcPort = 16375;
 	
 	private Settings() {
 	}
@@ -61,7 +62,7 @@ public class Settings {
 	}
 	
 	public String getSvcUrl() {
-		return getPreferencesNode().get("svc_url", svcUrl);
+		return getPreferencesNode().get("svc_url", defaultSvcUrl);
 	}
 	
 	public void setSvcUrl(String url) {
@@ -72,6 +73,14 @@ public class Settings {
 	
 	public String getVersion() {
 		return "2.0"; //TODO: find a standard way
+	}
+	
+	public int getLocalSvcPort() {
+		return getPreferencesNode().getInt("local_svc_port", defaultLocalSvcPort);
+	}
+	
+	public void setLocalSvcPort(int localSvcPort) {
+		getPreferencesNode().putInt("local_svc_port", localSvcPort);
 	}
 	
 	private Preferences getPreferencesNode() {
