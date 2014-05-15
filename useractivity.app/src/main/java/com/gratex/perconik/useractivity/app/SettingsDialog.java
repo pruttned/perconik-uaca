@@ -65,6 +65,7 @@ public class SettingsDialog extends JDialog {
 	
 	private JSpinner createSpinner(long value) {
 		JSpinner spinner = new JSpinner();
+		spinner.setEditor(new JSpinner.NumberEditor(spinner, "#"));
 		SpinnerNumberModel model = (SpinnerNumberModel)spinner.getModel();
 		model.setMinimum(0);
 		model.setValue(value);
