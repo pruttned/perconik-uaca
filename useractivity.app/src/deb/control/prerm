@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo pkill -f 'java .*/opt/gti/perconik/uaca/useractivity.app'

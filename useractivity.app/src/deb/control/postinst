@@ -1,0 +1,3 @@
+#!/bin/sh
+chmod +x /opt/gti/perconik/uaca/run.sh
+/opt/gti/perconik/uaca/run.sh

@@ -1,0 +1,7 @@
+Package: perconik-uaca
+Version: [[version]]
+Section: misc
+Priority: low
+Architecture: all
+Description: PerConIK UserActivity central application
+Maintainer: Core.PerConIK@gratex.com

@@ -9,3 +9,13 @@
 		+ 'Run.sh' (upravit podla potreby a radsej cez pravy klik nastavit, aby bol spustitelny)
 		+ 'libs' (vsetky nativne sajrajty pre Sigar)
 	- aby sa spustalo 'UACA.jar' pri spusteni Linuxu, upravit a nakopirovat 'UserActivity.desktop' do '~/.config/autostart/'
+	
+	-instalacia: 
+		- treba pridat repo
+		- sudo apt-get update -o Acquire::http::proxy=none
+		- sudo apt-get install perconik-uaca -o Acquire::http::proxy=none
+		
+	-odinstalacia  : sudo apt-get remove perconik-uaca
+	
+		
+		

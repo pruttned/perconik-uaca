@@ -72,7 +72,7 @@ public class Settings {
 	}
 	
 	public String getVersion() {
-		return "2.0"; //TODO: find a standard way
+		return "2.0.0"; //TODO: find a standard way
 	}
 	
 	public int getLocalSvcPort() {
