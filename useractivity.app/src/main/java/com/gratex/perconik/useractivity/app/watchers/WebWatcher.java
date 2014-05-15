@@ -16,7 +16,9 @@ public class WebWatcher implements IWatcher {
 
 	private boolean isRunning = false;
 	private EventCache eventCache;
-
+	private String lastCopyText;
+	private String lastCopyUrl;
+	
 	private WebWatcher() {
 	}
 	
@@ -45,7 +47,8 @@ public class WebWatcher implements IWatcher {
 	}
 	
 	public void postCopyEvent(WebCopyEventDto dto) {
-		//TODO: pozri, ako je to v starom
+		lastCopyText = dto.getContent().trim(); //TODO: remove all whitespaces
+		lastCopyUrl = dto.getUrl();
 	}
 	
 	public void postSaveEvent(WebSaveDocumentEventDto dto) {
@@ -59,6 +62,14 @@ public class WebWatcher implements IWatcher {
 	public void postTabEvent(WebTabEventDto dto, String eventType) {
 		dto.setEventType(eventType);
 		addEventIfRunning(dto);
+	}
+	
+	public String getLastCopyText() {
+		return lastCopyText;
+	}
+	
+	public String getLastCopyUrl() {
+		return lastCopyUrl;
 	}
 	
 	private void addEventIfRunning(WebEventDto dto) {

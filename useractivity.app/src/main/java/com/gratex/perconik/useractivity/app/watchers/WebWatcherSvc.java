@@ -37,7 +37,7 @@ public class WebWatcherSvc {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/bookmar")
+	@Path("/bookmark")
 	public void postBookmarkEvent(WebBookmarkEventDto dto) {
 		WebWatcher.getInstance().postBookmarkEvent(dto);
 	}

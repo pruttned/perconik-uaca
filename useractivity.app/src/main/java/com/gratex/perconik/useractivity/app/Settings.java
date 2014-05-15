@@ -28,7 +28,7 @@ public class Settings {
 	}
 	
 	public long getEventAgeToCommit() {
-		return getPreferencesNode().getLong("event_age_to_commit", 60000 * 30); //default is 30 minutes
+		return getPreferencesNode().getLong("event_age_to_commit", 60000 * 60); //default is 60 minutes
 	}
 	
 	public void setEventAgeToCommit(long eventAgeToCommit) {
