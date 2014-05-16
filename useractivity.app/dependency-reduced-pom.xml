@@ -111,6 +111,21 @@
             </configuration>
           </plugin>
           <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app\target/libs</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <groupId>org.vafer</groupId>
             <artifactId>jdeb</artifactId>
             <version>1.1.1</version>
