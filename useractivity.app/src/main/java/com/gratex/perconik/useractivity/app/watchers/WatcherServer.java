@@ -13,6 +13,8 @@ public class WatcherServer {
 	int port;
 
 	public WatcherServer(int port) {
+		org.eclipse.jetty.util.log.Log.setLog(new AppTracerJettyLogger());
+		
 		this.port = port;
 		servletHolder = new ServletHolder(ServletContainer.class);
 		
