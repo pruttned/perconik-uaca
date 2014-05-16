@@ -24,14 +24,14 @@
                 <configuration>
                   <forkMode>once</forkMode>
                   <workingDirectory>target</workingDirectory>
-                  <argLine>-Djava.library.path=C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/libs</argLine>
+                  <argLine>-Djava.library.path=C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/libs</argLine>
                 </configuration>
               </execution>
             </executions>
             <configuration>
               <forkMode>once</forkMode>
               <workingDirectory>target</workingDirectory>
-              <argLine>-Djava.library.path=C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/libs</argLine>
+              <argLine>-Djava.library.path=C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/libs</argLine>
             </configuration>
           </plugin>
           <plugin>
@@ -45,8 +45,8 @@
                   <goal>replace</goal>
                 </goals>
                 <configuration>
-                  <file>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/src/deb/data/run.sh</file>
-                  <outputFile>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app\target/data/run.sh</outputFile>
+                  <file>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/src/deb/data/run.sh</file>
+                  <outputFile>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app\target/data/run.sh</outputFile>
                   <replacements>
                     <replacement>
                       <token>\[JarName\]</token>
@@ -57,8 +57,8 @@
               </execution>
             </executions>
             <configuration>
-              <file>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/src/deb/data/run.sh</file>
-              <outputFile>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app\target/data/run.sh</outputFile>
+              <file>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/src/deb/data/run.sh</file>
+              <outputFile>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app\target/data/run.sh</outputFile>
               <replacements>
                 <replacement>
                   <token>\[JarName\]</token>
@@ -125,10 +125,10 @@
                   <snapshotExpand>true</snapshotExpand>
                   <snapshotEnv>USER</snapshotEnv>
                   <verbose>true</verbose>
-                  <controlDir>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/src/deb/control</controlDir>
+                  <controlDir>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/src/deb/control</controlDir>
                   <dataSet>
                     <data>
-                      <src>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app\target/useractivity.app-2.0.0.jar</src>
+                      <src>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app\target/useractivity.app-2.0.0.jar</src>
                       <type>file</type>
                       <mapper>
                         <type>perm</type>
@@ -136,7 +136,7 @@
                       </mapper>
                     </data>
                     <data>
-                      <src>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app\target/data/run.sh</src>
+                      <src>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app\target/data/run.sh</src>
                       <type>file</type>
                       <mapper>
                         <type>perm</type>
@@ -144,7 +144,7 @@
                       </mapper>
                     </data>
                     <data>
-                      <src>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/libs</src>
+                      <src>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/libs</src>
                       <type>directory</type>
                       <mapper>
                         <type>perm</type>
@@ -152,11 +152,11 @@
                       </mapper>
                     </data>
                     <data>
-                      <src>C:\Work\Eclipse\Repos\perconik-uaca\useractivity.app/src/deb/data/perconik-uaca.desktop</src>
+                      <src>C:\Workspaces\Eclipse-Git\Repository\UserActivity\useractivity.app/src/deb/data/perconik-uaca.desktop</src>
                       <type>file</type>
                       <mapper>
                         <type>perm</type>
-                        <prefix>/etc/xdg/autostart</prefix>
+                        <prefix>/opt/gti/perconik/uaca</prefix>
                       </mapper>
                     </data>
                   </dataSet>

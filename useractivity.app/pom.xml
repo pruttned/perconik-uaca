@@ -233,7 +233,7 @@
 											<type>file</type>
 											<mapper>
 												<type>perm</type>
-												<prefix>/etc/xdg/autostart</prefix>
+												<prefix>/opt/gti/perconik/uaca</prefix>
 											</mapper>
 										</data>
 									</dataSet>
