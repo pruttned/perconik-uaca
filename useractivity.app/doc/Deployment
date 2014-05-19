@@ -1,8 +1,7 @@
 -WINDOWS
-	- mat takuto foldrovu strukturu:
-		+ 'UACA.jar'
-		+ <vsetky nativne sajrajty pre Sigar> - rovno pri 'UACA.jar'
-	- cez registre nastavit, aby sa spustal po spusteni Windowsu
+	- pre build NSIS instalacky treba:
+		- nakopirovat UACA.jar do windowsDeployment adresara (je tu v projekte)
+		- skompilovat NSIS skript vo windowsDeployment adresari
 -LINUX
 	- mat takuto foldrovu strukturu:
 		+ 'UACA.jar' (cez pravy klik nastavit, aby bol spustitelny)
