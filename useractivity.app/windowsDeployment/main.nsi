@@ -50,7 +50,7 @@ Function un.onInit
 FunctionEnd
 
 Section "Uninstall"
-	Delete $INSTDIR\PerConIK_UACA_Uninstall.exe
+	Delete $INSTDIR\perconik-uaca-win-uninstall.exe
 	
 	#removing files and folders
 	Delete $INSTDIR\UACA.jar
