@@ -8,7 +8,7 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 
-OutFile "perconik-uaca.exe"
+OutFile "perconik-uaca-win.exe"
 installDir "$PROGRAMFILES\Gratex International\PerConIK\UserActivity"
 Name "PerConIK User Activity Central Application (UACA)"
 
@@ -17,7 +17,7 @@ Name "PerConIK User Activity Central Application (UACA)"
 #------------------------------------------------------------------------------------------------------------
 Function .onInit
 	SetShellVarContext all
-	writeUninstaller $INSTDIR\perconik-uaca-uninstall.exe
+	writeUninstaller $INSTDIR\perconik-uaca-win-uninstall.exe
 FunctionEnd
 
 Section "User Activity" UserActivity
