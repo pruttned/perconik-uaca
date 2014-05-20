@@ -54,10 +54,10 @@ public class IdeWatcher implements IWatcher {
 	public void postCodeEvent(IdeCodeEventRequest dto, String eventType) {
 		//handling possible 'paste from web'
 		String copiedTextFromWeb = WebWatcher.getInstance().getLastCopyText();
-		String pastedTextIntoIde = dto.getText().trim();		
-		if(eventType.equals("paste") && !ValidationHelper.isStringNullOrWhitespace(copiedTextFromWeb) && copiedTextFromWeb.equals(pastedTextIntoIde)) {
+		String pastedTextIntoIde = !ValidationHelper.isStringNullOrWhitespace(dto.getText()) ? dto.getText().trim() : null;		
+		if(eventType.equals("paste") && copiedTextFromWeb != null && pastedTextIntoIde != null && copiedTextFromWeb.equals(pastedTextIntoIde)) {
 			eventType = "pastefromweb";
-			dto.setWebUrl(WebWatcher.getInstance().getLastCopyUrl());			
+			dto.setWebUrl(WebWatcher.getInstance().getLastCopyUrl());
 		}
 		
 		//adding the event

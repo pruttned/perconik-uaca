@@ -1,6 +1,7 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
 import com.gratex.perconik.useractivity.app.EventCache;
+import com.gratex.perconik.useractivity.app.ValidationHelper;
 import com.gratex.perconik.useractivity.app.dto.web.WebBookmarkEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebCopyEventDto;
 import com.gratex.perconik.useractivity.app.dto.web.WebEventDto;
@@ -47,8 +48,14 @@ public class WebWatcher implements IWatcher {
 	}
 	
 	public void postCopyEvent(WebCopyEventDto dto) {
-		lastCopyText = dto.getContent().trim(); //TODO: remove all whitespaces
-		lastCopyUrl = dto.getUrl();
+		if(!ValidationHelper.isStringNullOrWhitespace(dto.getContent())) {
+			lastCopyText = dto.getContent().trim(); //TODO: remove all whitespaces
+			lastCopyUrl = dto.getUrl();
+		}
+		else {
+			lastCopyText = null;
+			lastCopyUrl = null;
+		}
 	}
 	
 	public void postSaveEvent(WebSaveDocumentEventDto dto) {
