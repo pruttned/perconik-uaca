@@ -4,7 +4,7 @@ RequestExecutionLevel admin
 
 !include MUI2.nsh
 
-!insertmacro MUI_PAGE_COMPONENTS
+#!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 
@@ -29,7 +29,7 @@ Section "User Activity" UserActivity
 	File ..\libs\*.*
 	
 	#port reservation
-	ExecWait 'netsh http add urlacl url=http://+:16375/ user=\Everyone'	
+	#ExecWait 'netsh http add urlacl url=http://+:16375/ user=\Everyone'	
 	
 	#Adding UACA to startup
 	WriteRegStr HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity '"$SYSDIR\wscript.exe" "$INSTDIR\Run.vbs"'
@@ -59,7 +59,7 @@ Section "Uninstall"
 	RMDir $INSTDIR #remove the installation directory if it is empty
 	
 	#removing port reservation
-	ExecWait 'netsh http delete urlacl url=http://+:16375/'
+	#ExecWait 'netsh http delete urlacl url=http://+:16375/'
 	
 	#Removing UserActivity.App from startup
 	DeleteRegValue HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity
