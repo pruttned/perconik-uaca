@@ -17,6 +17,7 @@ Name "PerConIK User Activity Central Application (UACA)"
 #------------------------------------------------------------------------------------------------------------
 Function .onInit
 	SetShellVarContext all
+	setOutPath $INSTDIR
 	writeUninstaller $INSTDIR\perconik-uaca-win-uninstall.exe
 FunctionEnd
 
