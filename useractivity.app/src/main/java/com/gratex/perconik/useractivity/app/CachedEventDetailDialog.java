@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class CachedEventDetailDialog extends JDialog {
@@ -32,7 +33,7 @@ public class CachedEventDetailDialog extends JDialog {
 		JTextArea dataTextBox = new JTextArea(eventData);
 		dataTextBox.setEditable(false);
 		dataTextBox.setLineWrap(true);
-		topPanel.add(dataTextBox);
+		topPanel.add(new JScrollPane(dataTextBox));
 		
 		//close button
 		JButton closeButton = new JButton("Close");
