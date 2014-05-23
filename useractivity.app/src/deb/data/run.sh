@@ -4,8 +4,8 @@
 if [ "$1" == "-init" ]
 then
 	echo "Running the initialization..."
-	mkdir -p ~/.config/autostart/perconik-uaca.desktop
-	cp /opt/gti/perconik/uaca/perconik-uaca.desktop ~/.config/autostart/perconik-uaca.desktop
+	mkdir -p ~/.config/autostart
+	cp /opt/gti/perconik/uaca/perconik-uaca.desktop ~/.config/autostart
 	echo "Initialization finished"
 fi
 
