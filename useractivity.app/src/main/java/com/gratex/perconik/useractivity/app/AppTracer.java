@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class AppTracer {
-	private static final int MAX_ROW_COUNT = 100;
+	private static final int MAX_ROW_COUNT = 1000;
 	private static final AppTracer INSTANCE = new AppTracer();
 	private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
 	private Object syncObj = new Object();
