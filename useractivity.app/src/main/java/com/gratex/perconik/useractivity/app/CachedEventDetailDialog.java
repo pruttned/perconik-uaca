@@ -9,29 +9,27 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import com.gratex.perconik.useractivity.app.dto.CachedEvent;
-
 public class CachedEventDetailDialog extends JDialog {
 	private static final long serialVersionUID = -3333495706407138000L;
 	
-	public CachedEventDetailDialog(JDialog parent, CachedEvent cachedEvent) {
+	public CachedEventDetailDialog(JDialog parent, String eventData) {
 		super(parent, true);
 		
 		setTitle("Event Detail");
 		setIconImage(ResourcesHelper.getUserActivityIcon16().getImage());
 		setSize(800, 500);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		addControls(cachedEvent);
+		addControls(eventData);
 		setLocationRelativeTo(null);
 	}
 	
-	private void addControls(CachedEvent cachedEvent) {
+	private void addControls(String eventData) {
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 		add(topPanel);
 		
 		//data text box
-		JTextArea dataTextBox = new JTextArea(cachedEvent.getData());
+		JTextArea dataTextBox = new JTextArea(eventData);
 		dataTextBox.setEditable(false);
 		dataTextBox.setLineWrap(true);
 		topPanel.add(dataTextBox);

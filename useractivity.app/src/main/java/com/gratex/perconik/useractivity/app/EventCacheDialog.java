@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -23,10 +24,33 @@ import javax.swing.table.TableColumn;
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
 public class EventCacheDialog extends JDialog {
+	
+	private class CachedEventViewModel {
+		private UUID eventId;
+		private String timestamp;
+		private String eventTypeShortUri;
+		private String formattedData;
+		
+		public CachedEventViewModel(CachedEvent cachedEvent) {
+			eventId = cachedEvent.getEventId();
+			timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
+			
+			try {
+				SerializedEventReader reader = new SerializedEventReader(cachedEvent.getData());
+				eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(reader.getEventTypeUri());
+				formattedData = reader.getFormattedData();
+			} catch (IOException ex) {
+				AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'.", cachedEvent.getEventId()), ex);
+				eventTypeShortUri = "<ERROR - see log for details>";
+				formattedData = "<ERROR - see log for details>";
+			}
+		}
+	}
+	
 	private static final long serialVersionUID = 3565081061317049889L;
 	private EventCache eventCache;
 	private JTable eventsTable;
-	private ArrayList<CachedEvent> displayedEvents; //events currently displayed to the user
+	private ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
 	
 	public EventCacheDialog(JFrame parent, EventCache eventCache) {
 		super(parent, true);
@@ -35,7 +59,7 @@ public class EventCacheDialog extends JDialog {
 		
 		setTitle("Event Cache");
 		setIconImage(ResourcesHelper.getUserActivityIcon16().getImage());
-		setSize(500, 500);		
+		setSize(900, 500);		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addControls();
 		setLocationRelativeTo(null);
@@ -73,21 +97,29 @@ public class EventCacheDialog extends JDialog {
 	
 	private void refreshEvents() {
 		try {
-			this.displayedEvents = this.eventCache.getEvents();
+			this.displayedEvents = createViewModels(eventCache.getEvents());
 			setEventsTableData();
 		} catch (SQLException ex) {
 			MessageBox.showError(this, "Failed to retrieve events from the cache.", ex, "Failed retrieve events.");
 		}
 	}
 	
+	private ArrayList<CachedEventViewModel> createViewModels(ArrayList<CachedEvent> cachedEvents) {
+		ArrayList<CachedEventViewModel> viewModels = new ArrayList<>(cachedEvents.size());
+		for (CachedEvent cachedEvent : cachedEvents) {
+			viewModels.add(new CachedEventViewModel(cachedEvent));
+		}
+		return viewModels;
+	}
+
 	private void setEventsTableData() {
 		//set data
-		Object[][] rows = new Object[this.displayedEvents.size()][2];
-		for(int i = 0; i < this.displayedEvents.size(); i++) {
-			CachedEvent cachedEvent = this.displayedEvents.get(i);
-			rows[i] = new Object[] { XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp()), cachedEvent.getEventId() };
+		Object[][] rows = new Object[displayedEvents.size()][3];
+		for(int i = 0; i < displayedEvents.size(); i++) {
+			CachedEventViewModel viewModel = displayedEvents.get(i);
+			rows[i] = new Object[] { viewModel.timestamp, viewModel.eventTypeShortUri, viewModel.eventId };
 		}
-		((DefaultTableModel)this.eventsTable.getModel()).setDataVector(rows, new String[] { "Time", "ID"});
+		((DefaultTableModel)this.eventsTable.getModel()).setDataVector(rows, new String[] { "Time", "Type", "ID"});
 		
 		//resize columns
 		TableColumn timeColumn = this.eventsTable.getColumnModel().getColumn(0);
@@ -99,7 +131,7 @@ public class EventCacheDialog extends JDialog {
 	private void openSelectedEventRowDetail() {
 		int selectedRowIndex = this.eventsTable.getSelectedRow();
 		if(selectedRowIndex != -1) {
-			new CachedEventDetailDialog(this, this.displayedEvents.get(selectedRowIndex)).setVisible(true);
+			new CachedEventDetailDialog(this, this.displayedEvents.get(selectedRowIndex).formattedData).setVisible(true);
 		}
 	}
 	
@@ -121,7 +153,7 @@ public class EventCacheDialog extends JDialog {
 				try {
 					ArrayList<UUID> selectedEventIds = new ArrayList<UUID>();
 					for (int eventIndex : EventCacheDialog.this.eventsTable.getSelectedRows()) {
-						selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).getEventId());
+						selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).eventId);
 					}
 					EventCacheDialog.this.eventCache.removeEvents(selectedEventIds);
 					refreshEvents();
