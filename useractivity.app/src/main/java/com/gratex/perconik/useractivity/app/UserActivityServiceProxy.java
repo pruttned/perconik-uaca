@@ -1,5 +1,7 @@
 package com.gratex.perconik.useractivity.app;
 
+import java.io.IOException;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -25,7 +27,7 @@ public class UserActivityServiceProxy {
 	public void commitEvent(CachedEvent cachedEvent) throws SvcException {
 		ValidationHelper.checkArgNotNull(cachedEvent, "cachedEvent");
 
-		//AppTracer.getInstance().writeInfo("PROXY - sending: " + cachedEvent.getEventId());
+		AppTracer.getInstance().write(String.format("Committing event '%s'... \n\nData:\n\n%s", cachedEvent.getEventId(), getEventFormattedData(cachedEvent)), MessageSeverity.INFO_EVENT_COMMIT);
 
 		WebTarget fullTarget = baseSvcUrl.path(cachedEvent.getEventId()
 				.toString());
@@ -48,6 +50,15 @@ public class UserActivityServiceProxy {
 			}
 		} finally {
 			response.close();
+		}
+	}
+	
+	private String getEventFormattedData(CachedEvent cachedEvent) {
+		try {
+			return new SerializedEventReader(cachedEvent.getData()).getFormattedData();
+		} catch (IOException ex) {
+			AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'", cachedEvent.getEventId()), ex);
+			return "<ERROR - see log for details>";
 		}
 	}
 }

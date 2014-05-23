@@ -6,14 +6,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +27,8 @@ import javax.swing.table.TableColumn;
 public class AppTracerDialog extends JDialog {
 	private static final long serialVersionUID = 4010888456482642956L;
 	private JTable rowsTable;
-	private AppTracerRow[] displayedRows;
+	private ArrayList<AppTracerRow> displayedRows;
+	private ArrayList<MessageSeverity> disabledSeverities = new ArrayList<>();
 	
 	public AppTracerDialog(JFrame parent) {
 		super(parent, true);
@@ -43,6 +49,7 @@ public class AppTracerDialog extends JDialog {
 		add(topPanel);
 		
 		addRowsTable(topPanel);
+		addFilterControls(topPanel);
 		addButtons(topPanel);
 	}
 	
@@ -72,8 +79,47 @@ public class AppTracerDialog extends JDialog {
 	private void openSelectedRowDetail() {
 		int selectedRowIndex = this.rowsTable.getSelectedRow();
 		if(selectedRowIndex != -1) {
-			new AppTracerRowDetailDialog(this, this.displayedRows[selectedRowIndex]).setVisible(true);
+			new AppTracerRowDetailDialog(this, this.displayedRows.get(selectedRowIndex)).setVisible(true);
 		}
+	}
+	
+	private void addFilterControls(JPanel panel) {
+		JPanel filterPanel = new JPanel();
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+		panel.add(filterPanel);
+		
+		addFilterButton("Info", MessageSeverity.INFO, filterPanel);
+		addFilterButton("Event Commit", MessageSeverity.INFO_EVENT_COMMIT, filterPanel);
+		addFilterButton("Warning", MessageSeverity.WARNING, filterPanel);
+		addFilterButton("Error", MessageSeverity.ERROR, filterPanel);
+	}
+	
+	private void addFilterButton(String title, final MessageSeverity severity, JPanel panel) {
+		JCheckBox button = new JCheckBox();
+		button.setSelected(true);
+		panel.add(button);
+		
+		JLabel titleLabel = new JLabel(title, getSeverityIcon(severity), JLabel.CENTER);
+		panel.add(titleLabel);
+		
+		panel.add(Box.createRigidArea(new Dimension(15, 0)));
+		
+		button.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				AppTracerDialog.this.setIsSeverityEnabled(severity, ((JCheckBox)e.getSource()).isSelected());
+			}
+		});
+	}
+
+	private void setIsSeverityEnabled(MessageSeverity severity, boolean isEnabled) {
+		if(isEnabled) {
+			disabledSeverities.remove(severity);	
+		}
+		else {
+			disabledSeverities.add(severity);
+		}
+		refresh();
 	}
 	
 	private void addButtons(JPanel panel) {
@@ -118,15 +164,21 @@ public class AppTracerDialog extends JDialog {
 	}
 	
 	private void refresh() {
-		this.displayedRows = AppTracer.getInstance().getRows();
+		displayedRows = new ArrayList<AppTracerRow>();		
+		for (AppTracerRow row : AppTracer.getInstance().getRows()) {
+			if(!disabledSeverities.contains(row.getSeverity())) {
+				displayedRows.add(row);
+			}
+		}
+		
 		setRowsTableData();
 	}
 	
 	private void setRowsTableData() {
 		//set data
-		Object[][] rows = new Object[this.displayedRows.length][3];
-		for(int i = 0; i < this.displayedRows.length; i++) {
-			AppTracerRow appTracerRow = this.displayedRows[i];
+		Object[][] rows = new Object[this.displayedRows.size()][3];
+		for(int i = 0; i < this.displayedRows.size(); i++) {
+			AppTracerRow appTracerRow = this.displayedRows.get(i);
 			rows[i] = new Object[] { getSeverityIcon(appTracerRow.getSeverity()),
 									 SimpleDateFormat.getInstance().format(appTracerRow.getTime()), 
 									 appTracerRow.getMessage() };
@@ -152,6 +204,9 @@ public class AppTracerDialog extends JDialog {
 				
 			case ERROR:
 				return ResourcesHelper.getErrorSeverityIcon16();
+				
+			case INFO_EVENT_COMMIT:
+				return ResourcesHelper.getInfoEventCommitSeverityIcon16();
 				
 			case INFO:
 			default:
