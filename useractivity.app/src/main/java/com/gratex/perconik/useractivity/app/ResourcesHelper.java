@@ -7,6 +7,7 @@ public class ResourcesHelper {
 	public static ImageIcon getInfoSeverityIcon16() { return getPngImage("InfoSeverity16");	}
 	public static ImageIcon getWarningSeverityIcon16() { return getPngImage("WarningSeverity16"); }
 	public static ImageIcon getErrorSeverityIcon16() { return getPngImage("ErrorSeverity16"); }
+	public static ImageIcon getInfoEventCommitSeverityIcon16() { return getPngImage("InfoEventCommitSeverity16"); }
 	
 	public static ImageIcon getPngImage(String nameWithoutExtension) {
 		ValidationHelper.checkStringArgNotNullOrWhitespace(nameWithoutExtension, "nameWithoutExtension");
