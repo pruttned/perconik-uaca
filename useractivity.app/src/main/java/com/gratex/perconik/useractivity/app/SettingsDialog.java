@@ -29,7 +29,7 @@ public class SettingsDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addControls();
 		pack();
-		setSize(700, getSize().height);
+		setSize(800, getSize().height);
 		setLocationRelativeTo(null);
 	}
 	
@@ -42,19 +42,19 @@ public class SettingsDialog extends JDialog {
 		
 		//event commit interval
 		JSpinner eventCommitIntervalSpinner = createSpinner(Settings.getInstance().getEventCommitInterval() / 60000); //milliseconds to minutes
-		addField("Event Commit Interval (Minutes)", eventCommitIntervalSpinner);
+		addField("Events are sent to the server every (minutes)", eventCommitIntervalSpinner);
 		
 		//event age to commit
 		JSpinner eventAgeToCommitSpinner = createSpinner(Settings.getInstance().getEventAgeToCommit() / 60000); //milliseconds to minutes
-		addField("Event Age To Commit (Minutes)", eventAgeToCommitSpinner);
+		addField("Send only events older than (minutes)", eventAgeToCommitSpinner);
 		
 		//user name
 		JTextField userNameTextBox = new JTextField(Settings.getInstance().getUserName());
-		addField("User Name", userNameTextBox);
+		addField("User name (sent with each event)", userNameTextBox);
 		
 		//svc url
 		JTextField svcUrlTextBox = new JTextField(Settings.getInstance().getSvcUrl());
-		addField("Service URL", svcUrlTextBox);
+		addField("Service URL (where events are sent)", svcUrlTextBox);
 		
 		//local svc port
 		JSpinner localSvcPortSpinner = addLocalSvcPortField();
@@ -101,7 +101,7 @@ public class SettingsDialog extends JDialog {
 		titleConstraints.gridx = 0;
 		titleConstraints.gridy = GridBagConstraints.RELATIVE;
 		titleConstraints.insets = new Insets(topMargin, 0, 0, 0);
-		add(new JLabel("Local Services Port:"), titleConstraints);
+		add(new JLabel("Local services port (for communication with IDE, web browser...):"), titleConstraints);
 		
 		//control
 		JSpinner control = createSpinner(Settings.getInstance().getLocalSvcPort());
