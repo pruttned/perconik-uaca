@@ -2,6 +2,7 @@ package com.gratex.perconik.useractivity.app.watchers;
 
 import java.util.ArrayList;
 
+import com.gratex.perconik.useractivity.app.AppSvc;
 import com.gratex.perconik.useractivity.app.AppTracer;
 import com.gratex.perconik.useractivity.app.EventCache;
 import com.gratex.perconik.useractivity.app.Settings;
@@ -28,7 +29,7 @@ public class WatcherManager {
 				
 		try {
 			WatcherServer watcherServer = new WatcherServer(Settings.getInstance().getLocalSvcPort());  
-			watcherServer.setServiceClasses(IdeWatcherSvc.class, WebWatcherSvc.class);
+			watcherServer.setServiceClasses(IdeWatcherSvc.class, WebWatcherSvc.class, AppSvc.class); //TODO:AppSvc is not a watcher - add this whole code somewhere else
 			watcherServer.start(); //TODO: stop at app shutdown
 		} catch (Exception ex) {
 			AppTracer.getInstance().writeError(String.format("Failed to start the '%s'.", WatcherServer.class.getName()), ex);

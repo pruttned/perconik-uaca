@@ -7,11 +7,11 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import com.gratex.perconik.useractivity.app.dto.MonitoringStartedEventDto;
 import com.gratex.perconik.useractivity.app.watchers.WatcherManager;
 
-public class App {	
+public class App {
+	private static final App INSTANCE = new App();
 	private EventCache eventCache;
 	private UserActivityServiceProxy userActivityServiceProxy;
 	private EventCommitJob eventCommitJob;
@@ -19,8 +19,15 @@ public class App {
 	private MainWindow mainWindow;
 	private boolean isCollectingAndCommitting = false;
 	
+	private App() {		
+	}
+	
 	public static void main(String[] args) {
-		new App().onRun();
+		getInstance().onRun();
+	}
+	
+	public static App getInstance() {
+		return INSTANCE;
 	}
 	
 	public void startCollectingAndCommitting() {
@@ -56,6 +63,10 @@ public class App {
 	
 	public UserActivityServiceProxy getUserActivityServiceProxy() {
 		return userActivityServiceProxy;
+	}
+	
+	public void showMainWindow() {
+		mainWindow.setVisible(true);
 	}
 	
 	private void onRun() {
@@ -98,7 +109,7 @@ public class App {
 				TrayIcon trayIcon = new TrayIcon(ResourcesHelper.getUserActivityIcon16().getImage(), "User Activity - PerConIK", menu);
 				trayIcon.addActionListener(new ActionListener() {					
 					public void actionPerformed(ActionEvent e) {
-						mainWindow.setVisible(true);
+						showMainWindow();
 					}
 				});
 				SystemTray.getSystemTray().add(trayIcon);
@@ -107,7 +118,7 @@ public class App {
 				MenuItem openMenuItem = new MenuItem("Open");
 				openMenuItem.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						mainWindow.setVisible(true);
+						showMainWindow();
 					}
 				});
 				menu.add(openMenuItem);
