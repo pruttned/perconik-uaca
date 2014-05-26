@@ -11,6 +11,7 @@ public class Settings {
 	private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
 	private final String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity"; 
 	private final int defaultLocalSvcPort = 16375;
+	private final int defaultMaxRowCountInLog = 1000;
 	
 	private Settings() {
 	}
@@ -81,6 +82,15 @@ public class Settings {
 	
 	public void setLocalSvcPort(int localSvcPort) {
 		getPreferencesNode().putInt("local_svc_port", localSvcPort);
+	}
+	
+	public int getMaxRowCountInLog() {
+		return getPreferencesNode().getInt("max_row_count_in_log", defaultMaxRowCountInLog);
+	}
+	
+	public void setMaxRowCountInLog(int maxRowCountInLog) {
+		getPreferencesNode().putInt("max_row_count_in_log", maxRowCountInLog);
+		AppTracer.getInstance().ensureMaxRowCount();
 	}
 	
 	private Preferences getPreferencesNode() {

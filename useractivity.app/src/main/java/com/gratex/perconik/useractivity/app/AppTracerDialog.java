@@ -18,7 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -48,8 +47,9 @@ public class AppTracerDialog extends JDialog {
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 		add(topPanel);
 		
-		addRowsTable(topPanel);
+		addRowsTable(topPanel);		
 		addFilterControls(topPanel);
+		addMaxRowCountControls(topPanel);
 		addButtons(topPanel);
 	}
 	
@@ -81,6 +81,46 @@ public class AppTracerDialog extends JDialog {
 		if(selectedRowIndex != -1) {
 			new AppTracerRowDetailDialog(this, this.displayedRows.get(selectedRowIndex)).setVisible(true);
 		}
+	}
+	
+	private void addMaxRowCountControls(JPanel panel) {
+		JPanel maxRowCountPanel = new JPanel();
+		maxRowCountPanel.setLayout(new BoxLayout(maxRowCountPanel, BoxLayout.X_AXIS));
+		panel.add(maxRowCountPanel);
+		
+		//title
+		JLabel titleLabel = new JLabel("Max row count:");
+		maxRowCountPanel.add(titleLabel);
+		maxRowCountPanel.add(Box.createRigidArea(new Dimension(2, 0)));
+		
+		//value
+		final JLabel valueLabel = new JLabel(String.valueOf(Settings.getInstance().getMaxRowCountInLog()));		
+		maxRowCountPanel.add(valueLabel);
+		maxRowCountPanel.add(Box.createRigidArea(new Dimension(2, 0)));
+		
+		//change button
+		JButton changeButton = new JButton("Change...");
+		changeButton.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String result = JOptionPane.showInputDialog(AppTracerDialog.this, "Enter new 'max row count':");
+				if(!ValidationHelper.isStringNullOrWhitespace(result)) {
+					try {
+						int newValue = Math.max(Integer.parseInt(result), 0);
+						Settings.getInstance().setMaxRowCountInLog(newValue);
+						AppTracerDialog.this.refresh();
+						valueLabel.setText(String.valueOf(newValue));
+					}
+					catch(Throwable ex) {
+						MessageBox.showError(AppTracerDialog.this, "The value must be a number.", "Not a number");
+					}
+				}
+			}
+		});
+		maxRowCountPanel.add(changeButton);
+		
+		//bottom margin
+		panel.add(Box.createRigidArea(new Dimension(0, 15)));
 	}
 	
 	private void addFilterControls(JPanel panel) {

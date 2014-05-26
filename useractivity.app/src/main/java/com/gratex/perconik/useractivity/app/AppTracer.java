@@ -6,9 +6,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AppTracer {
-	private static final int MAX_ROW_COUNT = 1000;
-	private static final AppTracer INSTANCE = new AppTracer();
+public class AppTracer {	
+	private static final AppTracer INSTANCE = new AppTracer();	
 	private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
 	private Object syncObj = new Object();
 
@@ -49,7 +48,7 @@ public class AppTracer {
 		synchronized (this.syncObj) {
 			this.rows.add(new AppTracerRow(message, severity, new Date()));
 
-			if (this.rows.size() > MAX_ROW_COUNT) {
+			if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
 				this.rows.remove(0);
 			}
 		}
@@ -79,5 +78,12 @@ public class AppTracer {
 		}
 
 		return exceptionFullText;
+	}
+	
+	public void ensureMaxRowCount() {
+		if (rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
+			int newStartIndex = rows.size() - Settings.getInstance().getMaxRowCountInLog();
+			rows = new ArrayList<AppTracerRow>(rows.subList(newStartIndex, rows.size()));
+		}
 	}
 }
