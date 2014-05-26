@@ -13,4 +13,11 @@ public class AppSvc {
 	public void postWindow() {
 		App.getInstance().showMainWindow();
 	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/exit")
+	public void postExit() {
+		System.exit(0);
+	}
 }

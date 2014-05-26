@@ -17,6 +17,8 @@ function printHelp {
 	echo -e "\t\t runs the 'first run' initializations and runs UACA"
 	echo -e "\t-window [-port <portNumber>]"
 	echo -e "\t\t if UACA is running, shows its main window (GUI); specify the port if it has been changed in the UACA settings (the Local Services Port field)"
+	echo -e "\t-exit"
+	echo -e "\t\t exits UACA if it is running"
 	echo -e "\t-help"
 	echo -e "\t\t prints this help"
 }
@@ -58,6 +60,9 @@ then
 elif [ "$1" == "-help" ] ##### -help #####
 then
 	printHelp
+elif [ "$1" == "-exit" ] ##### -exit #####
+then
+	curl -X POST http://localhost:$(getUacaPort $2 $3)/uaca/exit
 else
 	printHowToPrintHelp
 fi
