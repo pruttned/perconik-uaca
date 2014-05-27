@@ -1,6 +1,8 @@
 package com.gratex.perconik.useractivity.app.watchers;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ServerProperties;
@@ -45,7 +47,14 @@ public class WatcherServer {
 			throw new IllegalStateException("Already started");
 		}
 
-		server = new Server(port);
+		server = new Server();
+		
+		//listen only on localhost - http://stackoverflow.com/a/1955591
+		ServerConnector connector=new ServerConnector(server);
+        connector.setPort(port);
+        connector.setHost("localhost");
+        server.setConnectors(new Connector[]{connector});
+		
 		servletContextHandler = new ServletContextHandler(server, "/",
 				ServletContextHandler.SESSIONS);
 		servletContextHandler.addServlet(servletHolder, "/*");
