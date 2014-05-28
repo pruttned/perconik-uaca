@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
 		//'eventCache' button
 		addButton(topPanel, "Event Cache", "Show events that have not yet been sent to the server", true, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new EventCacheDialog(MainWindow.this, MainWindow.this.eventCache).setVisible(true);
+				new EventCacheDialog(MainWindow.this, MainWindow.this.eventCache, MainWindow.this.app.getEventCommitJob()).setVisible(true);
 			}
 		});
 		

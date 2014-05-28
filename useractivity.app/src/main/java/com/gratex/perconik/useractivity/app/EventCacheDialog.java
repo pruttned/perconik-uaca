@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -49,13 +50,15 @@ public class EventCacheDialog extends JDialog {
 	
 	private static final long serialVersionUID = 3565081061317049889L;
 	private EventCache eventCache;
+	private EventCommitJob eventCommitJob;
 	private JTable eventsTable;
 	private ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
 	
-	public EventCacheDialog(JFrame parent, EventCache eventCache) {
+	public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
 		super(parent, true);
 		
 		this.eventCache = eventCache;
+		this.eventCommitJob = eventCommitJob;
 		
 		setTitle("Event Cache");
 		setIconImage(ResourcesHelper.getUserActivityIcon16().getImage());
@@ -172,6 +175,40 @@ public class EventCacheDialog extends JDialog {
 				} catch(SQLException ex) {
 					MessageBox.showError(EventCacheDialog.this, "Failed to delete all events.", ex, "Delete all failed");
 				}
+			}
+		});
+		
+		//'send now' button
+		addButton(buttonsPanel, "Send Now", "Send all events, that are old enough, to the server now", true, new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				new SwingWorker<Void, Void>() {
+					@Override
+					protected Void doInBackground() throws Exception {
+						eventCommitJob.commitEventsNow(false);
+						return null;
+					}
+					@Override
+					protected void done() {
+						EventCacheDialog.this.refreshEvents();
+					}
+				}.execute();
+			}
+		});
+		
+		//'send now - force all' button
+		addButton(buttonsPanel, "Send Now - Force All", "Send all events, no matter how old they are, to the server now", true, new ActionListener() {			
+			public void actionPerformed(ActionEvent arg0) {
+				new SwingWorker<Void, Void>() {
+					@Override
+					protected Void doInBackground() throws Exception {
+						eventCommitJob.commitEventsNow(true);
+						return null;
+					}
+					@Override
+					protected void done() {
+						EventCacheDialog.this.refreshEvents();
+					}
+				}.execute();
 			}
 		});
 		

@@ -3,7 +3,6 @@ package com.gratex.perconik.useractivity.app;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
 /**
@@ -55,6 +54,34 @@ public class EventCommitJob {
 				stop();
 				start();
 			}
+		}
+	}
+	
+	/**
+	 * Forces commit - commits events now. This is completely independent from this job`s timer or its work.
+	 * Thread safe. 
+	 * @param commitAllEvents true - commit all events in EventCache; false - commit only events that are old enough to be committed
+	 */
+	public void commitEventsNow(boolean commitAllEvents) {
+		try {
+			ArrayList<CachedEvent> eventsToCommit = commitAllEvents ? eventCache.getEvents() : eventCache.getEventsToCommit();
+			
+			for (CachedEvent cachedEvent : eventsToCommit) {
+				try {
+					SerializedEventWriter writer = new SerializedEventWriter(cachedEvent.getData());
+					writer.setWasCommitForcedByUser(true);
+					cachedEvent.setData(writer.getData());
+					
+					userActivityServiceProxy.commitEvent(cachedEvent);
+					eventCache.removeEvent(cachedEvent.getEventId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove
+				}
+				catch (Exception ex) {
+					AppTracer.getInstance().writeError(String.format("There was an error while committing the event with ID '%s'.", cachedEvent.getEventId()), ex);
+				}
+			}
+		}
+		catch (Exception ex) {
+			AppTracer.getInstance().writeError("There was an error while committing events.", ex);
 		}
 	}
 	

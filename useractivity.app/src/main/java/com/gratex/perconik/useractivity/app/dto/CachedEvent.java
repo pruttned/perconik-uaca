@@ -26,4 +26,8 @@ public class CachedEvent {
 	public String getData() {
 		return this.data;
 	}
+	
+	public void setData(String data) {
+		this.data = data;
+	}
 }
