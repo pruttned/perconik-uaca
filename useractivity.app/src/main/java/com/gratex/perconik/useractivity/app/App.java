@@ -1,12 +1,16 @@
 package com.gratex.perconik.useractivity.app;
 
 import java.awt.AWTException;
+import java.awt.CheckboxMenuItem;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import com.gratex.perconik.useractivity.app.dto.MonitoringStartedEventDto;
 import com.gratex.perconik.useractivity.app.watchers.WatcherManager;
 
@@ -18,6 +22,7 @@ public class App {
 	private WatcherManager watcherManager;
 	private MainWindow mainWindow;
 	private boolean isCollectingAndCommitting = false;
+	private CheckboxMenuItem collectingAndCommittingMenuItem;
 	
 	private App() {		
 	}
@@ -30,6 +35,14 @@ public class App {
 		return INSTANCE;
 	}
 	
+	public void toggleCollectingAndCommitting() {
+		if(isCollectingAndCommitting()) {
+			stopCollectingAndCommitting();
+		} else {
+			startCollectingAndCommitting();			
+		}
+	}
+	
 	public void startCollectingAndCommitting() {
 		if(!isCollectingAndCommitting) {
 			addMonitoringStartedEvent();
@@ -38,6 +51,8 @@ public class App {
 			this.watcherManager.startWatchers();
 		
 			this.isCollectingAndCommitting = true;
+			
+			updateIsCollectingAndCommittingControls();			
 		}
 	}
 	
@@ -51,8 +66,10 @@ public class App {
 		}
 		
 		this.isCollectingAndCommitting = false;
+		
+		updateIsCollectingAndCommittingControls();		
 	}
-	
+
 	public boolean isCollectingAndCommitting() {
 		return this.isCollectingAndCommitting;
 	}
@@ -123,8 +140,19 @@ public class App {
 				});
 				menu.add(openMenuItem);
 				
+				//'enable/disable' menu item
+				collectingAndCommittingMenuItem = new CheckboxMenuItem("Enabled");
+				updateIsCollectingAndCommittingControls();
+				collectingAndCommittingMenuItem.addItemListener(new ItemListener() {
+					@Override
+					public void itemStateChanged(ItemEvent arg0) {
+						toggleCollectingAndCommitting();
+					}
+				});
+				menu.add(collectingAndCommittingMenuItem);
+				
 				//'exit' menu item
-				MenuItem exitMenuItem = new MenuItem("Exit");
+				MenuItem exitMenuItem = new MenuItem("Exit (Shut User Activity Down)");
 				exitMenuItem.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						System.exit(0);
@@ -149,6 +177,16 @@ public class App {
 	
 	private void addMonitoringStartedEvent() {
 		eventCache.addEventOrTrace(new MonitoringStartedEventDto());
+	}
+	
+	private void updateIsCollectingAndCommittingControls() {
+		if(collectingAndCommittingMenuItem != null) {
+			collectingAndCommittingMenuItem.setState(isCollectingAndCommitting);
+		}
+		
+		if(mainWindow != null) {
+			mainWindow.updateIsCollectingAndCommittingControls();
+		}
 	}
 	
 	private void onExitAsync() {		

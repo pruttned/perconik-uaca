@@ -16,6 +16,8 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 6907023637057102017L;
 	private App app;
 	private EventCache eventCache;	
+	private JButton pauseButton;
+	private JLabel pauseStatusLabel;
 	
 	public MainWindow(App app, EventCache eventCache) {
 		this.app = app;
@@ -30,6 +32,11 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	public void updateIsCollectingAndCommittingControls() {
+		updatePauseStatusLabel();
+		updatePauseButton();
+	}
+	
 	private void addControls() {
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -48,19 +55,19 @@ public class MainWindow extends JFrame {
 		topPanel.add(Box.createRigidArea(new Dimension(0,  10)));
 		
 		//'pause status' label
-		final JLabel pauseStatusLabel = new JLabel();
+		pauseStatusLabel = new JLabel();
 		pauseStatusLabel.setAlignmentX(CENTER_ALIGNMENT);		
 		topPanel.add(pauseStatusLabel);
 		topPanel.add(Box.createRigidArea(new Dimension(0,  10)));
-		updatePauseStatusLabel(pauseStatusLabel);
+		updatePauseStatusLabel();
 		
 		//'pause' button
-		JButton pauseButton = addButton(topPanel, "", "", true, new ActionListener() { //texts are set by 'updatePauseButton()'
+		pauseButton = addButton(topPanel, "", "", true, new ActionListener() { //texts are set by 'updatePauseButton()'
 			public void actionPerformed(ActionEvent arg0) {
-				pauseOrResume((JButton)arg0.getSource(), pauseStatusLabel);
+				app.toggleCollectingAndCommitting();
 			}
 		});
-		updatePauseButton(pauseButton);
+		updatePauseButton();
 		
 		//'eventCache' button
 		addButton(topPanel, "Event Cache", "Show events that have not yet been sent to the server", true, new ActionListener() {
@@ -89,7 +96,7 @@ public class MainWindow extends JFrame {
 		});
 		
 		//'exit' button
-		addButton(topPanel, "Exit", "Shut the User Activity down", true, new ActionListener() {
+		addButton(topPanel, "Shut Down", "Shut the User Activity down - nothing will be collected or sent to the server", true, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
@@ -112,32 +119,22 @@ public class MainWindow extends JFrame {
 		return button;
 	}
 	
-	private void pauseOrResume(JButton pauseButton, JLabel pauseStatusLabel) {
+	private void updatePauseButton() {
 		if(this.app.isCollectingAndCommitting()) {
-			this.app.stopCollectingAndCommitting();
+			pauseButton.setText("Disable");
+			pauseButton.setToolTipText("Temporarily disable the User Activity - nothing will be collected or sent to the server");			
 		} else {
-			this.app.startCollectingAndCommitting();			
-		}
-		updatePauseStatusLabel(pauseStatusLabel);
-		updatePauseButton(pauseButton);
-	}
-	
-	private void updatePauseButton(JButton pauseButton) {
-		if(this.app.isCollectingAndCommitting()) {
-			pauseButton.setText("Pause");
-			pauseButton.setToolTipText("Disable the User Activity - nothing will be collected and nothing will be sent to the server");			
-		} else {
-			pauseButton.setText("Resume");
+			pauseButton.setText("Enable");
 			pauseButton.setToolTipText("Enable the User Activity");
 		}
 	}
 	
-	private void updatePauseStatusLabel(JLabel pauseStatusLabel) {
+	private void updatePauseStatusLabel() {
 		if(this.app.isCollectingAndCommitting()) {
-			pauseStatusLabel.setText("Running...");
+			pauseStatusLabel.setText("Enabled...");
 			pauseStatusLabel.setForeground(new Color(0, 180, 0));
 		} else {
-			pauseStatusLabel.setText("Paused!");
+			pauseStatusLabel.setText("Disabled!");
 			pauseStatusLabel.setForeground(Color.RED);
 		}
 	}
