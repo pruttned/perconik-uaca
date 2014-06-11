@@ -35,6 +35,11 @@ Section "User Activity" UserActivity
 	#Adding UACA to startup
 	WriteRegStr HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity '"$SYSDIR\wscript.exe" "$INSTDIR\Run.vbs"'
 	
+	#Adding UACA to start menu
+	CreateDirectory "$SMPROGRAMS\Gratex International\PerConIK\UserActivity"
+	CreateShortCut "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity.lnk" "$INSTDIR\Run.vbs"
+	CreateShortCut "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity-Uninstall.lnk" "$INSTDIR\perconik-uaca-win-uninstall.exe"
+	
 	#Run UACA after installation
 	Exec '"$SYSDIR\wscript.exe" "$INSTDIR\Run.vbs"'
 SectionEnd
@@ -64,6 +69,13 @@ Section "Uninstall"
 	
 	#Removing UserActivity.App from startup
 	DeleteRegValue HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity
+	
+	#Removing UACA from start menu
+	Delete "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity.lnk"
+	Delete "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity-Uninstall.lnk"
+	RMDir "$SMPROGRAMS\Gratex International\PerConIK\UserActivity" #remove if it is empty
+	RMDir "$SMPROGRAMS\Gratex International\PerConIK\" #remove if it is empty
+	RMDir "$SMPROGRAMS\Gratex International\" #remove if it is empty
 SectionEnd
 
 
