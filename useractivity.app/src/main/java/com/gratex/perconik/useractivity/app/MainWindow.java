@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MainWindow extends JFrame {
@@ -84,6 +86,20 @@ public class MainWindow extends JFrame {
 				if(dialog.areChangesApplied()) {
 					MainWindow.this.app.getEventCommitJob().restartIfRunning();
 					MainWindow.this.app.getUserActivityServiceProxy().setSvcUrl(Settings.getInstance().getSvcUrl());
+					
+					if(dialog.isUserNameChanged()) {
+						boolean updateUserName = MessageBox.showYesNoQuestion(MainWindow.this, "The user name was changed. Update the user name in all existing events in the event cache?", 
+								"Update user name in event cache?");
+						
+						if(updateUserName) {
+							try {
+								MainWindow.this.eventCache.updateUserNameInAllEvents();
+								MessageBox.showOkInfo(MainWindow.this, "Existing events updated!", "Done!");
+							} catch (SQLException ex) {
+								MessageBox.showError(MainWindow.this, "Failed to update events.", ex, "Failed!");
+							}
+						}
+					}
 				}
 			}
 		});		

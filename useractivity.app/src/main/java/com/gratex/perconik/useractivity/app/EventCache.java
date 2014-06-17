@@ -147,6 +147,18 @@ public class EventCache {
 		return convertToArrayList(result);
 	}
 	
+	/**
+	 * Updates the user name in all events in the event cache to the current user name in the settings.
+	 * Thread safe.
+	 * @throws SQLException
+	 */
+	public void updateUserNameInAllEvents() throws SQLException {
+		String userNameRegexp = "\"user\":\"[^\"]*\"";
+		String newUserName = String.format("\"user\":\"%s\"", Settings.getInstance().getUserName());
+		
+		executeThreadSafeUpdate(String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
+	}
+	
 	private ArrayList<CachedEvent> convertToArrayList(ResultSet queryResult) throws SQLException {
 		ArrayList<CachedEvent> cachedEvents = new ArrayList<CachedEvent>();
 		while(queryResult.next()) {

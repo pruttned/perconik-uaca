@@ -20,6 +20,7 @@ import javax.swing.SpinnerNumberModel;
 public class SettingsDialog extends JDialog {
 	private static final long serialVersionUID = 2908926995613740506L;
 	private boolean areChangesApplied = false;
+	private boolean isUserNameChanged = false;
 	
 	public SettingsDialog(JFrame parent) {
 		super(parent, true);
@@ -35,6 +36,10 @@ public class SettingsDialog extends JDialog {
 	
 	public boolean areChangesApplied() {
 		return this.areChangesApplied;
+	}
+	
+	public boolean isUserNameChanged() {
+		return this.isUserNameChanged;
 	}
 	
 	private void addControls() {
@@ -169,6 +174,8 @@ public class SettingsDialog extends JDialog {
 			MessageBox.showError(this, "Please fill all fields.", "Empty fields!");
 			return false;
 		}
+		
+		isUserNameChanged = !userNameTextBox.getText().equals(Settings.getInstance().getUserName());
 		
 		Settings.getInstance().setEventCommitInterval(getSpinnerValue(eventCommitIntervalSpinner) * 60000);
 		Settings.getInstance().setEventAgeToCommit(getSpinnerValue(eventAgeToCommitSpinner) * 60000);
