@@ -88,7 +88,7 @@ public class MainWindow extends JFrame {
 					MainWindow.this.app.getUserActivityServiceProxy().setSvcUrl(Settings.getInstance().getSvcUrl());
 					
 					if(dialog.isUserNameChanged()) {
-						boolean updateUserName = MessageBox.showYesNoQuestion(MainWindow.this, "The user name was changed. Update the user name in all existing events in the event cache?", 
+						boolean updateUserName = MessageBox.showYesNoQuestion(MainWindow.this, "The user name has been changed. Update the user name for all existing events in the event cache?", 
 								"Update user name in event cache?");
 						
 						if(updateUserName) {
