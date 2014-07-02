@@ -64,6 +64,7 @@ public class EventCache {
 	public void addEvent(EventDto event) throws SQLException, JsonProcessingException {
 		ValidationHelper.checkArgNotNull(event, "event");
 		
+		event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
 		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", event.getEventId(), 
 																							 	  XMLGregorianCalendarHelper.getMilliseconds(event.getTimestamp()), 
 																							 	  this.eventSerializer.serialize(event));
