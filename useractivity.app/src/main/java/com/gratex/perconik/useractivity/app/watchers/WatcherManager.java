@@ -23,13 +23,14 @@ public class WatcherManager {
 			watchers.add(new ProcessWatcher());
 			watchers.add(WebWatcher.getInstance());
 			watchers.add(IdeWatcher.getInstance());
+			watchers.add(BashCommandWatcher.getInstance());
 		} catch(Exception ex) {
 			AppTracer.getInstance().writeError("Failed to create an instance of a watcher.", ex);
 		}
 				
 		try {
 			WatcherServer watcherServer = new WatcherServer(Settings.getInstance().getLocalSvcPort());  
-			watcherServer.setServiceClasses(IdeWatcherSvc.class, WebWatcherSvc.class, AppSvc.class); //TODO:AppSvc is not a watcher - add this whole code somewhere else
+			watcherServer.setServiceClasses(IdeWatcherSvc.class, WebWatcherSvc.class, BashCommandWatcherSvc.class, AppSvc.class); //TODO:AppSvc is not a watcher - add this whole code somewhere else
 			watcherServer.start(); //TODO: stop at app shutdown
 		} catch (Exception ex) {
 			AppTracer.getInstance().writeError(String.format("Failed to start the '%s'.", WatcherServer.class.getName()), ex);
