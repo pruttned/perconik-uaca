@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +26,7 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 public class EventCacheDialog extends JDialog {
 	
 	private class CachedEventViewModel {
-		private UUID eventId;
+		private String eventId;
 		private String timestamp;
 		private String eventTypeShortUri;
 		private String formattedData;
@@ -154,7 +153,7 @@ public class EventCacheDialog extends JDialog {
 		addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {			
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					ArrayList<UUID> selectedEventIds = new ArrayList<UUID>();
+					ArrayList<String> selectedEventIds = new ArrayList<String>();
 					for (int eventIndex : EventCacheDialog.this.eventsTable.getSelectedRows()) {
 						selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).eventId);
 					}

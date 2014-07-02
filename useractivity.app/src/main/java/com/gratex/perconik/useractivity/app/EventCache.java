@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gratex.perconik.useractivity.app.dto.EventDto;
@@ -37,6 +36,8 @@ public class EventCache {
 		String dbUri = "jdbc:h2:" + Paths.get(Settings.getInstance().getUserFolder(), "EventCache");
 		this.connection = DriverManager.getConnection(dbUri);
 		executeCreationScript();
+		
+		convertEventIdToVarchar(); //TODO: remove in future versions
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class EventCache {
 	 * Thread safe.
 	 * @throws SQLException 
 	 */
-	public void removeEvent(UUID eventId) throws SQLException {
+	public void removeEvent(String eventId) throws SQLException {
 		ValidationHelper.checkArgNotNull(eventId, "eventId");
 		executeThreadSafeUpdate("DELETE FROM EVENTS WHERE EVENTID=?", eventId);
 	}
@@ -96,7 +97,7 @@ public class EventCache {
 	 * Removes the event with the specified 'event ID' from the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
 	 * Thread safe.
 	 */
-	public boolean removeEventOrTrace(UUID eventId) {
+	public boolean removeEventOrTrace(String eventId) {
 		try {
 			removeEvent(eventId);
 			return true;
@@ -119,9 +120,9 @@ public class EventCache {
 	 * @param eventIds
 	 * @throws SQLException
 	 */
-	public void removeEvents(ArrayList<UUID> eventIds) throws SQLException {
+	public void removeEvents(ArrayList<String> eventIds) throws SQLException {
 		ValidationHelper.checkArgNotNull(eventIds, "eventIds");
-		for (UUID eventId : eventIds) {
+		for (String eventId : eventIds) {
 			removeEvent(eventId);
 		}
 	}
@@ -162,7 +163,7 @@ public class EventCache {
 	private ArrayList<CachedEvent> convertToArrayList(ResultSet queryResult) throws SQLException {
 		ArrayList<CachedEvent> cachedEvents = new ArrayList<CachedEvent>();
 		while(queryResult.next()) {
-			cachedEvents.add(new CachedEvent((UUID)queryResult.getObject("EVENTID"), 
+			cachedEvents.add(new CachedEvent(queryResult.getString("EVENTID"), 
 											 XMLGregorianCalendarHelper.createUtc(queryResult.getLong("TIMESTAMP")), 
 											 queryResult.getString("DATA")));
 		}
@@ -172,10 +173,15 @@ public class EventCache {
 	private void executeCreationScript() throws SQLException {
 		StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS EVENTS(");
 		builder.append("ID IDENTITY PRIMARY KEY NOT NULL,");
-		builder.append("EVENTID UUID NOT NULL,");
+		builder.append("EVENTID VARCHAR NOT NULL,");
 		builder.append("TIMESTAMP BIGINT NOT NULL,"); //milliseconds 
 		builder.append("DATA VARCHAR NOT NULL)");
 		this.connection.createStatement().executeUpdate(builder.toString());
+	}
+	
+	private void convertEventIdToVarchar() throws SQLException {
+		String sql = "ALTER TABLE EVENTS ALTER COLUMN EVENTID TYPE VARCHAR";		
+		this.connection.createStatement().executeUpdate(sql);
 	}
 	
 	private void executeThreadSafeUpdate(String sql, Object... params) throws SQLException {

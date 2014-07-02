@@ -1,21 +1,19 @@
 package com.gratex.perconik.useractivity.app.dto;
 
-import java.util.UUID;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public class CachedEvent {
-	private UUID eventId;
+	private String eventId;
 	private XMLGregorianCalendar timestamp;
 	private String data;
 	
-	public CachedEvent(UUID eventId, XMLGregorianCalendar timestamp, String data) {
+	public CachedEvent(String eventId, XMLGregorianCalendar timestamp, String data) {
 		this.eventId = eventId;
 		this.timestamp = timestamp;
 		this.data = data;
 	}
 	
-	public UUID getEventId() {
+	public String getEventId() {
 		return this.eventId;
 	}
 	

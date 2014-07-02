@@ -14,17 +14,17 @@ import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
 public class EventDto {	 
 	@JsonSerialize(using = ToStringSerializer.class)
 	private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
-	private UUID eventId = UUID.randomUUID();	
+	private String eventId = UUID.randomUUID().toString();	
 	private String user = Settings.getInstance().getUserName();
 	private String workstation = Settings.getInstance().getWorkstationName();
 	private String eventTypeUri = getDefaultEventTypeUri().build().toString();
 	private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
 	
-	public UUID getEventId() {
+	public String getEventId() {
 		return this.eventId;
 	}
 
-	public void setEventId(UUID eventId) {
+	public void setEventId(String eventId) {
 		this.eventId = eventId;
 	}
 

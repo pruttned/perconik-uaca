@@ -4,23 +4,23 @@ import javax.ws.rs.core.UriBuilder;
 import com.gratex.perconik.useractivity.app.dto.ApplicationEventDto;
 
 public class BashCommandEventDto extends ApplicationEventDto {
-	private String commandName;
-	private String commandParameters;
-	
-	public String getCommandName() {
-		return commandName;
+	private String commandLine;
+	private int commandId;
+
+	public String getCommandLine() {
+		return commandLine;
 	}
 
-	public void setCommandName(String commandName) {
-		this.commandName = commandName;
+	public void setCommandLine(String commandLine) {
+		this.commandLine = commandLine;
 	}
 
-	public String getCommandParameters() {
-		return commandParameters;
+	public int getCommandId() {
+		return commandId;
 	}
 
-	public void setCommandParameters(String commandParameters) {
-		this.commandParameters = commandParameters;
+	public void setCommandId(int commandId) {
+		this.commandId = commandId;
 	}
 
 	@Override	
