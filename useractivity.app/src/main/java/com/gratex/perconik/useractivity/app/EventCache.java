@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gratex.perconik.useractivity.app.dto.EventDto;
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
@@ -56,21 +58,6 @@ public class EventCache {
 	}
 	
 	/**
-	 * Adds the specified event into the cache.
-	 * Thread safe.
-	 * @throws SQLException 
-	 * @throws JsonProcessingException 
-	 */
-	public void addEvent(EventDto event) throws SQLException, JsonProcessingException {
-		ValidationHelper.checkArgNotNull(event, "event");
-		
-		event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
-		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", event.getEventId(), 
-																							 	  XMLGregorianCalendarHelper.getMilliseconds(event.getTimestamp()), 
-																							 	  this.eventSerializer.serialize(event));
-	}
-	
-	/**
 	 * Adds the specified event into the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
 	 * Thread safe. 
 	 */
@@ -82,6 +69,49 @@ public class EventCache {
 			AppTracer.getInstance().writeError(String.format("Failed to add the event with ID '%s' to the event cache (local DB).", event.getEventId()), ex);
 			return false;
 		}
+	}
+	
+	/**
+	 * Adds the specified event into the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
+	 * Thread safe.
+	 */
+	public boolean addEventOrTrace(String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) {
+		try {
+			addEvent(eventId, timestamp, dataWithUtcTimestamp);
+			return true;
+		} catch (Exception ex) {
+			AppTracer.getInstance().writeError(String.format("Failed to add the event with ID '%s' to the event cache (local DB).", eventId), ex);
+			return false;
+		}
+	}
+	
+	/**
+	 * Adds the specified event into the cache.
+	 * Thread safe.
+	 * @throws SQLException 
+	 * @throws JsonProcessingException 
+	 */
+	public void addEvent(EventDto event) throws SQLException, JsonProcessingException {
+		ValidationHelper.checkArgNotNull(event, "event");
+		
+		event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
+		addEvent(event.getEventId(), event.getTimestamp(), this.eventSerializer.serialize(event));
+	}
+	
+	/**
+	 * Adds the specified event into the cache.
+	 * Thread safe.
+	 * @throws SQLException 
+	 * @throws JsonProcessingException 
+	 */
+	public void addEvent(String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) throws SQLException, JsonProcessingException {
+		ValidationHelper.checkStringArgNotNullOrWhitespace(eventId, "eventId");
+		ValidationHelper.checkArgNotNull(timestamp, "timestamp");
+		ValidationHelper.checkStringArgNotNullOrWhitespace(dataWithUtcTimestamp, "dataWithUtcTimestamp");
+		
+		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, 
+																							 	  XMLGregorianCalendarHelper.getMilliseconds(timestamp), 
+																							 	  dataWithUtcTimestamp);
 	}
 	
 	/**

@@ -71,5 +71,9 @@ public class XMLGregorianCalendarHelper {
         xmlCalendar.setTimezone(calendar.getTimeZone().getOffset(calendar.getTimeInMillis()) / 60000); //convert to local
         return xmlCalendar.normalize(); //to UTC
 	}
+	
+	public static XMLGregorianCalendar fromString(String xmlFormat) {
+		return datatypeFactory.newXMLGregorianCalendar(xmlFormat.trim());
+	}
 }
 
