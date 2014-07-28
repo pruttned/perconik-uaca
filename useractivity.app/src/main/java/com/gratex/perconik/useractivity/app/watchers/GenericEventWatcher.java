@@ -8,6 +8,7 @@ import com.gratex.perconik.useractivity.app.EventCache;
 import com.gratex.perconik.useractivity.app.SerializedEventReader;
 import com.gratex.perconik.useractivity.app.SerializedEventWriter;
 import com.gratex.perconik.useractivity.app.Settings;
+import com.gratex.perconik.useractivity.app.TypeUriHelper;
 import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
 
 public class GenericEventWatcher implements IWatcher {
@@ -54,6 +55,9 @@ public class GenericEventWatcher implements IWatcher {
 				
 				if(!reader.hasEventTypeUri()) {
 					AppTracer.getInstance().writeError(String.format("EventTypeUri is not set.\n\nEvent:\n\n%s", serializedEvent));				
+				}
+				else if(!reader.getEventTypeUri().startsWith(TypeUriHelper.EVENT_BASE_URI)) {
+					AppTracer.getInstance().writeError(String.format("EventTypeUri does not start with '%s'.\n\nEvent:\n\n%s", TypeUriHelper.EVENT_BASE_URI, serializedEvent));
 				}
 				else {
 					if(reader.hasTimestamp()) {
