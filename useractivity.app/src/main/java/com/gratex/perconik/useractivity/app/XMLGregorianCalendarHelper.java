@@ -9,8 +9,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import jersey.repackaged.com.google.common.base.Throwables;
-
 public class XMLGregorianCalendarHelper {
 	private static final DatatypeFactory datatypeFactory;
 	
@@ -18,7 +16,7 @@ public class XMLGregorianCalendarHelper {
 		try {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException ex) {
-			throw Throwables.propagate(ex);
+			throw new RuntimeException(ex); 
 		}
 	}
 	
