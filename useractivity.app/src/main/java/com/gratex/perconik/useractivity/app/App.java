@@ -193,9 +193,14 @@ public class App {
 		try {
 			stopCollectingAndCommitting();
 			
+			if(watcherManager != null){
+				watcherManager.close();
+			}
+
 			if (this.eventCache != null) {
 				this.eventCache.close();
 			}
+			
 		} catch (Throwable ex) {
 			//nothing - just exit
 		}

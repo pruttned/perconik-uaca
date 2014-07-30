@@ -13,6 +13,7 @@ import com.gratex.perconik.useractivity.app.Settings;
 public class WatcherManager {
 	private EventCache eventCache;
 	private ArrayList<IWatcher> watchers;
+	private WatcherServer watcherServer;
 	
 	public WatcherManager(EventCache eventCache) {
 		this.eventCache = eventCache;
@@ -30,7 +31,7 @@ public class WatcherManager {
 		}
 				
 		try {
-			WatcherServer watcherServer = new WatcherServer(Settings.getInstance().getLocalSvcPort());  
+			watcherServer = new WatcherServer(Settings.getInstance().getLocalSvcPort());  
 			watcherServer.setServiceClasses(IdeWatcherSvc.class,
 											WebWatcherSvc.class,
 											BashCommandWatcherSvc.class,
@@ -41,6 +42,11 @@ public class WatcherManager {
 		} catch (Exception ex) {
 			AppTracer.getInstance().writeError(String.format("Failed to start the '%s'.", WatcherServer.class.getName()), ex);
 		}
+	}
+	
+	public void close() throws Exception{
+		stopWatchers();
+		watcherServer.stop();
 	}
 	
 	public ArrayList<IWatcher> getWatchers() { 
