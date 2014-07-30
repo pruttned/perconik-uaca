@@ -26,12 +26,14 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 public class EventCacheDialog extends JDialog {
 	
 	private class CachedEventViewModel {
+		private int id;
 		private String eventId;
 		private String timestamp;
 		private String eventTypeShortUri;
 		private String formattedData;
 		
 		public CachedEventViewModel(CachedEvent cachedEvent) {
+			id = cachedEvent.getId();
 			eventId = cachedEvent.getEventId();
 			timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
 			
@@ -99,17 +101,20 @@ public class EventCacheDialog extends JDialog {
 	
 	private void refreshEvents() {
 		try {
-			this.displayedEvents = createViewModels(eventCache.getEvents());
+			EventCacheReader eventsReader = eventCache.getEvents();
+			displayedEvents = createViewModels(eventsReader);
+			eventsReader.close();
+			
 			setEventsTableData();
 		} catch (SQLException ex) {
 			MessageBox.showError(this, "Failed to retrieve events from the cache.", ex, "Failed retrieve events.");
 		}
 	}
 	
-	private ArrayList<CachedEventViewModel> createViewModels(ArrayList<CachedEvent> cachedEvents) {
-		ArrayList<CachedEventViewModel> viewModels = new ArrayList<>(cachedEvents.size());
-		for (CachedEvent cachedEvent : cachedEvents) {
-			viewModels.add(new CachedEventViewModel(cachedEvent));
+	private ArrayList<CachedEventViewModel> createViewModels(EventCacheReader cachedEventsReader) throws SQLException {
+		ArrayList<CachedEventViewModel> viewModels = new ArrayList<>();
+		while(cachedEventsReader.next()) {
+			viewModels.add(new CachedEventViewModel(cachedEventsReader.getCurrent()));
 		}
 		return viewModels;
 	}
@@ -153,9 +158,9 @@ public class EventCacheDialog extends JDialog {
 		addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {			
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					ArrayList<String> selectedEventIds = new ArrayList<String>();
+					ArrayList<Integer> selectedEventIds = new ArrayList<Integer>();
 					for (int eventIndex : EventCacheDialog.this.eventsTable.getSelectedRows()) {
-						selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).eventId);
+						selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).id);
 					}
 					EventCacheDialog.this.eventCache.removeEvents(selectedEventIds);
 					refreshEvents();

@@ -13,7 +13,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gratex.perconik.useractivity.app.dto.EventDto;
-import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
 
 /**
@@ -39,7 +38,7 @@ public class EventCache {
 		this.connection = DriverManager.getConnection(dbUri);
 		executeCreationScript();
 		
-		convertEventIdToVarchar(); //TODO: remove in future versions
+		convertEventIdToVarchar(); //TODO: remove in version 2.0.8
 	}
 
 	/**
@@ -115,31 +114,29 @@ public class EventCache {
 	}
 	
 	/**
-	 * Removes the event with the specified 'event ID' from the cache.
+	 * Removes all events with specified 'IDs' from the cache.
 	 * Thread safe.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public void removeEvent(String eventId) throws SQLException {
-		ValidationHelper.checkArgNotNull(eventId, "eventId");
-		executeThreadSafeUpdate("DELETE FROM EVENTS WHERE EVENTID=?", eventId);
-	}
-	
-	/**
-	 * Removes the event with the specified 'event ID' from the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
-	 * Thread safe.
-	 */
-	public boolean removeEventOrTrace(String eventId) {
-		try {
-			removeEvent(eventId);
-			return true;
-		} catch (Exception ex) {
-			AppTracer.getInstance().writeError(String.format("Failed to remove the event with ID '%s' from the event cache (local DB).", eventId), ex);
-			return false;
+	public void removeEvents(ArrayList<Integer> ids) throws SQLException {
+		ValidationHelper.checkArgNotNull(ids, "ids");
+		for (Integer id : ids) {
+			removeEvent(id);
 		}
 	}
 	
 	/**
+	 * Removes the event with the specified 'ID' from the cache.
+	 * Thread safe.
+	 * @throws SQLException 
+	 */
+	public void removeEvent(int id) throws SQLException {
+		executeThreadSafeUpdate("DELETE FROM EVENTS WHERE ID=?", id);
+	}
+	
+	/**
 	 * Removes all events from the cache.
+	 * Thread safe.
 	 * @throws SQLException
 	 */
 	public void removeAllEvents() throws SQLException {
@@ -147,26 +144,14 @@ public class EventCache {
 	}
 	
 	/**
-	 * Removes all events with the specified 'event IDs' from the cache.
-	 * @param eventIds
-	 * @throws SQLException
-	 */
-	public void removeEvents(ArrayList<String> eventIds) throws SQLException {
-		ValidationHelper.checkArgNotNull(eventIds, "eventIds");
-		for (String eventId : eventIds) {
-			removeEvent(eventId);
-		}
-	}
-	
-	/**
 	 * Gets events from the cache that are old enough to be committed to the server.
 	 * Thread safe.
 	 * @throws SQLException 
 	 */
-	public ArrayList<CachedEvent> getEventsToCommit() throws SQLException {
+	public EventCacheReader getEventsToCommit() throws SQLException {
 		long lastEventTimeToCommit = new Date().getTime() - Settings.getInstance().getEventAgeToCommit();
-		ResultSet result = executeThreadSafeQuery(String.format("SELECT EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
-		return convertToArrayList(result);
+		ResultSet resultSet = executeThreadSafeQuery(String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
+		return new EventCacheReader(connection, resultSet);
 	}
 
 	/**
@@ -174,9 +159,9 @@ public class EventCache {
 	 * Thread safe.
 	 * @throws SQLException 
 	 */
-	public ArrayList<CachedEvent> getEvents() throws SQLException {
-		ResultSet result = executeThreadSafeQuery("SELECT EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
-		return convertToArrayList(result);
+	public EventCacheReader getEvents() throws SQLException {
+		ResultSet resultSet = executeThreadSafeQuery("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
+		return new EventCacheReader(connection, resultSet);
 	}
 	
 	/**
@@ -189,17 +174,7 @@ public class EventCache {
 		String newUserName = String.format("\"user\":\"%s\"", Settings.getInstance().getUserName());
 		
 		executeThreadSafeUpdate(String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
-	}
-	
-	private ArrayList<CachedEvent> convertToArrayList(ResultSet queryResult) throws SQLException {
-		ArrayList<CachedEvent> cachedEvents = new ArrayList<CachedEvent>();
-		while(queryResult.next()) {
-			cachedEvents.add(new CachedEvent(queryResult.getString("EVENTID"), 
-											 XMLGregorianCalendarHelper.createUtc(queryResult.getLong("TIMESTAMP")), 
-											 queryResult.getString("DATA")));
-		}
-		return cachedEvents;
-	}
+	}	
 	
 	private void executeCreationScript() throws SQLException {
 		StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS EVENTS(");
