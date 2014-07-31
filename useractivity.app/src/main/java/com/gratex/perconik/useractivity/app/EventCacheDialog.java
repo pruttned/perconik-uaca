@@ -110,14 +110,17 @@ public class EventCacheDialog extends JDialog {
 	}
 	
 	private void refreshEvents() {
+		EventCacheReader eventsReader = null;
 		try {
-			EventCacheReader eventsReader = eventCache.getEvents();
+			eventsReader = eventCache.getEvents();
 			displayedEvents = createViewModels(eventsReader);
-			eventsReader.close();
-			
 			setEventsTableData();
 		} catch (SQLException ex) {
 			MessageBox.showError(this, "Failed to retrieve events from the cache.", ex, "Failed retrieve events.");
+		} finally {
+			if(eventsReader != null) {
+				eventsReader.closeOrTrace();
+			}
 		}
 	}
 	

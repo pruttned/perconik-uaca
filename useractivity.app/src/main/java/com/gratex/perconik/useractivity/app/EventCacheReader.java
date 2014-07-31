@@ -45,6 +45,14 @@ public class EventCacheReader {
 		return current;
 	}
 
+	public void closeOrTrace() {
+		try {
+			close();
+		} catch (SQLException ex) {
+			AppTracer.getInstance().writeError("Failed to close an EventCacheReader.", ex);
+		}
+	}
+	
 	public void close() throws SQLException
 	{
 		resultSet.close(); //'connection' is not closed here - it is closed at application exit

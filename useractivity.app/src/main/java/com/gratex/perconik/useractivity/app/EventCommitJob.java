@@ -62,8 +62,9 @@ public class EventCommitJob {
 	 * @param commitAllEvents true - commit all events in EventCache; false - commit only events that are old enough to be committed
 	 */
 	public void commitEventsNow(boolean commitAllEvents) {
+		EventCacheReader eventsToCommitReader = null;
 		try {
-			EventCacheReader eventsToCommitReader = commitAllEvents ? eventCache.getEvents() : eventCache.getEventsToCommit();
+			eventsToCommitReader = commitAllEvents ? eventCache.getEvents() : eventCache.getEventsToCommit();
 			
 			while(eventsToCommitReader.next()) {
 				CachedEvent cachedEvent = eventsToCommitReader.getCurrent();				
@@ -78,11 +79,15 @@ public class EventCommitJob {
 				catch (Exception ex) {
 					AppTracer.getInstance().writeError(String.format("There was an error while committing the event with ID '%s'.", cachedEvent.getEventId()), ex);
 				}
-			}			
-			eventsToCommitReader.close();
+			}
 		}
 		catch (Exception ex) {
 			AppTracer.getInstance().writeError("There was an error while committing events.", ex);
+		}
+		finally {
+			if(eventsToCommitReader != null) {
+				eventsToCommitReader.closeOrTrace();
+			}
 		}
 	}
 	
@@ -113,11 +118,12 @@ public class EventCommitJob {
 	
 	private void commitEvents() {
 		synchronized (this.stateSyncObj) {
+			EventCacheReader eventsToCommitReader = null;
 			try {
 				if(getState() != EventCommitJobState.STOPPED) {
 					setState(EventCommitJobState.COMMITTING);
 					
-					EventCacheReader eventsToCommitReader = eventCache.getEventsToCommit();					
+					eventsToCommitReader = eventCache.getEventsToCommit();					
 					while(eventsToCommitReader.next()) {
 						if(this.isCommitAborted) {
 							break;
@@ -132,13 +138,16 @@ public class EventCommitJob {
 							AppTracer.getInstance().writeError(String.format("There was an error while committing the event with ID '%s'.", cachedEvent.getEventId()), ex);
 						}
 					}
-					eventsToCommitReader.close();
 				}
 			}
-			catch (Exception ex) {
+			catch (Exception ex) {				
 				AppTracer.getInstance().writeError("There was an error while committing events.", ex);
 			}
 			finally {
+				if(eventsToCommitReader != null) {
+					eventsToCommitReader.closeOrTrace();
+				}
+				
 				if(!this.isCommitAborted) {
 					setState(EventCommitJobState.WAITING);
 					startTimer();
