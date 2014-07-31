@@ -2,7 +2,6 @@ package com.gratex.perconik.useractivity.app;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +10,10 @@ import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.h2.jdbcx.JdbcConnectionPool;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 import com.gratex.perconik.useractivity.app.dto.EventDto;
 
@@ -20,7 +22,7 @@ import com.gratex.perconik.useractivity.app.dto.EventDto;
  * Represents the local cache of events - local DB.
  */
 public class EventCache {
-	private Connection connection;
+	private JdbcConnectionPool connectionPool;
 	private EventSerializer eventSerializer;
 	
 	/**
@@ -36,25 +38,19 @@ public class EventCache {
 		
 		Class.forName("org.h2.Driver");
 		String dbUri = "jdbc:h2:" + Paths.get(Settings.getInstance().getUserFolder(), "EventCache");
-		this.connection = DriverManager.getConnection(dbUri);
-		executeCreationScript();
-		
-		convertEventIdToVarchar(); //TODO: remove in version 2.0.8
+    connectionPool = JdbcConnectionPool.create(dbUri, "", "");		
+
+    executeCreationScript();
 	}
 
 	/**
-	 * Closes the connection.
+	 * Closes all connections.
 	 * Thread safe.
-	 * @throws SQLException 
 	 */
-	public void close() throws SQLException {
-		if (this.connection != null) {
-			synchronized(this.connection) {
-				if(!connection.isClosed()) {
-					this.connection.close();
-				}
-			}
-		}
+	public void close() {
+	  if(connectionPool != null) {
+	    connectionPool.dispose();
+	  }
 	}
 	
 	/**
@@ -109,9 +105,9 @@ public class EventCache {
 		ValidationHelper.checkArgNotNull(timestamp, "timestamp");
 		ValidationHelper.checkStringArgNotNullOrWhitespace(dataWithUtcTimestamp, "dataWithUtcTimestamp");
 		
-		executeThreadSafeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, 
-																							 	  XMLGregorianCalendarHelper.getMilliseconds(timestamp), 
-																							 	  dataWithUtcTimestamp);
+		executeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, 
+																							 	                                    XMLGregorianCalendarHelper.getMilliseconds(timestamp), 
+																							 	                                    dataWithUtcTimestamp);
 	}
 	
 	/**
@@ -121,7 +117,7 @@ public class EventCache {
 	 */
 	public void removeEvents(ArrayList<Integer> ids) throws SQLException {
 		ValidationHelper.checkArgNotNull(ids, "ids");
-		for (Integer id : ids) {
+		for (Integer id : ids) { //TODO: execute separate SQL with 'IN' clause
 			removeEvent(id);
 		}
 	}
@@ -132,7 +128,7 @@ public class EventCache {
 	 * @throws SQLException 
 	 */
 	public void removeEvent(int id) throws SQLException {
-		executeThreadSafeUpdate("DELETE FROM EVENTS WHERE ID=?", id);
+		executeUpdate("DELETE FROM EVENTS WHERE ID=?", id);
 	}
 	
 	/**
@@ -141,7 +137,7 @@ public class EventCache {
 	 * @throws SQLException
 	 */
 	public void removeAllEvents() throws SQLException {
-		executeThreadSafeUpdate("DELETE FROM EVENTS");
+		executeUpdate("DELETE FROM EVENTS");
 	}
 	
 	/**
@@ -150,8 +146,7 @@ public class EventCache {
 	 * @throws SQLException
 	 */
 	public CachedEvent getEvent(int id) throws SQLException {
-		ResultSet resultSet = executeThreadSafeQuery(String.format("SELECT TOP 1 ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE ID=%s", id));
-		EventCacheReader reader = new EventCacheReader(connection, resultSet);
+	  EventCacheReader reader = executeQuery(String.format("SELECT TOP 1 ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE ID=%s", id));		
 		
 		try {
 			if(reader.next()) {
@@ -171,8 +166,7 @@ public class EventCache {
 	 */
 	public EventCacheReader getEventsToCommit() throws SQLException {
 		long lastEventTimeToCommit = new Date().getTime() - Settings.getInstance().getEventAgeToCommit();
-		ResultSet resultSet = executeThreadSafeQuery(String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
-		return new EventCacheReader(connection, resultSet);
+		return executeQuery(String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
 	}
 
 	/**
@@ -181,8 +175,7 @@ public class EventCache {
 	 * @throws SQLException 
 	 */
 	public EventCacheReader getEvents() throws SQLException {
-		ResultSet resultSet = executeThreadSafeQuery("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
-		return new EventCacheReader(connection, resultSet);
+		return executeQuery("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
 	}
 	
 	/**
@@ -194,7 +187,7 @@ public class EventCache {
 		String userNameRegexp = "\"user\":\"[^\"]*\"";
 		String newUserName = String.format("\"user\":\"%s\"", Settings.getInstance().getUserName());
 		
-		executeThreadSafeUpdate(String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
+		executeUpdate(String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
 	}	
 	
 	private void executeCreationScript() throws SQLException {
@@ -203,30 +196,25 @@ public class EventCache {
 		builder.append("EVENTID VARCHAR NOT NULL,");
 		builder.append("TIMESTAMP BIGINT NOT NULL,"); //milliseconds 
 		builder.append("DATA VARCHAR NOT NULL)");
-		this.connection.createStatement().executeUpdate(builder.toString());
+		
+		executeUpdate(builder.toString());
 	}
 	
-	private void convertEventIdToVarchar() throws SQLException {
-		String sql = "ALTER TABLE EVENTS ALTER COLUMN EVENTID TYPE VARCHAR";		
-		this.connection.createStatement().executeUpdate(sql);
-	}
-	
-	private void executeThreadSafeUpdate(String sql, Object... params) throws SQLException {
-		synchronized(this.connection) {
-			if(connection.isClosed()) throw new IllegalStateException("The connection is closed."); //the connection could be closed while this thread was waiting
-			
-			PreparedStatement statement = this.connection.prepareStatement(sql);
-			for (int i = 0; i < params.length; i++) {
-				statement.setObject(i + 1, params[i]);
-			}
-			statement.executeUpdate();
-		}
+	private void executeUpdate(String sql, Object... params) throws SQLException {
+	  Connection connection = connectionPool.getConnection();
+
+	  PreparedStatement statement = connection.prepareStatement(sql);
+	  for (int i = 0; i < params.length; i++) {
+	    statement.setObject(i + 1, params[i]);
+	  }
+	  statement.executeUpdate();
+
+	  connection.close();
 	}
 
-	private ResultSet executeThreadSafeQuery(String sql) throws SQLException {
-		synchronized(this.connection) {
-			if(connection.isClosed()) throw new IllegalStateException("The connection is closed."); //the connection could be closed while this thread was waiting
-			return this.connection.createStatement().executeQuery(sql);
-		}
+	private EventCacheReader executeQuery(String sql) throws SQLException {
+	  Connection connection = connectionPool.getConnection();
+	  ResultSet resultSet = connection.createStatement().executeQuery(sql);
+	  return new EventCacheReader(connection, resultSet);
 	}
 }

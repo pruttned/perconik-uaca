@@ -28,17 +28,15 @@ public class EventCacheReader {
 	 * @throws SQLException
 	 */
 	public boolean next() throws SQLException {
-		synchronized(connection) {
-			if(resultSet.next()) {
-				current = new CachedEvent(resultSet.getInt("ID"),
-									      resultSet.getString("EVENTID"), 
-						 				  XMLGregorianCalendarHelper.createUtc(resultSet.getLong("TIMESTAMP")), 
-						 				  resultSet.getString("DATA"));
-				return true;
-			}
-			current = null;
-			return false;
-		}
+	  if(resultSet.next()) {
+	    current = new CachedEvent(resultSet.getInt("ID"),
+	                              resultSet.getString("EVENTID"), 
+	                              XMLGregorianCalendarHelper.createUtc(resultSet.getLong("TIMESTAMP")), 
+	                              resultSet.getString("DATA"));
+	    return true;
+	  }
+	  current = null;
+	  return false;
 	}
 	
 	public CachedEvent getCurrent() {
@@ -55,6 +53,7 @@ public class EventCacheReader {
 	
 	public void close() throws SQLException
 	{
-		resultSet.close(); //'connection' is not closed here - it is closed at application exit
+		resultSet.close();
+		connection.close();
 	}
 }
