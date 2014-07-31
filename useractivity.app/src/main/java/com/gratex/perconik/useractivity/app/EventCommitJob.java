@@ -68,9 +68,9 @@ public class EventCommitJob {
 			while(eventsToCommitReader.next()) {
 				CachedEvent cachedEvent = eventsToCommitReader.getCurrent();				
 				try {
-					SerializedEventWriter writer = new SerializedEventWriter(cachedEvent.getData());
-					writer.setWasCommitForcedByUser(true);
-					cachedEvent.setData(writer.getData());
+					EventDocument doc = new EventDocument(cachedEvent.getData());
+					doc.setWasCommitForcedByUser(true);
+					cachedEvent.setData(doc.toJsonString());
 					
 					userActivityServiceProxy.commitEvent(cachedEvent);
 					eventCache.removeEvent(cachedEvent.getId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove

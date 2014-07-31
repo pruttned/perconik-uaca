@@ -54,7 +54,7 @@ public class UserActivityServiceProxy {
 	
 	private String getEventFormattedData(CachedEvent cachedEvent) {
 		try {
-			return new SerializedEventReader(cachedEvent.getData()).getFormattedData();
+			return new EventDocument(cachedEvent.getData()).toFormatedJsonString();
 		} catch (IOException ex) {
 			AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'", cachedEvent.getEventId()), ex);
 			return "<ERROR - see log for details>";

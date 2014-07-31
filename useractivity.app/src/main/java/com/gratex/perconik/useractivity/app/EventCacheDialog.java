@@ -38,9 +38,9 @@ public class EventCacheDialog extends JDialog {
 			timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
 			
 			try {
-				SerializedEventReader reader = new SerializedEventReader(cachedEvent.getData());
-				eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(reader.getEventTypeUri());
-				formattedData = reader.getFormattedData();
+				EventDocument doc = new EventDocument(cachedEvent.getData());
+				eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(doc.getEventTypeUri());
+				formattedData = doc.toFormatedJsonString();
 			} catch (IOException ex) {
 				AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'.", cachedEvent.getEventId()), ex);
 				eventTypeShortUri = "<ERROR - see log for details>";

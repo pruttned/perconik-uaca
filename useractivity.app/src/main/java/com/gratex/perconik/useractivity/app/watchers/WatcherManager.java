@@ -19,13 +19,9 @@ public class WatcherManager {
 		this.eventCache = eventCache;
 		
 		watchers = new ArrayList<IWatcher>();
-		
+
 		try {
 			watchers.add(new ProcessWatcher());
-			watchers.add(WebWatcher.getInstance());
-			watchers.add(IdeWatcher.getInstance());
-			watchers.add(BashCommandWatcher.getInstance());
-			watchers.add(GenericEventWatcher.getInstance());
 		} catch(Exception ex) {
 			AppTracer.getInstance().writeError("Failed to create an instance of a watcher.", ex);
 		}

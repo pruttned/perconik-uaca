@@ -73,13 +73,21 @@ public class App {
 	public boolean isCollectingAndCommitting() {
 		return this.isCollectingAndCommitting;
 	}
-	
+
+	public boolean isCollecting() {
+		return this.isCollectingAndCommitting;
+	}
+
 	public EventCommitJob getEventCommitJob() {
 		return this.eventCommitJob;
 	}
 	
 	public UserActivityServiceProxy getUserActivityServiceProxy() {
 		return userActivityServiceProxy;
+	}
+	
+	public EventCache getEventCache(){
+		return eventCache;
 	}
 	
 	public void showMainWindow() {
