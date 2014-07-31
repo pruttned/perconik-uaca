@@ -1,5 +1,6 @@
 package com.gratex.perconik.useractivity.app;
 
+import java.sql.Connection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,8 +65,10 @@ public class EventCommitJob {
    */
   public void commitEventsNow(boolean commitAllEvents) {
     EventCacheReader eventsToCommitReader = null;
+    Connection connection = null;
     try {
-      eventsToCommitReader = commitAllEvents ? this.eventCache.getEvents() : this.eventCache.getEventsToCommit();
+      connection = this.eventCache.openConnection();
+      eventsToCommitReader = commitAllEvents ? this.eventCache.getEvents(connection) : this.eventCache.getEventsToCommit(connection);
 
       while (eventsToCommitReader.next()) {
         CachedEvent cachedEvent = eventsToCommitReader.getCurrent();
@@ -75,7 +78,7 @@ public class EventCommitJob {
           cachedEvent.setData(doc.toJsonString());
 
           this.userActivityServiceProxy.commitEvent(cachedEvent);
-          this.eventCache.removeEvent(cachedEvent.getId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove
+          this.eventCache.removeEvent(connection, cachedEvent.getId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove
         } catch (Exception ex) {
           AppTracer.getInstance().writeError(String.format("There was an error while committing the event with ID '%s'.", cachedEvent.getEventId()), ex);
         }
@@ -85,6 +88,9 @@ public class EventCommitJob {
     } finally {
       if (eventsToCommitReader != null) {
         eventsToCommitReader.closeOrTrace();
+      }
+      if(connection != null ){
+        this.eventCache.closeConnectionOrTrace(connection);
       }
     }
   }
@@ -117,11 +123,13 @@ public class EventCommitJob {
   private void commitEvents() {
     synchronized (this.stateSyncObj) {
       EventCacheReader eventsToCommitReader = null;
+      Connection connection = null;
       try {
         if (this.getState() != EventCommitJobState.STOPPED) {
           this.setState(EventCommitJobState.COMMITTING);
+          connection = this.eventCache.openConnection();
 
-          eventsToCommitReader = this.eventCache.getEventsToCommit();
+          eventsToCommitReader = this.eventCache.getEventsToCommit(connection);
           while (eventsToCommitReader.next()) {
             if (this.isCommitAborted) {
               break;
@@ -130,7 +138,7 @@ public class EventCommitJob {
             CachedEvent cachedEvent = eventsToCommitReader.getCurrent();
             try {
               this.userActivityServiceProxy.commitEvent(cachedEvent);
-              this.eventCache.removeEvent(cachedEvent.getId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove
+              this.eventCache.removeEvent(connection, cachedEvent.getId()); //'commitEvent' is an idempotent operation so it is safe to fail during remove
             } catch (Exception ex) {
               AppTracer.getInstance().writeError(String.format("There was an error while committing the event with ID '%s'.", cachedEvent.getEventId()), ex);
             }
@@ -147,6 +155,11 @@ public class EventCommitJob {
           this.setState(EventCommitJobState.WAITING);
           this.startTimer();
         }
+
+        if(connection != null ){
+          this.eventCache.closeConnectionOrTrace(connection);
+        }
+
       }
     }
   }

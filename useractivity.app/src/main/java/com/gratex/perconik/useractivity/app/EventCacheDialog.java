@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
 public class EventCacheDialog extends JDialog {
 
-  private class CachedEventViewModel {
+  private static class CachedEventViewModel {
     private EventCache eventCache;
     private int id;
     private String eventId;
@@ -54,7 +55,14 @@ public class EventCacheDialog extends JDialog {
 
     public String getFormattedData() throws JsonProcessingException, IOException, SQLException {
       if (this.formattedData == null) {
-        this.formattedData = new EventDocument(this.eventCache.getEvent(this.id).getData()).toFormatedJsonString();
+
+        Connection connection = this.eventCache.openConnection();
+        try {
+          this.formattedData = new EventDocument(this.eventCache.getEvent(connection, this.id).getData()).toFormatedJsonString();
+        } finally {
+          this.eventCache.closeConnectionOrTrace(connection);
+        }
+
       }
       return this.formattedData;
     }
@@ -112,9 +120,11 @@ public class EventCacheDialog extends JDialog {
   }
 
   private void refreshEvents() {
+    Connection connection = null;
     EventCacheReader eventsReader = null;
     try {
-      eventsReader = this.eventCache.getEvents();
+      connection = this.eventCache.openConnection();
+      eventsReader = this.eventCache.getEvents(connection);
       this.displayedEvents = this.createViewModels(eventsReader);
       this.setEventsTableData();
     } catch (SQLException ex) {
@@ -122,6 +132,9 @@ public class EventCacheDialog extends JDialog {
     } finally {
       if (eventsReader != null) {
         eventsReader.closeOrTrace();
+      }
+      if (connection != null) {
+        this.eventCache.closeConnectionOrTrace(connection);
       }
     }
   }
@@ -181,7 +194,13 @@ public class EventCacheDialog extends JDialog {
           for (int eventIndex: EventCacheDialog.this.eventsTable.getSelectedRows()) {
             selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).id);
           }
-          EventCacheDialog.this.eventCache.removeEvents(selectedEventIds);
+          EventCache eventCache = EventCacheDialog.this.eventCache;
+          Connection connection = eventCache.openConnection();
+          try{
+            eventCache.removeEvents(connection, selectedEventIds);
+          }finally{
+            eventCache.closeConnectionOrTrace(connection);
+          }
           EventCacheDialog.this.refreshEvents();
         } catch (SQLException ex) {
           MessageBox.showError(EventCacheDialog.this, "Failed to delete all of the selected events.", ex, "Delete selection failed");
@@ -193,7 +212,14 @@ public class EventCacheDialog extends JDialog {
     this.addButton(buttonsPanel, "Delete All", "Remove all events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
-          EventCacheDialog.this.eventCache.removeAllEvents();
+          EventCache eventCache = EventCacheDialog.this.eventCache;
+          Connection connection = eventCache.openConnection();
+          try{
+            eventCache.removeAllEvents(connection);
+          }finally{
+            eventCache.closeConnectionOrTrace(connection);
+          }
+
           EventCacheDialog.this.refreshEvents();
         } catch (SQLException ex) {
           MessageBox.showError(EventCacheDialog.this, "Failed to delete all events.", ex, "Delete all failed");

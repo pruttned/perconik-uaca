@@ -24,7 +24,7 @@ public class AppTracer {
   }
 
   public void writeError(String message, Throwable exception) {
-    this.writeError(String.format("%s\nError:%s", message, getExceptionFullText(exception)));
+    this.writeError(String.format("%s%nError:%s", message, getExceptionFullText(exception)));
   }
 
   public void writeError(Throwable exception) {

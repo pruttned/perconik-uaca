@@ -27,7 +27,7 @@ public class UserActivityServiceProxy {
   public void commitEvent(CachedEvent cachedEvent) throws SvcException {
     ValidationHelper.checkArgNotNull(cachedEvent, "cachedEvent");
 
-    AppTracer.getInstance().write(String.format("Committing event '%s'... \n\nData:\n\n%s", cachedEvent.getEventId(), this.getEventFormattedData(cachedEvent)), MessageSeverity.INFO_EVENT_COMMIT);
+    AppTracer.getInstance().write(String.format("Committing event '%s'... %n%nData:%n%n%s", cachedEvent.getEventId(), this.getEventFormattedData(cachedEvent)), MessageSeverity.INFO_EVENT_COMMIT);
 
     WebTarget fullTarget = this.baseSvcUrl.path(cachedEvent.getEventId());
     Response response = fullTarget.request().put(Entity.json(cachedEvent.getData()));

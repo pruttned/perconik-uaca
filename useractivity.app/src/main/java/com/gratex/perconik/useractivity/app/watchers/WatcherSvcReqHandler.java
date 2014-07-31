@@ -29,12 +29,12 @@ public class WatcherSvcReqHandler {
       //load document
       EventDocument eventDoc = null;
       try {
-        eventDoc = EventDocument.LoadFromRequest(eventData);
+        eventDoc = EventDocument.loadFromRequest(eventData);
       } catch (IOException ex) {
-        AppTracer.getInstance().writeError(String.format("Bad json event data:\n\n%s", eventData), ex);
+        AppTracer.getInstance().writeError(String.format("Bad json event data:%n%n%s", eventData), ex);
         return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
       } catch (IllegalArgumentException ex) {
-        AppTracer.getInstance().writeError(String.format("Bad json event data:\n\n%s", eventData), ex);
+        AppTracer.getInstance().writeError(String.format("Bad json event data:%n%n%s", eventData), ex);
         return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
       }
 
@@ -60,10 +60,10 @@ public class WatcherSvcReqHandler {
 
   private Response checkEventTypeUri(EventDocument eventDoc) throws JsonProcessingException {
     if (!eventDoc.hasEventTypeUri()) {
-      AppTracer.getInstance().writeError(String.format("%s\n\nEvent:\n\n%s", EventTypeUriNotSetErrMsg, eventDoc.toJsonString()));
+      AppTracer.getInstance().writeError(String.format("%s%n%nEvent:%n%n%s", EventTypeUriNotSetErrMsg, eventDoc.toJsonString()));
       return Response.status(Response.Status.BAD_REQUEST).entity(EventTypeUriNotSetErrMsg).build();
     } else if (!eventDoc.getEventTypeUri().startsWith(TypeUriHelper.EVENT_BASE_URI)) {
-      AppTracer.getInstance().writeError(String.format("%s\n\nEvent:\n\n%s", EventTypeUriWrongBaseErrMsg, eventDoc.toJsonString()));
+      AppTracer.getInstance().writeError(String.format("%s%n%nEvent:%n%n%s", EventTypeUriWrongBaseErrMsg, eventDoc.toJsonString()));
       return Response.status(Response.Status.BAD_REQUEST).entity(EventTypeUriWrongBaseErrMsg).build();
     }
 

@@ -7,11 +7,11 @@ import java.util.prefs.Preferences;
 
 public class Settings {
   private final static Settings INSTANCE = new Settings();
-  private final String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
-  private final String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
-  private final String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity";
-  private final int defaultLocalSvcPort = 16375;
-  private final int defaultMaxRowCountInLog = 1000;
+  private final static String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
+  private final static String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
+  private final static String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity";
+  private final static int defaultLocalSvcPort = 16375;
+  private final static int defaultMaxRowCountInLog = 1000;
 
   private Settings() {}
 
@@ -50,7 +50,7 @@ public class Settings {
   }
 
   public String getUserFolder() {
-    return this.userFolder;
+    return Settings.userFolder;
   }
 
   public String getWorkstationName() {
@@ -62,7 +62,7 @@ public class Settings {
   }
 
   public String getSvcUrl() {
-    return this.getPreferencesNode().get("svc_url", this.defaultSvcUrl);
+    return this.getPreferencesNode().get("svc_url", Settings.defaultSvcUrl);
   }
 
   public void setSvcUrl(String url) {
@@ -76,7 +76,7 @@ public class Settings {
   }
 
   public int getLocalSvcPort() {
-    return this.getPreferencesNode().getInt("local_svc_port", this.defaultLocalSvcPort);
+    return this.getPreferencesNode().getInt("local_svc_port", Settings.defaultLocalSvcPort);
   }
 
   public void setLocalSvcPort(int localSvcPort) {
@@ -84,7 +84,7 @@ public class Settings {
   }
 
   public int getMaxRowCountInLog() {
-    return this.getPreferencesNode().getInt("max_row_count_in_log", this.defaultMaxRowCountInLog);
+    return this.getPreferencesNode().getInt("max_row_count_in_log", Settings.defaultMaxRowCountInLog);
   }
 
   public void setMaxRowCountInLog(int maxRowCountInLog) {
@@ -93,6 +93,6 @@ public class Settings {
   }
 
   private Preferences getPreferencesNode() {
-    return Preferences.userRoot().node(this.preferencesPackageName);
+    return Preferences.userRoot().node(Settings.preferencesPackageName);
   }
 }

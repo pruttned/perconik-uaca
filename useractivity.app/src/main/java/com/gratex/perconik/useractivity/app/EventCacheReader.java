@@ -1,8 +1,8 @@
 package com.gratex.perconik.useractivity.app;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
@@ -10,15 +10,15 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
  * Represents a data reader for EventCache query result sets. Reads CachedEvents from a result set.
  */
 public class EventCacheReader {
-  private Connection connection;
+  private Statement statement;
   private ResultSet resultSet;
   private CachedEvent current;
 
-  public EventCacheReader(Connection connection, ResultSet resultSet) {
-    ValidationHelper.checkArgNotNull(connection, "connection");
+  public EventCacheReader(Statement statement, ResultSet resultSet) {
+    ValidationHelper.checkArgNotNull(statement, "statement");
     ValidationHelper.checkArgNotNull(resultSet, "resultSet");
 
-    this.connection = connection;
+    this.statement = statement;
     this.resultSet = resultSet;
   }
 
@@ -49,7 +49,6 @@ public class EventCacheReader {
   }
 
   public void close() throws SQLException {
-    this.resultSet.close();
-    this.connection.close();
+    this.statement.close(); //also closes resultSet
   }
 }

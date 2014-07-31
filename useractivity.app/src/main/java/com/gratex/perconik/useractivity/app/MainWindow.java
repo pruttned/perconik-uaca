@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.Box;
@@ -90,11 +91,18 @@ public class MainWindow extends JFrame {
             boolean updateUserName = MessageBox.showYesNoQuestion(MainWindow.this, "The user name has been changed. Update the user name for all existing events in the event cache?", "Update user name in event cache?");
 
             if (updateUserName) {
+              Connection connection = null;
+              EventCache eventCache = MainWindow.this.eventCache;
               try {
-                MainWindow.this.eventCache.updateUserNameInAllEvents();
+                connection = eventCache.openConnection();
+                eventCache.updateUserNameInAllEvents(connection);
                 MessageBox.showOkInfo(MainWindow.this, "Existing events updated!", "Done!");
               } catch (SQLException ex) {
                 MessageBox.showError(MainWindow.this, "Failed to update events.", ex, "Failed!");
+              } finally {
+                if (connection != null) {
+                  eventCache.closeConnectionOrTrace(connection);
+                }
               }
             }
           }

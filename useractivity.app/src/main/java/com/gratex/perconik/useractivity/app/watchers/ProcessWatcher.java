@@ -63,7 +63,7 @@ public class ProcessWatcher extends TimerWatcherBase {
     for (Integer runningProcessPid: runningProcesses) {
       if (!this.lastRunningProcesses.containsKey(runningProcessPid)) {
         ProcessDto dto = new ProcessDto();
-        dto.setPid((int) runningProcessPid);
+        dto.setPid(runningProcessPid);
         dto.setName(Humidor.getInstance().getSigar().getProcState(runningProcessPid).getName());
         addedProcesses.add(dto);
       }

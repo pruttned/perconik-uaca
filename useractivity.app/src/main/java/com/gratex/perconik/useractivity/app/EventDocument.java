@@ -29,7 +29,7 @@ public class EventDocument {
    * @return
    * @throws IOException
    */
-  public static EventDocument LoadFromRequest(String jsonStr) throws IOException {
+  public static EventDocument loadFromRequest(String jsonStr) throws IOException {
     EventDocument doc = new EventDocument(jsonStr);
     doc.fixAfterReceive();
     return doc;

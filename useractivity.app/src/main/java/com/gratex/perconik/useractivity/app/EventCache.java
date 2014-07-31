@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -51,13 +52,46 @@ public class EventCache {
     }
   }
 
+  public Connection openConnection() throws SQLException {
+    return this.connectionPool.getConnection();
+  }
+
+  public void closeConnectionOrTrace(Connection connection){
+    ValidationHelper.checkArgNotNull(connection, "connection");
+
+    try {
+      connection.close();
+    } catch (Exception ex) {
+      AppTracer.getInstance().writeError("Failed to close a connection.", ex);
+    }
+  }
+
   /**
    * Adds the specified event into the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
    * Thread safe.
    */
   public boolean addEventOrTrace(EventDto event) {
+    Connection connection = null;
     try {
-      this.addEvent(event);
+      connection = this.openConnection();
+      return this.addEventOrTrace(connection, event);
+
+    } catch (SQLException ex) {
+      AppTracer.getInstance().writeError("Failed to open a connection.", ex);
+    } finally {
+      this.closeConnectionOrTrace(connection);
+    }
+
+    return false;
+  }
+
+  /**
+   * Adds the specified event into the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
+   * Thread safe.
+   */
+  public boolean addEventOrTrace(Connection connection, EventDto event) {
+    try {
+      this.addEvent(connection, event);
       return true;
     } catch (Exception ex) {
       AppTracer.getInstance().writeError(String.format("Failed to add the event with ID '%s' to the event cache (local DB).", event.getEventId()), ex);
@@ -70,8 +104,27 @@ public class EventCache {
    * Thread safe.
    */
   public boolean addEventOrTrace(String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) {
+    Connection connection = null;
     try {
-      this.addEvent(eventId, timestamp, dataWithUtcTimestamp);
+      connection = this.openConnection();
+      return this.addEventOrTrace(connection, eventId, timestamp, dataWithUtcTimestamp);
+
+    } catch (SQLException ex) {
+      AppTracer.getInstance().writeError("Failed to open a connection.", ex);
+    } finally {
+      this.closeConnectionOrTrace(connection);
+    }
+
+    return false;
+  }
+
+  /**
+   * Adds the specified event into the cache. If an error occurs, the error is traced and false is returned - no exception is thrown.
+   * Thread safe.
+   */
+  public boolean addEventOrTrace(Connection connection, String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) {
+    try {
+      this.addEvent(connection, eventId, timestamp, dataWithUtcTimestamp);
       return true;
     } catch (Exception ex) {
       AppTracer.getInstance().writeError(String.format("Failed to add the event with ID '%s' to the event cache (local DB).", eventId), ex);
@@ -86,10 +139,25 @@ public class EventCache {
    * @throws JsonProcessingException
    */
   public void addEvent(EventDto event) throws SQLException, JsonProcessingException {
+    Connection connection = this.openConnection();
+    try {
+      this.addEvent(connection, event);
+    } finally {
+      this.closeConnectionOrTrace(connection);
+    }
+  }
+
+  /**
+   * Adds the specified event into the cache.
+   * Thread safe.
+   * @throws SQLException
+   * @throws JsonProcessingException
+   */
+  public void addEvent(Connection connection, EventDto event) throws SQLException, JsonProcessingException {
     ValidationHelper.checkArgNotNull(event, "event");
 
     event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
-    this.addEvent(event.getEventId(), event.getTimestamp(), this.eventSerializer.serialize(event));
+    this.addEvent(connection, event.getEventId(), event.getTimestamp(), this.eventSerializer.serialize(event));
   }
 
   /**
@@ -99,11 +167,27 @@ public class EventCache {
    * @throws JsonProcessingException
    */
   public void addEvent(String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) throws SQLException, JsonProcessingException {
+    Connection connection = this.openConnection();
+    try {
+      this.addEvent(connection, eventId, timestamp, dataWithUtcTimestamp);
+    } finally {
+      this.closeConnectionOrTrace(connection);
+    }
+  }
+
+  /**
+   * Adds the specified event into the cache.
+   * Thread safe.
+   * @throws SQLException
+   * @throws JsonProcessingException
+   */
+  public void addEvent(Connection connection, String eventId, XMLGregorianCalendar timestamp, String dataWithUtcTimestamp) throws SQLException, JsonProcessingException {
+    ValidationHelper.checkArgNotNull(connection, "connection");
     ValidationHelper.checkStringArgNotNullOrWhitespace(eventId, "eventId");
     ValidationHelper.checkArgNotNull(timestamp, "timestamp");
     ValidationHelper.checkStringArgNotNullOrWhitespace(dataWithUtcTimestamp, "dataWithUtcTimestamp");
 
-    this.executeUpdate("INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XMLGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
+    this.executeUpdate(connection, "INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XMLGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
   }
 
   /**
@@ -111,10 +195,10 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public void removeEvents(ArrayList<Integer> ids) throws SQLException {
+  public void removeEvents(Connection connection, ArrayList<Integer> ids) throws SQLException {
     ValidationHelper.checkArgNotNull(ids, "ids");
     for (Integer id: ids) { //TODO: execute separate SQL with 'IN' clause
-      this.removeEvent(id);
+      this.removeEvent(connection, id);
     }
   }
 
@@ -123,8 +207,8 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public void removeEvent(int id) throws SQLException {
-    this.executeUpdate("DELETE FROM EVENTS WHERE ID=?", id);
+  public void removeEvent(Connection connection, int id) throws SQLException {
+    this.executeUpdate(connection, "DELETE FROM EVENTS WHERE ID=?", id);
   }
 
   /**
@@ -132,8 +216,8 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public void removeAllEvents() throws SQLException {
-    this.executeUpdate("DELETE FROM EVENTS");
+  public void removeAllEvents(Connection connection) throws SQLException {
+    this.executeUpdate(connection, "DELETE FROM EVENTS");
   }
 
   /**
@@ -141,8 +225,8 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public CachedEvent getEvent(int id) throws SQLException {
-    EventCacheReader reader = this.executeQuery(String.format("SELECT TOP 1 ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE ID=%s", id));
+  public CachedEvent getEvent(Connection connection, int id) throws SQLException {
+    EventCacheReader reader = this.executeQuery(connection, String.format("SELECT TOP 1 ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE ID=%s", id));
 
     try {
       if (reader.next()) {
@@ -160,9 +244,9 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public EventCacheReader getEventsToCommit() throws SQLException {
+  public EventCacheReader getEventsToCommit(Connection connection) throws SQLException {
     long lastEventTimeToCommit = new Date().getTime() - Settings.getInstance().getEventAgeToCommit();
-    return this.executeQuery(String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
+    return this.executeQuery(connection, String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
   }
 
   /**
@@ -170,8 +254,8 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public EventCacheReader getEvents() throws SQLException {
-    return this.executeQuery("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
+  public EventCacheReader getEvents(Connection connection) throws SQLException {
+    return this.executeQuery(connection, "SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
   }
 
   /**
@@ -179,11 +263,11 @@ public class EventCache {
    * Thread safe.
    * @throws SQLException
    */
-  public void updateUserNameInAllEvents() throws SQLException {
+  public void updateUserNameInAllEvents(Connection connection) throws SQLException {
     String userNameRegexp = "\"user\":\"[^\"]*\"";
     String newUserName = String.format("\"user\":\"%s\"", Settings.getInstance().getUserName());
 
-    this.executeUpdate(String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
+    this.executeUpdate(connection, String.format("UPDATE EVENTS SET DATA=REGEXP_REPLACE(DATA, '%s', '%s')", userNameRegexp, newUserName));
   }
 
   private void executeCreationScript() throws SQLException {
@@ -193,24 +277,32 @@ public class EventCache {
     builder.append("TIMESTAMP BIGINT NOT NULL,"); //milliseconds
     builder.append("DATA VARCHAR NOT NULL)");
 
-    this.executeUpdate(builder.toString());
-  }
-
-  private void executeUpdate(String sql, Object ... params) throws SQLException {
-    Connection connection = this.connectionPool.getConnection();
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-    for (int i = 0; i < params.length; i ++) {
-      statement.setObject(i + 1, params[i]);
+    Connection connection = this.openConnection();
+    try {
+      this.executeUpdate(connection, builder.toString());
     }
-    statement.executeUpdate();
-
-    connection.close();
+    finally {
+      this.closeConnectionOrTrace(connection);
+    }
   }
 
-  private EventCacheReader executeQuery(String sql) throws SQLException {
-    Connection connection = this.connectionPool.getConnection();
-    ResultSet resultSet = connection.createStatement().executeQuery(sql);
-    return new EventCacheReader(connection, resultSet);
+  private void executeUpdate(Connection connection, String sql, Object ... params) throws SQLException {
+    PreparedStatement statement = connection.prepareStatement(sql);
+
+    try {
+      for (int i = 0; i < params.length; i ++) {
+        statement.setObject(i + 1, params[i]);
+      }
+      statement.executeUpdate();
+    }
+    finally {
+      statement.close();
+    }
+  }
+
+  private EventCacheReader executeQuery(Connection connection, String sql) throws SQLException {
+    Statement statement = connection.createStatement();
+    ResultSet resultSet = statement.executeQuery(sql);
+    return new EventCacheReader(statement, resultSet);
   }
 }

@@ -175,8 +175,8 @@ public class SettingsDialog extends JDialog {
 
     this.isUserNameChanged = !userNameTextBox.getText().equals(Settings.getInstance().getUserName());
 
-    Settings.getInstance().setEventCommitInterval(this.getSpinnerValue(eventCommitIntervalSpinner) * 60000);
-    Settings.getInstance().setEventAgeToCommit(this.getSpinnerValue(eventAgeToCommitSpinner) * 60000);
+    Settings.getInstance().setEventCommitInterval(this.getSpinnerValue(eventCommitIntervalSpinner) * 60000L);
+    Settings.getInstance().setEventAgeToCommit(this.getSpinnerValue(eventAgeToCommitSpinner) * 60000L);
     Settings.getInstance().setUserName(userNameTextBox.getText());
     Settings.getInstance().setSvcUrl(svcUrlTextBox.getText());
     Settings.getInstance().setLocalSvcPort(this.getSpinnerValue(localSvcPortSpinner));
