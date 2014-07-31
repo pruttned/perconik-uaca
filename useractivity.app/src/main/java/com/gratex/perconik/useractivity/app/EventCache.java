@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 import com.gratex.perconik.useractivity.app.dto.EventDto;
 
 
@@ -141,6 +142,26 @@ public class EventCache {
 	 */
 	public void removeAllEvents() throws SQLException {
 		executeThreadSafeUpdate("DELETE FROM EVENTS");
+	}
+	
+	/**
+	 * Gets the event with the specified ID from the event cache. If it is not found, an exception is thrown.
+	 * Thread safe.
+	 * @throws SQLException
+	 */
+	public CachedEvent getEvent(int id) throws SQLException {
+		ResultSet resultSet = executeThreadSafeQuery(String.format("SELECT TOP 1 ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE ID=%s", id));
+		EventCacheReader reader = new EventCacheReader(connection, resultSet);
+		
+		try {
+			if(reader.next()) {
+				return reader.getCurrent();
+			}
+		} finally {
+			reader.close();
+		}
+		
+		throw new SQLException(String.format("The event with ID '%s' was not found in the event cache.", id));
 	}
 	
 	/**

@@ -21,18 +21,21 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
 public class EventCacheDialog extends JDialog {
 	
 	private class CachedEventViewModel {
+		private EventCache eventCache;
 		private int id;
 		private String eventId;
 		private String timestamp;
 		private String eventTypeShortUri;
-		private String formattedData;
+		private String formattedData;		
 		
-		public CachedEventViewModel(CachedEvent cachedEvent) {
+		public CachedEventViewModel(CachedEvent cachedEvent, EventCache eventCache) {
+			this.eventCache = eventCache;
 			id = cachedEvent.getId();
 			eventId = cachedEvent.getEventId();
 			timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
@@ -40,12 +43,19 @@ public class EventCacheDialog extends JDialog {
 			try {
 				EventDocument doc = new EventDocument(cachedEvent.getData());
 				eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(doc.getEventTypeUri());
-				formattedData = doc.toFormatedJsonString();
+				//formattedData = doc.toFormatedJsonString();
 			} catch (IOException ex) {
 				AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'.", cachedEvent.getEventId()), ex);
 				eventTypeShortUri = "<ERROR - see log for details>";
-				formattedData = "<ERROR - see log for details>";
+				//formattedData = "<ERROR - see log for details>";
 			}
+		}
+		
+		public String getFormattedData() throws JsonProcessingException, IOException, SQLException {
+			if(formattedData == null) {
+				formattedData = new EventDocument(this.eventCache.getEvent(id).getData()).toFormatedJsonString();
+			}
+			return formattedData;
 		}
 	}
 	
@@ -114,7 +124,7 @@ public class EventCacheDialog extends JDialog {
 	private ArrayList<CachedEventViewModel> createViewModels(EventCacheReader cachedEventsReader) throws SQLException {
 		ArrayList<CachedEventViewModel> viewModels = new ArrayList<>();
 		while(cachedEventsReader.next()) {
-			viewModels.add(new CachedEventViewModel(cachedEventsReader.getCurrent()));
+			viewModels.add(new CachedEventViewModel(cachedEventsReader.getCurrent(), eventCache));
 		}
 		return viewModels;
 	}
@@ -138,7 +148,11 @@ public class EventCacheDialog extends JDialog {
 	private void openSelectedEventRowDetail() {
 		int selectedRowIndex = this.eventsTable.getSelectedRow();
 		if(selectedRowIndex != -1) {
-			new CachedEventDetailDialog(this, this.displayedEvents.get(selectedRowIndex).formattedData).setVisible(true);
+			try {
+				new CachedEventDetailDialog(this, this.displayedEvents.get(selectedRowIndex).getFormattedData()).setVisible(true);
+			} catch (IOException | SQLException ex) {
+				MessageBox.showError(this, "Failed to retrieve the event detail.", ex, "Event detail failed");
+			}
 		}
 	}
 	
