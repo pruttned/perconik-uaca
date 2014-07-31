@@ -1,22 +1,22 @@
 package com.gratex.perconik.useractivity.app.dto;
 
 public class ProcessDto {
-	private String name;
-	private int pid;
-	
-	public String getName() {
-		return this.name;
-	}
+  private String name;
+  private int pid;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public int getPid() {
-		return this.pid;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setPid(int pid) {
-		this.pid = pid;
-	}
+  public int getPid() {
+    return this.pid;
+  }
+
+  public void setPid(int pid) {
+    this.pid = pid;
+  }
 }

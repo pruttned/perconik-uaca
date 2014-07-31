@@ -7,68 +7,69 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import com.gratex.perconik.useractivity.app.Settings;
 import com.gratex.perconik.useractivity.app.TypeUriHelper;
 import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
 
-public class EventDto {	 
-	@JsonSerialize(using = ToStringSerializer.class)
-	private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
-	private String eventId = UUID.randomUUID().toString();	
-	private String user = Settings.getInstance().getUserName();
-	private String workstation = Settings.getInstance().getWorkstationName();
-	private String eventTypeUri = getDefaultEventTypeUri().build().toString();
-	private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
-	
-	public String getEventId() {
-		return this.eventId;
-	}
+public class EventDto {
+  @JsonSerialize(using = ToStringSerializer.class)
+  private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
+  private String eventId = UUID.randomUUID().toString();
+  private String user = Settings.getInstance().getUserName();
+  private String workstation = Settings.getInstance().getWorkstationName();
+  private String eventTypeUri = this.getDefaultEventTypeUri().build().toString();
+  private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
 
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
-	}
+  public String getEventId() {
+    return this.eventId;
+  }
 
-	public XMLGregorianCalendar getTimestamp() {
-		return this.timestamp;
-	}
+  public void setEventId(String eventId) {
+    this.eventId = eventId;
+  }
 
-	public void setTimestamp(XMLGregorianCalendar timestamp) {
-		this.timestamp = timestamp;
-	}
+  public XMLGregorianCalendar getTimestamp() {
+    return this.timestamp;
+  }
 
-	public String getUser() {
-		return this.user;
-	}
+  public void setTimestamp(XMLGregorianCalendar timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+  public String getUser() {
+    return this.user;
+  }
 
-	public String getWorkstation() {
-		return this.workstation;
-	}
+  public void setUser(String user) {
+    this.user = user;
+  }
 
-	public void setWorkstation(String workstation) {
-		this.workstation = workstation;
-	}
+  public String getWorkstation() {
+    return this.workstation;
+  }
 
-	public String getEventTypeUri() {
-		return this.eventTypeUri;
-	}
+  public void setWorkstation(String workstation) {
+    this.workstation = workstation;
+  }
 
-	public void setEventTypeUri(String eventTypeUri) {
-		this.eventTypeUri = eventTypeUri;
-	}
-	
-	public boolean getWasCommitForcedByUser() {
-		return wasCommitForcedByUser;
-	}
+  public String getEventTypeUri() {
+    return this.eventTypeUri;
+  }
 
-	public void setWasCommitForcedByUser(boolean wasCommitForcedByUser) {
-		this.wasCommitForcedByUser = wasCommitForcedByUser;
-	}
-	
-	protected UriBuilder getDefaultEventTypeUri() {		
-		return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("event");
-	}
+  public void setEventTypeUri(String eventTypeUri) {
+    this.eventTypeUri = eventTypeUri;
+  }
+
+  public boolean getWasCommitForcedByUser() {
+    return this.wasCommitForcedByUser;
+  }
+
+  public void setWasCommitForcedByUser(boolean wasCommitForcedByUser) {
+    this.wasCommitForcedByUser = wasCommitForcedByUser;
+  }
+
+  protected UriBuilder getDefaultEventTypeUri() {
+    return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("event");
+  }
 }

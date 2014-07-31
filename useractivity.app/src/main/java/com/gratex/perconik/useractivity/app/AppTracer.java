@@ -6,84 +6,83 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AppTracer {	
-	private static final AppTracer INSTANCE = new AppTracer();	
-	private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
-	private Object syncObj = new Object();
+public class AppTracer {
+  private static final AppTracer INSTANCE = new AppTracer();
+  private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
+  private Object syncObj = new Object();
 
-	private AppTracer() {
-	}
+  private AppTracer() {}
 
-	public static AppTracer getInstance() {
-		return INSTANCE;
-	}
+  public static AppTracer getInstance() {
+    return INSTANCE;
+  }
 
-	public AppTracerRow[] getRows() {
-		synchronized (this.syncObj) {
-			return this.rows.toArray(new AppTracerRow[this.rows.size()]);
-		}
-	}
+  public AppTracerRow[] getRows() {
+    synchronized (this.syncObj) {
+      return this.rows.toArray(new AppTracerRow[this.rows.size()]);
+    }
+  }
 
-	public void writeError(String message, Throwable exception) {
-		writeError(String.format("%s\nError:%s", message, getExceptionFullText(exception)));
-	}
-	
-	public void writeError(Throwable exception) {
-		writeError(getExceptionFullText(exception));
-	}
+  public void writeError(String message, Throwable exception) {
+    this.writeError(String.format("%s\nError:%s", message, getExceptionFullText(exception)));
+  }
 
-	public void writeError(String message) {
-		write(message, MessageSeverity.ERROR);
-	}
+  public void writeError(Throwable exception) {
+    this.writeError(getExceptionFullText(exception));
+  }
 
-	public void writeWarning(String message) {
-		write(message, MessageSeverity.WARNING);
-	}
+  public void writeError(String message) {
+    this.write(message, MessageSeverity.ERROR);
+  }
 
-	public void writeInfo(String message) {
-		write(message, MessageSeverity.INFO);
-	}
+  public void writeWarning(String message) {
+    this.write(message, MessageSeverity.WARNING);
+  }
 
-	public void write(String message, MessageSeverity severity) {
-		synchronized (this.syncObj) {
-			this.rows.add(new AppTracerRow(message, severity, new Date()));
+  public void writeInfo(String message) {
+    this.write(message, MessageSeverity.INFO);
+  }
 
-			if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
-				this.rows.remove(0);
-			}
-		}
-	}
+  public void write(String message, MessageSeverity severity) {
+    synchronized (this.syncObj) {
+      this.rows.add(new AppTracerRow(message, severity, new Date()));
 
-	public void clear() {
-		synchronized (this.syncObj) {
-			this.rows.clear();
-		}
-	}
+      if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
+        this.rows.remove(0);
+      }
+    }
+  }
 
-	public static String getExceptionFullText(Throwable exception) {
-		if(exception == null) {
-			return "";
-		}
-		
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
-		exception.printStackTrace(printWriter);
-		String exceptionFullText = stringWriter.toString();
+  public void clear() {
+    synchronized (this.syncObj) {
+      this.rows.clear();
+    }
+  }
 
-		printWriter.close();
-		try {
-			stringWriter.close();
-		} catch (IOException e) {
-			// 'close' call has no effect
-		}
+  public static String getExceptionFullText(Throwable exception) {
+    if (exception == null) {
+      return "";
+    }
 
-		return exceptionFullText;
-	}
-	
-	public void ensureMaxRowCount() {
-		if (rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
-			int newStartIndex = rows.size() - Settings.getInstance().getMaxRowCountInLog();
-			rows = new ArrayList<AppTracerRow>(rows.subList(newStartIndex, rows.size()));
-		}
-	}
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
+    exception.printStackTrace(printWriter);
+    String exceptionFullText = stringWriter.toString();
+
+    printWriter.close();
+    try {
+      stringWriter.close();
+    } catch (IOException e) {
+      // 'close' call has no effect
+    }
+
+    return exceptionFullText;
+  }
+
+  public void ensureMaxRowCount() {
+    if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
+      int newStartIndex = this.rows.size() - Settings.getInstance().getMaxRowCountInLog();
+      this.rows = new ArrayList<AppTracerRow>(this.rows.subList(newStartIndex, this.rows.size()));
+    }
+  }
 }

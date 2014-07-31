@@ -13,12 +13,12 @@ import com.gratex.perconik.useractivity.app.TypeUriHelper;
 @Singleton
 @Path("/bash")
 public class BashCommandWatcherSvc {
-	static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler(); 
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/command")
-	public Response postGenericEvent(String eventData) throws Exception {
-		return watcherSvcReqHandler.handle(eventData, UriBuilder.fromPath(TypeUriHelper.EVENT_BASE_URI).path("bash/command").build().toString());
-	}
+  static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/command")
+  public Response postGenericEvent(String eventData) throws Exception {
+    return watcherSvcReqHandler.handle(eventData, UriBuilder.fromPath(TypeUriHelper.EVENT_BASE_URI).path("bash/command").build().toString());
+  }
 }

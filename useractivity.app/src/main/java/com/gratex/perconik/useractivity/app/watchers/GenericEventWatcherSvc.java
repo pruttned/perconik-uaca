@@ -10,15 +10,12 @@ import javax.ws.rs.core.Response;
 @Singleton
 @Path("/generic")
 public class GenericEventWatcherSvc {
-	static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler(); 
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/event")
-	public Response postGenericEvent(String eventData) throws Exception {
-		return watcherSvcReqHandler.handle(eventData, null);
-	}
+  static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/event")
+  public Response postGenericEvent(String eventData) throws Exception {
+    return watcherSvcReqHandler.handle(eventData, null);
+  }
 }
-
-
-
