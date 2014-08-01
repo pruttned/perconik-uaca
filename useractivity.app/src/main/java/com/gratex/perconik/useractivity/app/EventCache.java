@@ -287,16 +287,11 @@ public class EventCache {
   }
 
   private void executeUpdate(Connection connection, String sql, Object ... params) throws SQLException {
-    PreparedStatement statement = connection.prepareStatement(sql);
-
-    try {
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
       for (int i = 0; i < params.length; i ++) {
         statement.setObject(i + 1, params[i]);
       }
       statement.executeUpdate();
-    }
-    finally {
-      statement.close();
     }
   }
 
