@@ -183,14 +183,14 @@ public class EventCacheDialog extends JDialog {
     panel.add(buttonsPanel);
 
     //'refresh' button
-    this.addButton(buttonsPanel, "Refresh", "Reload events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Refresh", "Reload events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         EventCacheDialog.this.refreshEvents();
       }
     });
 
     //'delete selection' button
-    this.addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
           ArrayList<Integer> selectedEventIds = new ArrayList<>();
@@ -212,7 +212,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'delete all' button
-    this.addButton(buttonsPanel, "Delete All", "Remove all events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Delete All", "Remove all events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
           EventCache eventCache = EventCacheDialog.this.eventCache;
@@ -231,7 +231,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'send now' button
-    this.addButton(buttonsPanel, "Send Now", "Send all events, that are old enough, to the server now", true, new ActionListener() {
+    addButton(buttonsPanel, "Send Now", "Send all events, that are old enough, to the server now", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new SwingWorker<Void, Void>() {
           @Override
@@ -249,7 +249,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'send now - force all' button
-    this.addButton(buttonsPanel, "Send Now - Force All", "Send all events, no matter how old they are, to the server now", true, new ActionListener() {
+    addButton(buttonsPanel, "Send Now - Force All", "Send all events, no matter how old they are, to the server now", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new SwingWorker<Void, Void>() {
           @Override
@@ -267,14 +267,14 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'close' button
-    this.addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
+    addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         EventCacheDialog.this.setVisible(false);
       }
     });
   }
 
-  private void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
+  private static void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
     JButton button = new JButton(text);
     button.setToolTipText(toolTipText);
     button.setAlignmentY(CENTER_ALIGNMENT);

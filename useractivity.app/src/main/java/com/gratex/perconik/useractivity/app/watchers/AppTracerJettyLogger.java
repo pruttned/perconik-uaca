@@ -49,7 +49,7 @@ public class AppTracerJettyLogger implements org.eclipse.jetty.util.log.Logger {
 
   @Override
   public void info(String arg0, Object ... arg1) {
-    AppTracer.getInstance().writeInfo("Jetty: " + this.format(arg0, arg1));
+    AppTracer.getInstance().writeInfo("Jetty: " + format(arg0, arg1));
   }
 
   @Override
@@ -64,7 +64,7 @@ public class AppTracerJettyLogger implements org.eclipse.jetty.util.log.Logger {
 
   @Override
   public void warn(String arg0, Object ... arg1) {
-    AppTracer.getInstance().writeWarning("Jetty: " + this.format(arg0, arg1));
+    AppTracer.getInstance().writeWarning("Jetty: " + format(arg0, arg1));
   }
 
   @Override
@@ -73,7 +73,7 @@ public class AppTracerJettyLogger implements org.eclipse.jetty.util.log.Logger {
   }
 
   // http://grepcode.com/file/repo1.maven.org/maven2/org.eclipse.jetty.aggregate/jetty-all/9.1.3.v20140225/org/eclipse/jetty/util/log/JavaUtilLog.java#JavaUtilLog.format%28java.lang.String%2Cjava.lang.Object%5B%5D%29
-  private String format(String msg, Object ... args) {
+  private static String format(String msg, Object ... args) {
     msg = String.valueOf(msg); // Avoids NPE
     String braces = "{}";
     StringBuilder builder = new StringBuilder();

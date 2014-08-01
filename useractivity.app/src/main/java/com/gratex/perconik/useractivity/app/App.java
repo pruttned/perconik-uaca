@@ -120,7 +120,7 @@ public class App {
       this.startCollectingAndCommitting();
 
     } catch (Throwable ex) {
-      this.exitOnInitError(null, ex);
+      exitOnInitError(null, ex);
     }
   }
 
@@ -167,14 +167,14 @@ public class App {
         });
         menu.add(exitMenuItem);
       } catch (AWTException ex) {
-        this.exitOnInitError("failed to insert the application into the system tray", ex);
+        exitOnInitError("failed to insert the application into the system tray", ex);
       }
     } else {
-      this.exitOnInitError("the system tray is not supported by this OS", null);
+      exitOnInitError("the system tray is not supported by this OS", null);
     }
   }
 
-  private void exitOnInitError(String message, Throwable exception) {
+  private static void exitOnInitError(String message, Throwable exception) {
     if (message == null) {
       message = "";
     }

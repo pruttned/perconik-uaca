@@ -46,11 +46,11 @@ public class SettingsDialog extends JDialog {
     this.setLayout(new GridBagLayout());
 
     //event commit interval
-    JSpinner eventCommitIntervalSpinner = this.createSpinner(Settings.getInstance().getEventCommitInterval() / 60000); //milliseconds to minutes
+    JSpinner eventCommitIntervalSpinner = createSpinner(Settings.getInstance().getEventCommitInterval() / 60000); //milliseconds to minutes
     this.addField("Events are sent to the server every (minutes)", eventCommitIntervalSpinner);
 
     //event age to commit
-    JSpinner eventAgeToCommitSpinner = this.createSpinner(Settings.getInstance().getEventAgeToCommit() / 60000); //milliseconds to minutes
+    JSpinner eventAgeToCommitSpinner = createSpinner(Settings.getInstance().getEventAgeToCommit() / 60000); //milliseconds to minutes
     this.addField("Send only events older than (minutes)", eventAgeToCommitSpinner);
 
     //user name
@@ -68,7 +68,7 @@ public class SettingsDialog extends JDialog {
     this.addCloseButtons(eventCommitIntervalSpinner, eventAgeToCommitSpinner, userNameTextBox, svcUrlTextBox, localSvcPortSpinner);
   }
 
-  private JSpinner createSpinner(long value) {
+  private static JSpinner createSpinner(long value) {
     JSpinner spinner = new JSpinner();
     spinner.setEditor(new JSpinner.NumberEditor(spinner, "#"));
     SpinnerNumberModel model = (SpinnerNumberModel) spinner.getModel();
@@ -109,7 +109,7 @@ public class SettingsDialog extends JDialog {
     this.add(new JLabel("Local services port (for communication with IDE, web browser...):"), titleConstraints);
 
     //control
-    JSpinner control = this.createSpinner(Settings.getInstance().getLocalSvcPort());
+    JSpinner control = createSpinner(Settings.getInstance().getLocalSvcPort());
     GridBagConstraints controlConstraints = new GridBagConstraints();
     controlConstraints.anchor = GridBagConstraints.LINE_START;
     controlConstraints.gridx = 1;
@@ -175,17 +175,17 @@ public class SettingsDialog extends JDialog {
 
     this.isUserNameChanged = !userNameTextBox.getText().equals(Settings.getInstance().getUserName());
 
-    Settings.getInstance().setEventCommitInterval(this.getSpinnerValue(eventCommitIntervalSpinner) * 60000L);
-    Settings.getInstance().setEventAgeToCommit(this.getSpinnerValue(eventAgeToCommitSpinner) * 60000L);
+    Settings.getInstance().setEventCommitInterval(getSpinnerValue(eventCommitIntervalSpinner) * 60000L);
+    Settings.getInstance().setEventAgeToCommit(getSpinnerValue(eventAgeToCommitSpinner) * 60000L);
     Settings.getInstance().setUserName(userNameTextBox.getText());
     Settings.getInstance().setSvcUrl(svcUrlTextBox.getText());
-    Settings.getInstance().setLocalSvcPort(this.getSpinnerValue(localSvcPortSpinner));
+    Settings.getInstance().setLocalSvcPort(getSpinnerValue(localSvcPortSpinner));
 
     this.areChangesApplied = true;
     return true;
   }
 
-  private int getSpinnerValue(JSpinner spinner) {
+  private static int getSpinnerValue(JSpinner spinner) {
     return ((SpinnerNumberModel) spinner.getModel()).getNumber().intValue();
   }
 }
