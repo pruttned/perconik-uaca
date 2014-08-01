@@ -11,6 +11,10 @@ import com.gratex.perconik.useractivity.app.EventCache;
 public abstract class TimerWatcherBase implements IWatcher {
   private EventCache eventCache;
   private Timer timer;
+
+  private final boolean ticksAtStart = true;
+  private final long timerInterval = 1000 * 60 * 5;
+
   private boolean isStopped = true;
 
   public abstract String getDisplayName();
@@ -44,14 +48,14 @@ public abstract class TimerWatcherBase implements IWatcher {
   }
 
   protected long getTimerInterval() {
-    return 1000 * 60 * 5;
+    return timerInterval;
   }
 
   /**
    * Determines whether to wait the time interval to perform the first tick or whether to perform it immediately after 'start()' is called.
    */
   protected boolean ticksAtStart() {
-    return true;
+    return ticksAtStart;
   }
 
   protected abstract void onTick();
@@ -59,7 +63,7 @@ public abstract class TimerWatcherBase implements IWatcher {
   boolean isStopped() {
     return isStopped;
   }
-  
+
   void startTimer() {
     if (this.timer == null) {
       this.timer = new Timer(true);
