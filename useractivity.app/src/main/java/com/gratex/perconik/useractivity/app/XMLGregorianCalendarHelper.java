@@ -1,6 +1,6 @@
 package com.gratex.perconik.useractivity.app;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -36,7 +36,7 @@ public class XMLGregorianCalendarHelper {
   }
 
   public static String toLocalString(XMLGregorianCalendar xmlCalendar) {
-    return SimpleDateFormat.getInstance().format(xmlCalendar.toGregorianCalendar().getTime());
+    return DateFormat.getInstance().format(xmlCalendar.toGregorianCalendar().getTime());
   }
 
   public static TimeType getTimeType(XMLGregorianCalendar xmlCalendar) {

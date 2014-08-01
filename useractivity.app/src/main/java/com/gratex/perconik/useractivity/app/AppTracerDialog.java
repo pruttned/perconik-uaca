@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -140,7 +141,7 @@ public class AppTracerDialog extends JDialog {
     button.setSelected(true);
     panel.add(button);
 
-    JLabel titleLabel = new JLabel(title, this.getSeverityIcon(severity), JLabel.CENTER);
+    JLabel titleLabel = new JLabel(title, this.getSeverityIcon(severity), SwingConstants.CENTER);
     panel.add(titleLabel);
 
     panel.add(Box.createRigidArea(new Dimension(15, 0)));
@@ -219,7 +220,7 @@ public class AppTracerDialog extends JDialog {
     Object[][] rows = new Object[this.displayedRows.size()][3];
     for (int i = 0; i < this.displayedRows.size(); i ++) {
       AppTracerRow appTracerRow = this.displayedRows.get(i);
-      rows[i] = new Object[] {this.getSeverityIcon(appTracerRow.getSeverity()), SimpleDateFormat.getInstance().format(appTracerRow.getTime()), appTracerRow.getMessage()};
+      rows[i] = new Object[] {this.getSeverityIcon(appTracerRow.getSeverity()), DateFormat.getInstance().format(appTracerRow.getTime()), appTracerRow.getMessage()};
     }
     ((DefaultTableModel) this.rowsTable.getModel()).setDataVector(rows, new String[] {"", "Time", "Message"});
 
