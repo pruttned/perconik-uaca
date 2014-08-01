@@ -35,7 +35,7 @@ public class IdeWatcherSvc {
       }
 
       return true;
-    };
+    }
   };
 
   @POST

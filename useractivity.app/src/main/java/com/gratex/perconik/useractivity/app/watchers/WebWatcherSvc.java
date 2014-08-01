@@ -22,7 +22,7 @@ public class WebWatcherSvc {
       //handle paste from web
       WebWatcherState.getInstance().setCopiedText(doc.getUrl(), doc.getContent());
       return false;//don't save - web copy should be saved only for coping into an ide
-    };
+    }
   };
 
   @POST
