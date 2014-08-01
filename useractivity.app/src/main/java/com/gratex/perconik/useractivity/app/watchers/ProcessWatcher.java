@@ -34,7 +34,7 @@ public class ProcessWatcher extends TimerWatcherBase {
   @Override
   protected void onTick() {
     try {
-      HashSet<Integer> runningProcesses = this.getRunningProcesses();
+      HashSet<Integer> runningProcesses = getRunningProcesses();
       List<ProcessDto> addedProcesses = this.getAddedProcesses(runningProcesses);
       List<ProcessDto> killedProcesses = this.getKilledProcesses(runningProcesses);
 
@@ -47,7 +47,7 @@ public class ProcessWatcher extends TimerWatcherBase {
     }
   }
 
-  private HashSet<Integer> getRunningProcesses() throws SigarException {
+  private static HashSet<Integer> getRunningProcesses() throws SigarException {
     long[] pids = Humidor.getInstance().getSigar().getProcList();
 
     HashSet<Integer> pidsSet = new HashSet<>(pids.length);

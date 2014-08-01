@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 @Path("/uaca")
+@SuppressWarnings("static-method")
 public class AppSvc {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)

@@ -16,7 +16,7 @@ public class WatcherSvcReqHandler {
   private static final String EventTypeUriWrongBaseErrMsg = String.format("EventTypeUri does not start with '%s'", TypeUriHelper.EVENT_BASE_URI);
 
   /**
-   * 
+   *
    * @param eventData
    * @param eventTypeUri - optionally overrides eventTypeUri in eventData. Must be set if the eventData doesn't contains the eventTypeUri
    * @return
@@ -45,7 +45,7 @@ public class WatcherSvcReqHandler {
 
       //prepare - svc specific
       if (this.beforeAddToCache(eventDoc)) {
-        Response errResponse = this.checkEventTypeUri(eventDoc);
+        Response errResponse = checkEventTypeUri(eventDoc);
         if (errResponse != null) {
           return errResponse;
         }
@@ -58,7 +58,7 @@ public class WatcherSvcReqHandler {
     return Response.noContent().build();
   }
 
-  private Response checkEventTypeUri(EventDocument eventDoc) throws JsonProcessingException {
+  private static Response checkEventTypeUri(EventDocument eventDoc) throws JsonProcessingException {
     if (!eventDoc.hasEventTypeUri()) {
       AppTracer.getInstance().writeError(String.format("%s%n%nEvent:%n%n%s", EventTypeUriNotSetErrMsg, eventDoc.toJsonString()));
       return Response.status(Response.Status.BAD_REQUEST).entity(EventTypeUriNotSetErrMsg).build();
@@ -75,6 +75,7 @@ public class WatcherSvcReqHandler {
    * @param doc
    * @return Whether should be event saved
    */
+  @SuppressWarnings("static-method")
   protected boolean beforeAddToCache(EventDocument doc) {
     return true;
   }

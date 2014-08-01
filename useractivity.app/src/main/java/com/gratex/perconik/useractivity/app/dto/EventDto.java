@@ -18,7 +18,7 @@ public class EventDto {
   private String eventId = UUID.randomUUID().toString();
   private String user = Settings.getInstance().getUserName();
   private String workstation = Settings.getInstance().getWorkstationName();
-  private String eventTypeUri = this.getDefaultEventTypeUri().build().toString();
+  private String eventTypeUri = getDefaultEventTypeUri().build().toString();
   private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
 
   public String getEventId() {
@@ -69,6 +69,7 @@ public class EventDto {
     this.wasCommitForcedByUser = wasCommitForcedByUser;
   }
 
+  @SuppressWarnings("static-method")
   protected UriBuilder getDefaultEventTypeUri() {
     return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("event");
   }

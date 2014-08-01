@@ -15,6 +15,7 @@ import com.gratex.perconik.useractivity.app.ValidationHelper;
 
 @Singleton
 @Path("/ide")
+@SuppressWarnings("static-method")
 public class IdeWatcherSvc {
   static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
   static final WatcherSvcReqHandler codePasteWatcherSvcReqHandler = new WatcherSvcReqHandler() {
@@ -42,14 +43,14 @@ public class IdeWatcherSvc {
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/checkin")
   public Response postCheckinEvent(String eventData) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("checkin").build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("checkin").build().toString());
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/find")
   public Response postFindEvent(String eventData) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("find").build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("find").build().toString());
   }
 
   @POST
@@ -57,40 +58,40 @@ public class IdeWatcherSvc {
   @Path("/code/{eventType:(selectionchanged|paste|copy|cut)}")
   public Response postCodeEvent(String eventData, @PathParam("eventType") String eventType) throws Exception {
     if (eventType.equals("paste")) { //handle paste from web
-      return codePasteWatcherSvcReqHandler.handle(eventData, this.getBaseUri().path("code").path(eventType).build().toString());
+      return codePasteWatcherSvcReqHandler.handle(eventData, getBaseUri().path("code").path(eventType).build().toString());
     }
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("code").path(eventType).build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("code").path(eventType).build().toString());
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/codeelement/{eventType:(visiblestart|visibleend|editstart|editend)}")
   public Response postCodeElementEvent(String eventData, @PathParam("eventType") String eventType) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("codeelement").path(eventType).build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("codeelement").path(eventType).build().toString());
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/document/{eventType:(switchto|add|open|close|remove|rename|save)}")
   public Response postDocumentEvent(String eventData, @PathParam("eventType") String eventType) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("document").path(eventType).build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("document").path(eventType).build().toString());
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/project/{eventType:(switchto|add|remove|rename|open|close|refresh)}")
   public Response postProjectEvent(String eventData, @PathParam("eventType") String eventType) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("project").path(eventType).build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("project").path(eventType).build().toString());
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/idestatechange")
   public Response postIdeStateChangeEvent(String eventData) throws Exception {
-    return watcherSvcReqHandler.handle(eventData, this.getBaseUri().path("statechange").build().toString());
+    return watcherSvcReqHandler.handle(eventData, getBaseUri().path("statechange").build().toString());
   }
 
-  private UriBuilder getBaseUri() {
+  private static UriBuilder getBaseUri() {
     return UriBuilder.fromPath(TypeUriHelper.EVENT_BASE_URI).path("ide");
   }
 }
