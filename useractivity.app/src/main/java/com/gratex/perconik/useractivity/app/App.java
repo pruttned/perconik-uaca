@@ -196,7 +196,7 @@ public class App {
     }
   }
 
-  private void onExitAsync() {
+  void onExitAsync() {
     try {
       this.stopCollectingAndCommitting();
 

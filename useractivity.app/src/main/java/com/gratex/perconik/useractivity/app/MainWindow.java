@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 
 public class MainWindow extends JFrame {
   private static final long serialVersionUID = 6907023637057102017L;
-  private App app;
-  private EventCache eventCache;
+  App app;
+  EventCache eventCache;
   private JButton pauseButton;
   private JLabel pauseStatusLabel;
 

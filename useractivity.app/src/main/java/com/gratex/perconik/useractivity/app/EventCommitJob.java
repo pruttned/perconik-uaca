@@ -120,7 +120,7 @@ public class EventCommitJob {
     }
   }
 
-  private void commitEvents() {
+  void commitEvents() {
     synchronized (this.stateSyncObj) {
       EventCacheReader eventsToCommitReader = null;
       Connection connection = null;

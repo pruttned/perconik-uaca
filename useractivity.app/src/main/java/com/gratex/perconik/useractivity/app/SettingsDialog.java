@@ -167,7 +167,7 @@ public class SettingsDialog extends JDialog {
     panel.add(cancelButton);
   }
 
-  private boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox, JTextField svcUrlTextBox, JSpinner localSvcPortSpinner) {
+  boolean applyChanges(JSpinner eventCommitIntervalSpinner, JSpinner eventAgeToCommitSpinner, JTextField userNameTextBox, JTextField svcUrlTextBox, JSpinner localSvcPortSpinner) {
     if (ValidationHelper.isStringNullOrWhitespace(userNameTextBox.getText()) || ValidationHelper.isStringNullOrWhitespace(svcUrlTextBox.getText())) {
       MessageBox.showError(this, "Please fill all fields.", "Empty fields!");
       return false;

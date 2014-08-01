@@ -79,7 +79,7 @@ public class AppTracerDialog extends JDialog {
     panel.add(new JScrollPane(this.rowsTable));
   }
 
-  private void openSelectedRowDetail() {
+  void openSelectedRowDetail() {
     int selectedRowIndex = this.rowsTable.getSelectedRow();
     if (selectedRowIndex != -1) {
       new AppTracerRowDetailDialog(this, this.displayedRows.get(selectedRowIndex)).setVisible(true);
@@ -154,7 +154,7 @@ public class AppTracerDialog extends JDialog {
     });
   }
 
-  private void setIsSeverityEnabled(MessageSeverity severity, boolean isEnabled) {
+  void setIsSeverityEnabled(MessageSeverity severity, boolean isEnabled) {
     if (isEnabled) {
       this.disabledSeverities.remove(severity);
     } else {
@@ -204,7 +204,7 @@ public class AppTracerDialog extends JDialog {
     }
   }
 
-  private void refresh() {
+  void refresh() {
     this.displayedRows = new ArrayList<>();
     for (AppTracerRow row: AppTracer.getInstance().getRows()) {
       if (!this.disabledSeverities.contains(row.getSeverity())) {

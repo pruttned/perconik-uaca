@@ -30,10 +30,12 @@ public class EventCacheDialog extends JDialog {
 
   private static class CachedEventViewModel {
     private EventCache eventCache;
-    private int id;
-    private String eventId;
-    private String timestamp;
-    private String eventTypeShortUri;
+
+    int id;
+    String eventId;
+    String timestamp;
+    String eventTypeShortUri;
+
     private String formattedData;
 
     public CachedEventViewModel(CachedEvent cachedEvent, EventCache eventCache) {
@@ -69,10 +71,11 @@ public class EventCacheDialog extends JDialog {
   }
 
   private static final long serialVersionUID = 3565081061317049889L;
-  private EventCache eventCache;
-  private EventCommitJob eventCommitJob;
-  private JTable eventsTable;
-  private ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
+
+  EventCache eventCache;
+  EventCommitJob eventCommitJob;
+  JTable eventsTable;
+  ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
 
   public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
     super(parent, true);
@@ -119,7 +122,7 @@ public class EventCacheDialog extends JDialog {
     parent.add(new JScrollPane(this.eventsTable));
   }
 
-  private void refreshEvents() {
+  void refreshEvents() {
     Connection connection = null;
     EventCacheReader eventsReader = null;
     try {
@@ -163,7 +166,7 @@ public class EventCacheDialog extends JDialog {
     timeColumn.setMaxWidth(1000);
   }
 
-  private void openSelectedEventRowDetail() {
+  void openSelectedEventRowDetail() {
     int selectedRowIndex = this.eventsTable.getSelectedRow();
     if (selectedRowIndex != -1) {
       try {

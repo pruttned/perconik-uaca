@@ -56,7 +56,11 @@ public abstract class TimerWatcherBase implements IWatcher {
 
   protected abstract void onTick();
 
-  private void startTimer() {
+  boolean isStopped() {
+    return isStopped;
+  }
+  
+  void startTimer() {
     if (this.timer == null) {
       this.timer = new Timer(true);
     }
@@ -66,7 +70,7 @@ public abstract class TimerWatcherBase implements IWatcher {
       @Override
       public void run() {
         TimerWatcherBase.this.onTick();
-        if (!TimerWatcherBase.this.isStopped) {
+        if (!TimerWatcherBase.this.isStopped()) {
           TimerWatcherBase.this.startTimer();
         }
       }
