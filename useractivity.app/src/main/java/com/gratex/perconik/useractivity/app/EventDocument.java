@@ -116,7 +116,7 @@ public class EventDocument {
     }
 
     try {
-      return XMLGregorianCalendarHelper.fromString(node.asText());
+      return XmlGregorianCalendarHelper.fromString(node.asText());
     } catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException("Invalid timestamp format");
     }
@@ -162,9 +162,9 @@ public class EventDocument {
     //ensure timestamp + ToUtc
     XMLGregorianCalendar timestamp = this.getTimestamp();
     if (timestamp != null) {
-      this.setTimestamp(XMLGregorianCalendarHelper.toUtc(timestamp)); //ensure UTC
+      this.setTimestamp(XmlGregorianCalendarHelper.toUtc(timestamp)); //ensure UTC
     } else {
-      this.setTimestamp(XMLGregorianCalendarHelper.createUtcNow());
+      this.setTimestamp(XmlGregorianCalendarHelper.createUtcNow());
     }
 
     //eventId

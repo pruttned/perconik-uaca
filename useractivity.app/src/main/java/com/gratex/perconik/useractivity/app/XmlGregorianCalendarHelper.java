@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class XMLGregorianCalendarHelper {
+public class XmlGregorianCalendarHelper {
   private static final DatatypeFactory datatypeFactory;
 
   static {

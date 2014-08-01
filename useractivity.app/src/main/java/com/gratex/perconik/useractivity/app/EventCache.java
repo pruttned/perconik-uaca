@@ -156,7 +156,7 @@ public class EventCache {
   public void addEvent(Connection connection, EventDto event) throws SQLException, JsonProcessingException {
     ValidationHelper.checkArgNotNull(event, "event");
 
-    event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
+    event.setTimestamp(XmlGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
     this.addEvent(connection, event.getEventId(), event.getTimestamp(), this.eventSerializer.serialize(event));
   }
 
@@ -187,7 +187,7 @@ public class EventCache {
     ValidationHelper.checkArgNotNull(timestamp, "timestamp");
     ValidationHelper.checkStringArgNotNullOrWhitespace(dataWithUtcTimestamp, "dataWithUtcTimestamp");
 
-    this.executeUpdate(connection, "INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XMLGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
+    this.executeUpdate(connection, "INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XmlGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
   }
 
   /**

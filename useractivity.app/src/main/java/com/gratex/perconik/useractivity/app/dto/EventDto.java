@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import com.gratex.perconik.useractivity.app.Settings;
 import com.gratex.perconik.useractivity.app.TypeUriHelper;
-import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
+import com.gratex.perconik.useractivity.app.XmlGregorianCalendarHelper;
 
 public class EventDto {
   @JsonSerialize(using = ToStringSerializer.class)
-  private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
+  private XMLGregorianCalendar timestamp = XmlGregorianCalendarHelper.createUtcNow();
   private String eventId = UUID.randomUUID().toString();
   private String user = Settings.getInstance().getUserName();
   private String workstation = Settings.getInstance().getWorkstationName();

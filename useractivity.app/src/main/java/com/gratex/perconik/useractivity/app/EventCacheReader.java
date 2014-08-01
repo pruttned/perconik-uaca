@@ -29,7 +29,7 @@ public class EventCacheReader {
    */
   public boolean next() throws SQLException {
     if (this.resultSet.next()) {
-      this.current = new CachedEvent(this.resultSet.getInt("ID"), this.resultSet.getString("EVENTID"), XMLGregorianCalendarHelper.createUtc(this.resultSet.getLong("TIMESTAMP")), this.resultSet.getString("DATA"));
+      this.current = new CachedEvent(this.resultSet.getInt("ID"), this.resultSet.getString("EVENTID"), XmlGregorianCalendarHelper.createUtc(this.resultSet.getLong("TIMESTAMP")), this.resultSet.getString("DATA"));
       return true;
     }
     this.current = null;

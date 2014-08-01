@@ -40,7 +40,7 @@ public class EventCacheDialog extends JDialog {
       this.eventCache = eventCache;
       this.id = cachedEvent.getId();
       this.eventId = cachedEvent.getEventId();
-      this.timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
+      this.timestamp = XmlGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
 
       try {
         EventDocument doc = new EventDocument(cachedEvent.getData());
