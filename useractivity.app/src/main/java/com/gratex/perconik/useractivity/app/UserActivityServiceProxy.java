@@ -12,8 +12,9 @@ import javax.ws.rs.core.Response.StatusType;
 
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
-public class UserActivityServiceProxy {
-  Client client = ClientBuilder.newClient();
+public final class UserActivityServiceProxy {
+  final Client client = ClientBuilder.newClient();
+
   WebTarget baseSvcUrl;
 
   public UserActivityServiceProxy() {

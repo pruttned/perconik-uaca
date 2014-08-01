@@ -21,6 +21,8 @@ public class EventDto {
   private String eventTypeUri = getDefaultEventTypeUri().build().toString();
   private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
 
+  public EventDto() {}
+
   public String getEventId() {
     return this.eventId;
   }

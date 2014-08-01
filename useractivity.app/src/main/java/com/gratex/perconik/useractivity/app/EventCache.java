@@ -20,9 +20,11 @@ import com.gratex.perconik.useractivity.app.dto.EventDto;
 /**
  * Represents the local cache of events - local DB.
  */
-public class EventCache {
+public final class EventCache {
   private JdbcConnectionPool connectionPool;
   private EventSerializer eventSerializer;
+
+  public EventCache() {}
 
   /**
    * Initializes this cache and ensures that the backing store exists.

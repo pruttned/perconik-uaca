@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class XmlGregorianCalendarHelper {
+public final class XmlGregorianCalendarHelper {
   private static final DatatypeFactory datatypeFactory;
 
   static {
@@ -19,6 +19,8 @@ public class XmlGregorianCalendarHelper {
       throw new RuntimeException(ex);
     }
   }
+
+  private XmlGregorianCalendarHelper() {}
 
   public static XMLGregorianCalendar createUtcNow() {
     GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));

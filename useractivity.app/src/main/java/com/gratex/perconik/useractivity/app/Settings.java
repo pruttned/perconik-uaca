@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 
-public class Settings {
+public final class Settings {
   private final static Settings INSTANCE = new Settings();
 
   private final static String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity";

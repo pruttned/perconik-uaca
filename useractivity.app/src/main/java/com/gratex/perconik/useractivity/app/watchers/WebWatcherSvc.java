@@ -26,6 +26,8 @@ public class WebWatcherSvc {
     }
   };
 
+  public WebWatcherSvc() {}
+
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/navigate")

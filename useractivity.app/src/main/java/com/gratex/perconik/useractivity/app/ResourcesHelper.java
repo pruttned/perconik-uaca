@@ -2,7 +2,9 @@ package com.gratex.perconik.useractivity.app;
 
 import javax.swing.ImageIcon;
 
-public class ResourcesHelper {
+public final class ResourcesHelper {
+  private ResourcesHelper() {}
+
   public static ImageIcon getUserActivityIcon16() {
     return getPngImage("UserActivity16");
   }

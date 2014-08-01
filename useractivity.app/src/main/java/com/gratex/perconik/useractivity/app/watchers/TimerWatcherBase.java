@@ -8,7 +8,7 @@ import com.gratex.perconik.useractivity.app.EventCache;
 /**
  * Base class for watchers that execute their work in time intervals.
  */
-public abstract class TimerWatcherBase implements IWatcher {
+public abstract class TimerWatcherBase implements Watcher {
   private EventCache eventCache;
   private Timer timer;
 

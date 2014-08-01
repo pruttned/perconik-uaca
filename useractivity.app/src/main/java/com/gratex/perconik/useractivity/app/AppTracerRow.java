@@ -2,15 +2,15 @@ package com.gratex.perconik.useractivity.app;
 
 import java.util.Date;
 
-public class AppTracerRow {
-  private String message;
-  private MessageSeverity severity;
-  private Date time;
+public final class AppTracerRow {
+  private final String message;
+  private final MessageSeverity severity;
+  private final Date time;
 
   public AppTracerRow(String message, MessageSeverity severity, Date time) {
     this.message = message;
     this.severity = severity;
-    this.time = time;
+    this.time = new Date(time.getTime());
   }
 
   public String getMessage() {
@@ -22,7 +22,7 @@ public class AppTracerRow {
   }
 
   public Date getTime() {
-    return this.time;
+    return new Date(this.time.getTime());
   }
 
   @Override

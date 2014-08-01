@@ -15,6 +15,8 @@ public class WatcherSvcReqHandler {
   private static final String EventTypeUriNotSetErrMsg = "EventTypeUri is not set";
   private static final String EventTypeUriWrongBaseErrMsg = String.format("EventTypeUri does not start with '%s'", TypeUriHelper.EVENT_BASE_URI);
 
+  public WatcherSvcReqHandler() {}
+
   /**
    *
    * @param eventData

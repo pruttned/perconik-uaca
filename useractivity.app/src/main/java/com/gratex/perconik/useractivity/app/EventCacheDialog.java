@@ -26,17 +26,41 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
-public class EventCacheDialog extends JDialog {
+public final class EventCacheDialog extends JDialog {
 
-  private static class CachedEventViewModel {
-    private EventCache eventCache;
+  private static final long serialVersionUID = 3565081061317049889L;
 
-    int id;
-    String eventId;
-    String timestamp;
+  final EventCache eventCache;
+  final EventCommitJob eventCommitJob;
+
+  JTable eventsTable;
+  ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
+
+  public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
+    super(parent, true);
+
+    this.eventCache = eventCache;
+    this.eventCommitJob = eventCommitJob;
+
+    this.setTitle("Event Cache");
+    this.setIconImage(ResourcesHelper.getUserActivityIcon16().getImage());
+    this.setSize(900, 500);
+    this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    this.addControls();
+    this.setLocationRelativeTo(null);
+
+    this.refreshEvents();
+  }
+
+  private final static class CachedEventViewModel {
+    private final EventCache eventCache;
+
+    final int id;
+    final String eventId;
+    final String timestamp;
+
     String eventTypeShortUri;
-
-    private String formattedData;
+    String formattedData;
 
     public CachedEventViewModel(CachedEvent cachedEvent, EventCache eventCache) {
       this.eventCache = eventCache;
@@ -57,40 +81,17 @@ public class EventCacheDialog extends JDialog {
 
     public String getFormattedData() throws JsonProcessingException, IOException, SQLException {
       if (this.formattedData == null) {
-
         Connection connection = this.eventCache.openConnection();
+
         try {
           this.formattedData = new EventDocument(this.eventCache.getEvent(connection, this.id).getData()).toFormatedJsonString();
         } finally {
           this.eventCache.closeConnectionOrTrace(connection);
         }
-
       }
+
       return this.formattedData;
     }
-  }
-
-  private static final long serialVersionUID = 3565081061317049889L;
-
-  EventCache eventCache;
-  EventCommitJob eventCommitJob;
-  JTable eventsTable;
-  ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
-
-  public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
-    super(parent, true);
-
-    this.eventCache = eventCache;
-    this.eventCommitJob = eventCommitJob;
-
-    this.setTitle("Event Cache");
-    this.setIconImage(ResourcesHelper.getUserActivityIcon16().getImage());
-    this.setSize(900, 500);
-    this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    this.addControls();
-    this.setLocationRelativeTo(null);
-
-    this.refreshEvents();
   }
 
   private void addControls() {

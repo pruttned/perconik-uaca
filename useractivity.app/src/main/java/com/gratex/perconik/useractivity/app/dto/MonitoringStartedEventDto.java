@@ -12,6 +12,12 @@ public class MonitoringStartedEventDto extends SystemEventDto {
   private String appVersion;
   private String sessionId;
 
+  public MonitoringStartedEventDto() {
+    this.setAppName("UACA");
+    this.setAppVersion(Settings.getInstance().getVersion());
+    this.setSessionId(SESSION_ID);
+  }
+
   public String getAppName() {
     return this.appName;
   }
@@ -34,12 +40,6 @@ public class MonitoringStartedEventDto extends SystemEventDto {
 
   public void setSessionId(String sessionId) {
     this.sessionId = sessionId;
-  }
-
-  public MonitoringStartedEventDto() {
-    this.setAppName("UACA");
-    this.setAppVersion(Settings.getInstance().getVersion());
-    this.setSessionId(SESSION_ID);
   }
 
   @Override

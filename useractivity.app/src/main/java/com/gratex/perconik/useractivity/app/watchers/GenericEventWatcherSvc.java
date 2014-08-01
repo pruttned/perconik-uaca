@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 public class GenericEventWatcherSvc {
   static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
 
+  public GenericEventWatcherSvc() {}
+
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/event")

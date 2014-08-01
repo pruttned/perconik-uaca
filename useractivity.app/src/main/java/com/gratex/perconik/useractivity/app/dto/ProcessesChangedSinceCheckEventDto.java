@@ -9,6 +9,8 @@ public class ProcessesChangedSinceCheckEventDto extends SystemEventDto {
   private List<ProcessDto> startedProcesses;
   private List<ProcessDto> killedProcesses;
 
+  public ProcessesChangedSinceCheckEventDto() {}
+
   public List<ProcessDto> getStartedProcesses() {
     if (this.startedProcesses != null) {
       return this.startedProcesses;

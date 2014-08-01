@@ -14,10 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class MainWindow extends JFrame {
+public final class MainWindow extends JFrame {
   private static final long serialVersionUID = 6907023637057102017L;
-  App app;
-  EventCache eventCache;
+
+  final App app;
+  final EventCache eventCache;
+
   private JButton pauseButton;
   private JLabel pauseStatusLabel;
 

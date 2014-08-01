@@ -16,6 +16,8 @@ import com.gratex.perconik.useractivity.app.TypeUriHelper;
 public class BashCommandWatcherSvc {
   static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
 
+  public BashCommandWatcherSvc() {}
+
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/command")

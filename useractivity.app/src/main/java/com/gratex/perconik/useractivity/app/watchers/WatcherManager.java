@@ -12,7 +12,7 @@ import com.gratex.perconik.useractivity.app.Settings;
  */
 public class WatcherManager {
   private EventCache eventCache;
-  private ArrayList<IWatcher> watchers;
+  private ArrayList<Watcher> watchers;
   private WatcherServer watcherServer;
 
   public WatcherManager(EventCache eventCache) {
@@ -41,12 +41,12 @@ public class WatcherManager {
     this.watcherServer.stop();
   }
 
-  public ArrayList<IWatcher> getWatchers() {
+  public ArrayList<Watcher> getWatchers() {
     return this.watchers;
   }
 
   public void startWatchers() {
-    for (IWatcher watcher: this.watchers) {
+    for (Watcher watcher: this.watchers) {
       try {
         watcher.start(this.eventCache);
       } catch (Throwable ex) {
@@ -56,7 +56,7 @@ public class WatcherManager {
   }
 
   public void stopWatchers() {
-    for (IWatcher watcher: this.watchers) {
+    for (Watcher watcher: this.watchers) {
       try {
         watcher.stop();
       } catch (Throwable ex) {

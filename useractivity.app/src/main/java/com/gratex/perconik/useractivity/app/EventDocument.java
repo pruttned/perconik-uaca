@@ -15,9 +15,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Writes/Read into serialized event string (e.g. CahcedEvent.getData())
  */
-public class EventDocument {
+public final class EventDocument {
   private static final ObjectMapper mapper = new ObjectMapper(); //thread safe
   private static final ObjectMapper mapperFormated = new ObjectMapper(); //thread safe
+
   private ObjectNode dataTree;
 
   static {
@@ -55,7 +56,7 @@ public class EventDocument {
   }
 
   /**
-   * 
+   *
    * @return event type uir or null
    */
   public String getEventTypeUri() {
@@ -106,7 +107,7 @@ public class EventDocument {
   }
 
   /**
-   * 
+   *
    * @return timestamp or null
    */
   public XMLGregorianCalendar getTimestamp() {
@@ -131,7 +132,7 @@ public class EventDocument {
   }
 
   /**
-   * 
+   *
    * @return eventId or null
    */
   public String getEventId() {
@@ -186,5 +187,4 @@ public class EventDocument {
     }
     return node.asText();
   }
-
 }

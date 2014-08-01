@@ -7,7 +7,8 @@ import com.gratex.perconik.useractivity.app.AppTracer;
 /**
  * Logger for Jetty that redirects all messages to AppTracer.
  */
-public class AppTracerJettyLogger implements org.eclipse.jetty.util.log.Logger {
+public final class AppTracerJettyLogger implements org.eclipse.jetty.util.log.Logger {
+  public AppTracerJettyLogger() {}
 
   @Override
   public String getName() {

@@ -17,8 +17,9 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-public class SettingsDialog extends JDialog {
+public final class SettingsDialog extends JDialog {
   private static final long serialVersionUID = 2908926995613740506L;
+
   private boolean areChangesApplied = false;
   private boolean isUserNameChanged = false;
 

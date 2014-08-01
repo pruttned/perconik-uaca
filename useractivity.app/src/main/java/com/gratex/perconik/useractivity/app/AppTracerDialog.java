@@ -24,11 +24,13 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class AppTracerDialog extends JDialog {
+public final class AppTracerDialog extends JDialog {
   private static final long serialVersionUID = 4010888456482642956L;
+
+  private final ArrayList<MessageSeverity> disabledSeverities = new ArrayList<>();
+
   private JTable rowsTable;
   private ArrayList<AppTracerRow> displayedRows;
-  private ArrayList<MessageSeverity> disabledSeverities = new ArrayList<>();
 
   public AppTracerDialog(JFrame parent) {
     super(parent, true);

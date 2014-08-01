@@ -20,7 +20,7 @@ public class IdeWatcherSvc {
   static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
   static final WatcherSvcReqHandler codePasteWatcherSvcReqHandler = new WatcherSvcReqHandler() {
     @Override
-    protected boolean beforeAddToCache(EventDocument doc) {
+    protected final boolean beforeAddToCache(EventDocument doc) {
       //handle paste from web
       String pastedTextIntoIde = doc.getText();
       if (!ValidationHelper.isStringNullOrWhitespace(pastedTextIntoIde)) {
@@ -38,6 +38,8 @@ public class IdeWatcherSvc {
       return true;
     }
   };
+
+  public IdeWatcherSvc() {}
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)

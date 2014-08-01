@@ -5,15 +5,17 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AppTracer {
-  private static final AppTracer INSTANCE = new AppTracer();
+public final class AppTracer {
+  private static final AppTracer instance = new AppTracer();
+
+  private final Object syncObj = new Object();
+
   private ArrayList<AppTracerRow> rows = new ArrayList<>();
-  private Object syncObj = new Object();
 
   private AppTracer() {}
 
   public static AppTracer getInstance() {
-    return INSTANCE;
+    return instance;
   }
 
   public AppTracerRow[] getRows() {
