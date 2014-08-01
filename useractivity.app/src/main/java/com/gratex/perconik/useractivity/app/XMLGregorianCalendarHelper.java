@@ -48,9 +48,9 @@ public class XMLGregorianCalendarHelper {
 
     if (timeZone == DatatypeConstants.FIELD_UNDEFINED) {
       return TimeType.UNSPECIFIED;
-    } else {
-      return TimeType.LOCAL;
     }
+
+    return TimeType.LOCAL;
   }
 
   public static XMLGregorianCalendar toUtc(XMLGregorianCalendar xmlCalendar) {
