@@ -1,6 +1,5 @@
 package com.gratex.perconik.useractivity.app;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -65,18 +64,8 @@ public class AppTracer {
     }
 
     StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    exception.printStackTrace(printWriter);
-    String exceptionFullText = stringWriter.toString();
-
-    printWriter.close();
-    try {
-      stringWriter.close();
-    } catch (IOException e) {
-      // 'close' call has no effect
-    }
-
-    return exceptionFullText;
+    exception.printStackTrace(new PrintWriter(stringWriter));
+    return stringWriter.toString();
   }
 
   public void ensureMaxRowCount() {
