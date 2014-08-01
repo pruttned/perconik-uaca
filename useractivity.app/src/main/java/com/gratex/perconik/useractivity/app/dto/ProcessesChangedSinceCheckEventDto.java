@@ -13,7 +13,7 @@ public class ProcessesChangedSinceCheckEventDto extends SystemEventDto {
     if (this.startedProcesses != null) {
       return this.startedProcesses;
     }
-    return new ArrayList<ProcessDto>();
+    return new ArrayList<>();
   }
 
   public void setStartedProcesses(List<ProcessDto> startedProcesses) {
@@ -24,7 +24,7 @@ public class ProcessesChangedSinceCheckEventDto extends SystemEventDto {
     if (this.killedProcesses != null) {
       return this.killedProcesses;
     }
-    return new ArrayList<ProcessDto>();
+    return new ArrayList<>();
   }
 
   public void setKilledProcesses(List<ProcessDto> killedProcesses) {

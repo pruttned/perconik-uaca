@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class AppTracer {
   private static final AppTracer INSTANCE = new AppTracer();
-  private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
+  private ArrayList<AppTracerRow> rows = new ArrayList<>();
   private Object syncObj = new Object();
 
   private AppTracer() {}
@@ -82,7 +82,7 @@ public class AppTracer {
   public void ensureMaxRowCount() {
     if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
       int newStartIndex = this.rows.size() - Settings.getInstance().getMaxRowCountInLog();
-      this.rows = new ArrayList<AppTracerRow>(this.rows.subList(newStartIndex, this.rows.size()));
+      this.rows = new ArrayList<>(this.rows.subList(newStartIndex, this.rows.size()));
     }
   }
 }

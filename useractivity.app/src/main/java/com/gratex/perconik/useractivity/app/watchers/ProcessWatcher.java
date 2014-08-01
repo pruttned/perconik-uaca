@@ -18,7 +18,7 @@ import com.gratex.perconik.useractivity.app.dto.ProcessesChangedSinceCheckEventD
  * Raises 'ProcessesChangedSinceCheckEvent'.
  */
 public class ProcessWatcher extends TimerWatcherBase {
-  private HashMap<Integer, ProcessDto> lastRunningProcesses = new HashMap<Integer, ProcessDto>();
+  private HashMap<Integer, ProcessDto> lastRunningProcesses = new HashMap<>();
 
   @Override
   public String getDisplayName() {
@@ -50,7 +50,7 @@ public class ProcessWatcher extends TimerWatcherBase {
   private HashSet<Integer> getRunningProcesses() throws SigarException {
     long[] pids = Humidor.getInstance().getSigar().getProcList();
 
-    HashSet<Integer> pidsSet = new HashSet<Integer>(pids.length);
+    HashSet<Integer> pidsSet = new HashSet<>(pids.length);
     for (long pid: pids) {
       pidsSet.add((int) pid);
     }
@@ -58,7 +58,7 @@ public class ProcessWatcher extends TimerWatcherBase {
   }
 
   private List<ProcessDto> getAddedProcesses(HashSet<Integer> runningProcesses) throws SigarException {
-    ArrayList<ProcessDto> addedProcesses = new ArrayList<ProcessDto>();
+    ArrayList<ProcessDto> addedProcesses = new ArrayList<>();
 
     for (Integer runningProcessPid: runningProcesses) {
       if (!this.lastRunningProcesses.containsKey(runningProcessPid)) {
@@ -72,7 +72,7 @@ public class ProcessWatcher extends TimerWatcherBase {
   }
 
   private List<ProcessDto> getKilledProcesses(HashSet<Integer> runningProcesses) {
-    ArrayList<ProcessDto> killedProcesses = new ArrayList<ProcessDto>();
+    ArrayList<ProcessDto> killedProcesses = new ArrayList<>();
 
     for (ProcessDto lastRunningProcessDto: this.lastRunningProcesses.values()) {
       if (!runningProcesses.contains(lastRunningProcessDto.getPid())) {

@@ -18,7 +18,7 @@ public class WatcherManager {
   public WatcherManager(EventCache eventCache) {
     this.eventCache = eventCache;
 
-    this.watchers = new ArrayList<IWatcher>();
+    this.watchers = new ArrayList<>();
 
     try {
       this.watchers.add(new ProcessWatcher());

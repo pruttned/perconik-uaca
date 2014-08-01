@@ -190,7 +190,7 @@ public class EventCacheDialog extends JDialog {
     this.addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
-          ArrayList<Integer> selectedEventIds = new ArrayList<Integer>();
+          ArrayList<Integer> selectedEventIds = new ArrayList<>();
           for (int eventIndex: EventCacheDialog.this.eventsTable.getSelectedRows()) {
             selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).id);
           }

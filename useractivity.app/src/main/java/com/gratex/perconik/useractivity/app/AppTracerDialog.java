@@ -204,7 +204,7 @@ public class AppTracerDialog extends JDialog {
   }
 
   private void refresh() {
-    this.displayedRows = new ArrayList<AppTracerRow>();
+    this.displayedRows = new ArrayList<>();
     for (AppTracerRow row: AppTracer.getInstance().getRows()) {
       if (!this.disabledSeverities.contains(row.getSeverity())) {
         this.displayedRows.add(row);
