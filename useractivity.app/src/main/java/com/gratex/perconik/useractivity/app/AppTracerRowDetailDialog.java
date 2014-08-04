@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class AppTracerRowDetailDialog extends JDialog {
+public final class AppTracerRowDetailDialog extends JDialog {
   private static final long serialVersionUID = 6367895829127550046L;
 
   public AppTracerRowDetailDialog(JDialog parent, AppTracerRow appTracerRow) {

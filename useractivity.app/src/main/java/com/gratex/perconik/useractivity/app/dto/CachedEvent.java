@@ -2,10 +2,11 @@ package com.gratex.perconik.useractivity.app.dto;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class CachedEvent {
-  private int id;
-  private String eventId;
-  private XMLGregorianCalendar timestamp;
+public final class CachedEvent {
+  private final int id;
+  private final String eventId;
+  private final XMLGregorianCalendar timestamp;
+
   private String data;
 
   public CachedEvent(int id, String eventId, XMLGregorianCalendar timestamp, String data) {

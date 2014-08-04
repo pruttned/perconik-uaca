@@ -10,16 +10,18 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import com.gratex.perconik.useractivity.app.Settings;
 import com.gratex.perconik.useractivity.app.TypeUriHelper;
-import com.gratex.perconik.useractivity.app.XMLGregorianCalendarHelper;
+import com.gratex.perconik.useractivity.app.XmlGregorianCalendarHelper;
 
 public class EventDto {
   @JsonSerialize(using = ToStringSerializer.class)
-  private XMLGregorianCalendar timestamp = XMLGregorianCalendarHelper.createUtcNow();
+  private XMLGregorianCalendar timestamp = XmlGregorianCalendarHelper.createUtcNow();
   private String eventId = UUID.randomUUID().toString();
   private String user = Settings.getInstance().getUserName();
   private String workstation = Settings.getInstance().getWorkstationName();
-  private String eventTypeUri = this.getDefaultEventTypeUri().build().toString();
+  private String eventTypeUri = getDefaultEventTypeUri().build().toString();
   private boolean wasCommitForcedByUser = false; //true - commit forced by 'send now' button
+
+  public EventDto() {}
 
   public String getEventId() {
     return this.eventId;
@@ -69,6 +71,7 @@ public class EventDto {
     this.wasCommitForcedByUser = wasCommitForcedByUser;
   }
 
+  @SuppressWarnings("static-method")
   protected UriBuilder getDefaultEventTypeUri() {
     return UriBuilder.fromPath(TypeUriHelper.BASE_URI).path("event");
   }

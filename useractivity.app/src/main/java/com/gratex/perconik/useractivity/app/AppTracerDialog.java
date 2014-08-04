@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -20,14 +20,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class AppTracerDialog extends JDialog {
+public final class AppTracerDialog extends JDialog {
   private static final long serialVersionUID = 4010888456482642956L;
+
+  private final ArrayList<MessageSeverity> disabledSeverities = new ArrayList<>();
+
   private JTable rowsTable;
   private ArrayList<AppTracerRow> displayedRows;
-  private ArrayList<MessageSeverity> disabledSeverities = new ArrayList<>();
 
   public AppTracerDialog(JFrame parent) {
     super(parent, true);
@@ -78,7 +81,7 @@ public class AppTracerDialog extends JDialog {
     panel.add(new JScrollPane(this.rowsTable));
   }
 
-  private void openSelectedRowDetail() {
+  void openSelectedRowDetail() {
     int selectedRowIndex = this.rowsTable.getSelectedRow();
     if (selectedRowIndex != -1) {
       new AppTracerRowDetailDialog(this, this.displayedRows.get(selectedRowIndex)).setVisible(true);
@@ -140,7 +143,7 @@ public class AppTracerDialog extends JDialog {
     button.setSelected(true);
     panel.add(button);
 
-    JLabel titleLabel = new JLabel(title, this.getSeverityIcon(severity), JLabel.CENTER);
+    JLabel titleLabel = new JLabel(title, getSeverityIcon(severity), SwingConstants.CENTER);
     panel.add(titleLabel);
 
     panel.add(Box.createRigidArea(new Dimension(15, 0)));
@@ -153,7 +156,7 @@ public class AppTracerDialog extends JDialog {
     });
   }
 
-  private void setIsSeverityEnabled(MessageSeverity severity, boolean isEnabled) {
+  void setIsSeverityEnabled(MessageSeverity severity, boolean isEnabled) {
     if (isEnabled) {
       this.disabledSeverities.remove(severity);
     } else {
@@ -168,14 +171,14 @@ public class AppTracerDialog extends JDialog {
     panel.add(buttonsPanel);
 
     //'refresh' button
-    this.addButton(buttonsPanel, "Refresh", "Reload the log", true, new ActionListener() {
+    addButton(buttonsPanel, "Refresh", "Reload the log", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         AppTracerDialog.this.refresh();
       }
     });
 
     //'delete all' button
-    this.addButton(buttonsPanel, "Delete All", "Clear the log", true, new ActionListener() {
+    addButton(buttonsPanel, "Delete All", "Clear the log", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         AppTracer.getInstance().clear();
         AppTracerDialog.this.refresh();
@@ -183,14 +186,14 @@ public class AppTracerDialog extends JDialog {
     });
 
     //'close' button
-    this.addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
+    addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         AppTracerDialog.this.setVisible(false);
       }
     });
   }
 
-  private void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
+  private static void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
     JButton button = new JButton(text);
     button.setToolTipText(toolTipText);
     button.setAlignmentY(CENTER_ALIGNMENT);
@@ -203,8 +206,8 @@ public class AppTracerDialog extends JDialog {
     }
   }
 
-  private void refresh() {
-    this.displayedRows = new ArrayList<AppTracerRow>();
+  void refresh() {
+    this.displayedRows = new ArrayList<>();
     for (AppTracerRow row: AppTracer.getInstance().getRows()) {
       if (!this.disabledSeverities.contains(row.getSeverity())) {
         this.displayedRows.add(row);
@@ -219,7 +222,7 @@ public class AppTracerDialog extends JDialog {
     Object[][] rows = new Object[this.displayedRows.size()][3];
     for (int i = 0; i < this.displayedRows.size(); i ++) {
       AppTracerRow appTracerRow = this.displayedRows.get(i);
-      rows[i] = new Object[] {this.getSeverityIcon(appTracerRow.getSeverity()), SimpleDateFormat.getInstance().format(appTracerRow.getTime()), appTracerRow.getMessage()};
+      rows[i] = new Object[] {getSeverityIcon(appTracerRow.getSeverity()), DateFormat.getInstance().format(appTracerRow.getTime()), appTracerRow.getMessage()};
     }
     ((DefaultTableModel) this.rowsTable.getModel()).setDataVector(rows, new String[] {"", "Time", "Message"});
 
@@ -235,7 +238,7 @@ public class AppTracerDialog extends JDialog {
     timeColumn.setMaxWidth(1000);
   }
 
-  private ImageIcon getSeverityIcon(MessageSeverity severity) {
+  private static ImageIcon getSeverityIcon(MessageSeverity severity) {
     switch (severity) {
       case WARNING:
         return ResourcesHelper.getWarningSeverityIcon16();

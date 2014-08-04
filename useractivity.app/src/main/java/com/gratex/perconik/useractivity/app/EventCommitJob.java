@@ -9,13 +9,16 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 /**
  * Represents a timer job that commits events stored in EventCache to the server in time intervals.
  */
-public class EventCommitJob {
+public final class EventCommitJob {
+  private final Object stateSyncObj = new Object();
+
+  private final EventCache eventCache;
+  private final UserActivityServiceProxy userActivityServiceProxy;
+
   private EventCommitJobState state = EventCommitJobState.STOPPED;
-  private Object stateSyncObj = new Object();
   private boolean isCommitAborted = false;
+
   private Timer timer;
-  private EventCache eventCache;
-  private UserActivityServiceProxy userActivityServiceProxy;
 
   public EventCommitJob(EventCache eventCache, UserActivityServiceProxy userActivityServiceProxy) {
     ValidationHelper.checkArgNotNull(eventCache, "eventCache");
@@ -120,7 +123,7 @@ public class EventCommitJob {
     }
   }
 
-  private void commitEvents() {
+  void commitEvents() {
     synchronized (this.stateSyncObj) {
       EventCacheReader eventsToCommitReader = null;
       Connection connection = null;

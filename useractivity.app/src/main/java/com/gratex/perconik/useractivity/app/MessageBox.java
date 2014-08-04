@@ -4,7 +4,9 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-public class MessageBox {
+public final class MessageBox {
+  private MessageBox() {}
+
   public static void showError(Component parent, String message, Throwable exception, String title) {
     if (exception != null) {
       showError(parent, String.format("%s%nError:%n%s", message, AppTracer.getExceptionFullText(exception)), title);

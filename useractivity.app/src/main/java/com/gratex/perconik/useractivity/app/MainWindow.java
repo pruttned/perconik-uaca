@@ -14,10 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class MainWindow extends JFrame {
+public final class MainWindow extends JFrame {
   private static final long serialVersionUID = 6907023637057102017L;
-  private App app;
-  private EventCache eventCache;
+
+  final App app;
+  final EventCache eventCache;
+
   private JButton pauseButton;
   private JLabel pauseStatusLabel;
 
@@ -64,7 +66,7 @@ public class MainWindow extends JFrame {
     this.updatePauseStatusLabel();
 
     //'pause' button
-    this.pauseButton = this.addButton(topPanel, "", "", true, new ActionListener() { //texts are set by 'updatePauseButton()'
+    this.pauseButton = addButton(topPanel, "", "", true, new ActionListener() { //texts are set by 'updatePauseButton()'
       public void actionPerformed(ActionEvent arg0) {
         MainWindow.this.app.toggleCollectingAndCommitting();
       }
@@ -72,14 +74,14 @@ public class MainWindow extends JFrame {
     this.updatePauseButton();
 
     //'eventCache' button
-    this.addButton(topPanel, "Event Cache", "Show events that have not yet been sent to the server", true, new ActionListener() {
+    addButton(topPanel, "Event Cache", "Show events that have not yet been sent to the server", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new EventCacheDialog(MainWindow.this, MainWindow.this.eventCache, MainWindow.this.app.getEventCommitJob()).setVisible(true);
       }
     });
 
     //'settings' button
-    this.addButton(topPanel, "Settings", "Show the settings dialog", true, new ActionListener() {
+    addButton(topPanel, "Settings", "Show the settings dialog", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         SettingsDialog dialog = new SettingsDialog(MainWindow.this);
         dialog.setVisible(true);
@@ -111,21 +113,21 @@ public class MainWindow extends JFrame {
     });
 
     //'log' button
-    this.addButton(topPanel, "Log", "Show the log", true, new ActionListener() {
+    addButton(topPanel, "Log", "Show the log", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new AppTracerDialog(MainWindow.this).setVisible(true);
       }
     });
 
     //'exit' button
-    this.addButton(topPanel, "Shut Down", "Shut the User Activity down - nothing will be collected or sent to the server", true, new ActionListener() {
+    addButton(topPanel, "Shut Down", "Shut the User Activity down - nothing will be collected or sent to the server", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         System.exit(0);
       }
     });
   }
 
-  private JButton addButton(JPanel panel, String text, String toolTipText, boolean addBottomMargin, ActionListener actionListener) {
+  private static JButton addButton(JPanel panel, String text, String toolTipText, boolean addBottomMargin, ActionListener actionListener) {
     JButton button = new JButton(text);
     button.setToolTipText(toolTipText);
     button.setAlignmentX(CENTER_ALIGNMENT);

@@ -2,19 +2,18 @@ package com.gratex.perconik.useractivity.app.watchers;
 
 import com.gratex.perconik.useractivity.app.ValidationHelper;
 
-public class WebWatcherState {
-  // http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+public final class WebWatcherState {
   private static class LazyHolder {
-    private static final WebWatcherState INSTANCE = new WebWatcherState();
+    static final WebWatcherState instance = new WebWatcherState();
   }
 
   private String lastCopyText;
   private String lastCopyUrl;
 
-  private WebWatcherState() {}
+  WebWatcherState() {}
 
   public static WebWatcherState getInstance() {
-    return LazyHolder.INSTANCE;
+    return LazyHolder.instance;
   }
 
   public void setCopiedText(String url, String text) {

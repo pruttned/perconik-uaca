@@ -9,11 +9,12 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-public class WatcherServer {
-  ServletHolder servletHolder;
+public final class WatcherServer {
+  final ServletHolder servletHolder;
+  final int port;
+
   Server server;
   ServletContextHandler servletContextHandler;
-  int port;
 
   public WatcherServer(int port) {
     org.eclipse.jetty.util.log.Log.setLog(new AppTracerJettyLogger());
@@ -24,6 +25,7 @@ public class WatcherServer {
     //		MoxyJsonConfig moxyJsonConfig = new MoxyJsonConfig();
   }
 
+  // TODO remove unused code
   //	public void addProviderPackage(String packageName) {
   //		servletHolder.setInitParameter(ServerProperties.PROVIDER_PACKAGES, packageName);
   //	}

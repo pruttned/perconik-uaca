@@ -9,9 +9,10 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 /**
  * Represents a data reader for EventCache query result sets. Reads CachedEvents from a result set.
  */
-public class EventCacheReader {
-  private Statement statement;
-  private ResultSet resultSet;
+public final class EventCacheReader {
+  private final Statement statement;
+  private final ResultSet resultSet;
+
   private CachedEvent current;
 
   public EventCacheReader(Statement statement, ResultSet resultSet) {
@@ -29,7 +30,7 @@ public class EventCacheReader {
    */
   public boolean next() throws SQLException {
     if (this.resultSet.next()) {
-      this.current = new CachedEvent(this.resultSet.getInt("ID"), this.resultSet.getString("EVENTID"), XMLGregorianCalendarHelper.createUtc(this.resultSet.getLong("TIMESTAMP")), this.resultSet.getString("DATA"));
+      this.current = new CachedEvent(this.resultSet.getInt("ID"), this.resultSet.getString("EVENTID"), XmlGregorianCalendarHelper.createUtc(this.resultSet.getLong("TIMESTAMP")), this.resultSet.getString("DATA"));
       return true;
     }
     this.current = null;

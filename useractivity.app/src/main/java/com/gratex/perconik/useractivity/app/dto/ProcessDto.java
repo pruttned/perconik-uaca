@@ -4,6 +4,8 @@ public class ProcessDto {
   private String name;
   private int pid;
 
+  public ProcessDto() {}
+
   public String getName() {
     return this.name;
   }

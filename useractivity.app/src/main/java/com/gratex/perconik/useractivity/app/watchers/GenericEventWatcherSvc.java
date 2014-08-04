@@ -9,8 +9,11 @@ import javax.ws.rs.core.Response;
 
 @Singleton
 @Path("/generic")
+@SuppressWarnings("static-method")
 public class GenericEventWatcherSvc {
   static final WatcherSvcReqHandler watcherSvcReqHandler = new WatcherSvcReqHandler();
+
+  public GenericEventWatcherSvc() {}
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)

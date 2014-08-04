@@ -20,9 +20,11 @@ import com.gratex.perconik.useractivity.app.dto.EventDto;
 /**
  * Represents the local cache of events - local DB.
  */
-public class EventCache {
+public final class EventCache {
   private JdbcConnectionPool connectionPool;
   private EventSerializer eventSerializer;
+
+  public EventCache() {}
 
   /**
    * Initializes this cache and ensures that the backing store exists.
@@ -156,7 +158,7 @@ public class EventCache {
   public void addEvent(Connection connection, EventDto event) throws SQLException, JsonProcessingException {
     ValidationHelper.checkArgNotNull(event, "event");
 
-    event.setTimestamp(XMLGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
+    event.setTimestamp(XmlGregorianCalendarHelper.toUtc(event.getTimestamp())); //ensure UTC
     this.addEvent(connection, event.getEventId(), event.getTimestamp(), this.eventSerializer.serialize(event));
   }
 
@@ -187,7 +189,7 @@ public class EventCache {
     ValidationHelper.checkArgNotNull(timestamp, "timestamp");
     ValidationHelper.checkStringArgNotNullOrWhitespace(dataWithUtcTimestamp, "dataWithUtcTimestamp");
 
-    this.executeUpdate(connection, "INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XMLGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
+    this.executeUpdate(connection, "INSERT INTO EVENTS (EVENTID, TIMESTAMP, DATA) VALUES (?, ?, ?)", eventId, XmlGregorianCalendarHelper.getMilliseconds(timestamp), dataWithUtcTimestamp);
   }
 
   /**
@@ -287,16 +289,11 @@ public class EventCache {
   }
 
   private void executeUpdate(Connection connection, String sql, Object ... params) throws SQLException {
-    PreparedStatement statement = connection.prepareStatement(sql);
-
-    try {
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
       for (int i = 0; i < params.length; i ++) {
         statement.setObject(i + 1, params[i]);
       }
       statement.executeUpdate();
-    }
-    finally {
-      statement.close();
     }
   }
 

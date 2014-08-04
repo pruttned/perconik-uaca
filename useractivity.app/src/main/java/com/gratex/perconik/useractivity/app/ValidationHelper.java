@@ -1,6 +1,8 @@
 package com.gratex.perconik.useractivity.app;
 
-public class ValidationHelper {
+public final class ValidationHelper {
+  private ValidationHelper() {}
+
   public static void checkArgNotNull(Object value, String name) {
     if (name == null) {
       throw new IllegalArgumentException("'name' must not be null");

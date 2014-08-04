@@ -26,53 +26,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 
-public class EventCacheDialog extends JDialog {
-
-  private static class CachedEventViewModel {
-    private EventCache eventCache;
-    private int id;
-    private String eventId;
-    private String timestamp;
-    private String eventTypeShortUri;
-    private String formattedData;
-
-    public CachedEventViewModel(CachedEvent cachedEvent, EventCache eventCache) {
-      this.eventCache = eventCache;
-      this.id = cachedEvent.getId();
-      this.eventId = cachedEvent.getEventId();
-      this.timestamp = XMLGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
-
-      try {
-        EventDocument doc = new EventDocument(cachedEvent.getData());
-        this.eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(doc.getEventTypeUri());
-        //formattedData = doc.toFormatedJsonString();
-      } catch (IOException ex) {
-        AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'.", cachedEvent.getEventId()), ex);
-        this.eventTypeShortUri = "<ERROR - see log for details>";
-        //formattedData = "<ERROR - see log for details>";
-      }
-    }
-
-    public String getFormattedData() throws JsonProcessingException, IOException, SQLException {
-      if (this.formattedData == null) {
-
-        Connection connection = this.eventCache.openConnection();
-        try {
-          this.formattedData = new EventDocument(this.eventCache.getEvent(connection, this.id).getData()).toFormatedJsonString();
-        } finally {
-          this.eventCache.closeConnectionOrTrace(connection);
-        }
-
-      }
-      return this.formattedData;
-    }
-  }
+public final class EventCacheDialog extends JDialog {
 
   private static final long serialVersionUID = 3565081061317049889L;
-  private EventCache eventCache;
-  private EventCommitJob eventCommitJob;
-  private JTable eventsTable;
-  private ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
+
+  final EventCache eventCache;
+  final EventCommitJob eventCommitJob;
+
+  JTable eventsTable;
+  ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
 
   public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
     super(parent, true);
@@ -88,6 +50,48 @@ public class EventCacheDialog extends JDialog {
     this.setLocationRelativeTo(null);
 
     this.refreshEvents();
+  }
+
+  private final static class CachedEventViewModel {
+    private final EventCache eventCache;
+
+    final int id;
+    final String eventId;
+    final String timestamp;
+
+    String eventTypeShortUri;
+    String formattedData;
+
+    public CachedEventViewModel(CachedEvent cachedEvent, EventCache eventCache) {
+      this.eventCache = eventCache;
+      this.id = cachedEvent.getId();
+      this.eventId = cachedEvent.getEventId();
+      this.timestamp = XmlGregorianCalendarHelper.toLocalString(cachedEvent.getTimestamp());
+
+      try {
+        EventDocument doc = new EventDocument(cachedEvent.getData());
+        this.eventTypeShortUri = TypeUriHelper.getEventTypeShortUri(doc.getEventTypeUri());
+        //formattedData = doc.toFormatedJsonString();
+      } catch (IOException ex) {
+        AppTracer.getInstance().writeError(String.format("Failed to deserialize the event with ID '%s'.", cachedEvent.getEventId()), ex);
+        this.eventTypeShortUri = "<ERROR - see log for details>";
+        //formattedData = "<ERROR - see log for details>";
+      }
+    }
+
+    public String getFormattedData() throws JsonProcessingException, IOException, SQLException {
+      if (this.formattedData == null) {
+        Connection connection = this.eventCache.openConnection();
+
+        try {
+          this.formattedData = new EventDocument(this.eventCache.getEvent(connection, this.id).getData()).toFormatedJsonString();
+        } finally {
+          this.eventCache.closeConnectionOrTrace(connection);
+        }
+      }
+
+      return this.formattedData;
+    }
   }
 
   private void addControls() {
@@ -119,7 +123,7 @@ public class EventCacheDialog extends JDialog {
     parent.add(new JScrollPane(this.eventsTable));
   }
 
-  private void refreshEvents() {
+  void refreshEvents() {
     Connection connection = null;
     EventCacheReader eventsReader = null;
     try {
@@ -163,7 +167,7 @@ public class EventCacheDialog extends JDialog {
     timeColumn.setMaxWidth(1000);
   }
 
-  private void openSelectedEventRowDetail() {
+  void openSelectedEventRowDetail() {
     int selectedRowIndex = this.eventsTable.getSelectedRow();
     if (selectedRowIndex != -1) {
       try {
@@ -180,17 +184,17 @@ public class EventCacheDialog extends JDialog {
     panel.add(buttonsPanel);
 
     //'refresh' button
-    this.addButton(buttonsPanel, "Refresh", "Reload events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Refresh", "Reload events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         EventCacheDialog.this.refreshEvents();
       }
     });
 
     //'delete selection' button
-    this.addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Delete Selection", "Remove the selected events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
-          ArrayList<Integer> selectedEventIds = new ArrayList<Integer>();
+          ArrayList<Integer> selectedEventIds = new ArrayList<>();
           for (int eventIndex: EventCacheDialog.this.eventsTable.getSelectedRows()) {
             selectedEventIds.add(EventCacheDialog.this.displayedEvents.get(eventIndex).id);
           }
@@ -209,7 +213,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'delete all' button
-    this.addButton(buttonsPanel, "Delete All", "Remove all events from the cache", true, new ActionListener() {
+    addButton(buttonsPanel, "Delete All", "Remove all events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         try {
           EventCache eventCache = EventCacheDialog.this.eventCache;
@@ -228,7 +232,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'send now' button
-    this.addButton(buttonsPanel, "Send Now", "Send all events, that are old enough, to the server now", true, new ActionListener() {
+    addButton(buttonsPanel, "Send Now", "Send all events, that are old enough, to the server now", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new SwingWorker<Void, Void>() {
           @Override
@@ -246,7 +250,7 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'send now - force all' button
-    this.addButton(buttonsPanel, "Send Now - Force All", "Send all events, no matter how old they are, to the server now", true, new ActionListener() {
+    addButton(buttonsPanel, "Send Now - Force All", "Send all events, no matter how old they are, to the server now", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         new SwingWorker<Void, Void>() {
           @Override
@@ -264,14 +268,14 @@ public class EventCacheDialog extends JDialog {
     });
 
     //'close' button
-    this.addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
+    addButton(buttonsPanel, "Close", "Close the dialog", false, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         EventCacheDialog.this.setVisible(false);
       }
     });
   }
 
-  private void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
+  private static void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
     JButton button = new JButton(text);
     button.setToolTipText(toolTipText);
     button.setAlignmentY(CENTER_ALIGNMENT);

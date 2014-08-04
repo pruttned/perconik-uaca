@@ -1,20 +1,21 @@
 package com.gratex.perconik.useractivity.app;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AppTracer {
-  private static final AppTracer INSTANCE = new AppTracer();
-  private ArrayList<AppTracerRow> rows = new ArrayList<AppTracerRow>();
-  private Object syncObj = new Object();
+public final class AppTracer {
+  private static final AppTracer instance = new AppTracer();
+
+  private final Object syncObj = new Object();
+
+  private ArrayList<AppTracerRow> rows = new ArrayList<>();
 
   private AppTracer() {}
 
   public static AppTracer getInstance() {
-    return INSTANCE;
+    return instance;
   }
 
   public AppTracerRow[] getRows() {
@@ -65,24 +66,14 @@ public class AppTracer {
     }
 
     StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    exception.printStackTrace(printWriter);
-    String exceptionFullText = stringWriter.toString();
-
-    printWriter.close();
-    try {
-      stringWriter.close();
-    } catch (IOException e) {
-      // 'close' call has no effect
-    }
-
-    return exceptionFullText;
+    exception.printStackTrace(new PrintWriter(stringWriter));
+    return stringWriter.toString();
   }
 
   public void ensureMaxRowCount() {
     if (this.rows.size() > Settings.getInstance().getMaxRowCountInLog()) {
       int newStartIndex = this.rows.size() - Settings.getInstance().getMaxRowCountInLog();
-      this.rows = new ArrayList<AppTracerRow>(this.rows.subList(newStartIndex, this.rows.size()));
+      this.rows = new ArrayList<>(this.rows.subList(newStartIndex, this.rows.size()));
     }
   }
 }

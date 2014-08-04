@@ -5,15 +5,33 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 
-public class Settings {
+public final class Settings {
   private final static Settings INSTANCE = new Settings();
-  private final static String preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
-  private final static String userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
+
   private final static String defaultSvcUrl = "http://perconikprod.hq.gratex.com:9090/web/api/UserActivity";
   private final static int defaultLocalSvcPort = 16375;
   private final static int defaultMaxRowCountInLog = 1000;
 
-  private Settings() {}
+  private final String preferencesPackageName;
+  private final String userFolder;
+  private final String workstationName;
+  private final String version;
+
+  private Settings() {
+    this.preferencesPackageName = "com/gratex/perconik/useractivity/app"; //for Preferences API
+    this.userFolder = Paths.get(System.getProperty("user.home"), "GratexInternational", "UserActivity").toString();
+
+    String workstationName;
+
+    try {
+      workstationName = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException ex) {
+      workstationName = "UNKNOWN"; //TODO: find a better solution
+    }
+
+    this.workstationName = workstationName;
+    this.version = "2.0.8"; //TODO: find a standard way; maybe try to read it from pom.xml
+  }
 
   public static Settings getInstance() {
     return INSTANCE;
@@ -50,15 +68,11 @@ public class Settings {
   }
 
   public String getUserFolder() {
-    return Settings.userFolder;
+    return userFolder;
   }
 
   public String getWorkstationName() {
-    try {
-      return InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException ex) {
-      return "UNKNOWN"; //TODO: find a better solution
-    }
+    return workstationName;
   }
 
   public String getSvcUrl() {
@@ -72,7 +86,7 @@ public class Settings {
   }
 
   public String getVersion() {
-    return "2.0.8"; //TODO: find a standard way
+    return version;
   }
 
   public int getLocalSvcPort() {
@@ -93,6 +107,6 @@ public class Settings {
   }
 
   private Preferences getPreferencesNode() {
-    return Preferences.userRoot().node(Settings.preferencesPackageName);
+    return Preferences.userRoot().node(preferencesPackageName);
   }
 }

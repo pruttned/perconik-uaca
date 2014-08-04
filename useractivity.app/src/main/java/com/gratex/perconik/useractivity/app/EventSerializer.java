@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.gratex.perconik.useractivity.app.dto.EventDto;
 
-public class EventSerializer {
+public final class EventSerializer {
   private static final ObjectMapper mapper = new ObjectMapper(); //thread safe
+
+  public EventSerializer() {}
 
   public String serialize(EventDto event) throws JsonProcessingException {
     ValidationHelper.checkArgNotNull(event, "event");

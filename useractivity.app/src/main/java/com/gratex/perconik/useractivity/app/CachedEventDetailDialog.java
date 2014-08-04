@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class CachedEventDetailDialog extends JDialog {
+public final class CachedEventDetailDialog extends JDialog {
   private static final long serialVersionUID = -3333495706407138000L;
 
   public CachedEventDetailDialog(JDialog parent, String eventData) {
