@@ -1,16 +1,19 @@
 package com.gratex.perconik.useractivity.app;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * Writes/Read into serialized event string (e.g. CahcedEvent.getData())
@@ -18,11 +21,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public final class EventDocument {
   private static final ObjectMapper mapper = new ObjectMapper(); //thread safe
   private static final ObjectMapper mapperFormated = new ObjectMapper(); //thread safe
+  private static final JavaType mapperFormatedType = TypeFactory.defaultInstance().constructMapType(LinkedHashMap.class, String.class, Object.class);
 
   private ObjectNode dataTree;
 
   static {
     mapperFormated.configure(SerializationFeature.INDENT_OUTPUT, true);
+    mapperFormated.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
   }
 
   /**
@@ -48,7 +53,7 @@ public final class EventDocument {
   }
 
   public String toFormatedJsonString() throws JsonProcessingException {
-    return mapperFormated.writeValueAsString(this.dataTree);
+    return mapperFormated.writeValueAsString(mapperFormated.convertValue(this.dataTree, mapperFormatedType));
   }
 
   public boolean hasEventTypeUri() {
