@@ -58,6 +58,10 @@ public final class App {
   }
 
   public void stopCollectingAndCommitting() {
+    stopCollectingAndCommitting(true);
+  }
+  
+  public void stopCollectingAndCommitting(boolean updateGui) {
     if (this.watcherManager != null) {
       this.watcherManager.stopWatchers();
     }
@@ -68,7 +72,9 @@ public final class App {
 
     this.isCollectingAndCommitting = false;
 
-    this.updateIsCollectingAndCommittingControls();
+    if(updateGui) {
+      this.updateIsCollectingAndCommittingControls();
+    }
   }
 
   public boolean isCollectingAndCommitting() {
@@ -200,7 +206,7 @@ public final class App {
 
   void onExitAsync() {
     try {
-      this.stopCollectingAndCommitting();
+      this.stopCollectingAndCommitting(false);
 
       if (this.watcherManager != null) {
         this.watcherManager.close();
@@ -209,7 +215,6 @@ public final class App {
       if (this.eventCache != null) {
         this.eventCache.close();
       }
-
     } catch (Throwable ex) {
       //nothing - just exit
     }
