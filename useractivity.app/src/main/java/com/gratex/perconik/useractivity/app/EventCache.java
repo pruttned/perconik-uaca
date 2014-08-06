@@ -41,7 +41,12 @@ public final class EventCache {
     String dbUri = "jdbc:h2:" + Paths.get(Settings.getInstance().getUserFolder(), "EventCache");
     this.connectionPool = JdbcConnectionPool.create(dbUri, "", "");
 
-    this.executeCreationScript();
+    try {
+      this.executeCreationScript();
+    } catch (SQLException ex) {
+      close();
+      throw ex;
+    }
   }
 
   /**
@@ -51,6 +56,7 @@ public final class EventCache {
   public void close() {
     if (this.connectionPool != null) {
       this.connectionPool.dispose();
+      this.connectionPool = null;
     }
   }
 
@@ -299,7 +305,13 @@ public final class EventCache {
 
   private EventCacheReader executeQuery(Connection connection, String sql) throws SQLException {
     Statement statement = connection.createStatement();
-    ResultSet resultSet = statement.executeQuery(sql);
-    return new EventCacheReader(statement, resultSet);
+    
+    try {
+      ResultSet resultSet = statement.executeQuery(sql);
+      return new EventCacheReader(statement, resultSet);
+    } catch (SQLException ex) {
+      statement.close();
+      throw ex;
+    }
   }
 }
