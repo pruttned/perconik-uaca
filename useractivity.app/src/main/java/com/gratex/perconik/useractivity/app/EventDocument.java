@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
+import com.gratex.perconik.useractivity.app.docfilters.EventDocumentFilterManager;
+
 /**
  * Writes/Read into serialized event string (e.g. CahcedEvent.getData())
  */
@@ -38,6 +40,8 @@ public final class EventDocument {
   public static EventDocument loadFromRequest(String jsonStr) throws IOException {
     EventDocument doc = new EventDocument(jsonStr);
     doc.fixAfterReceive();
+
+
     return doc;
   }
 
@@ -46,6 +50,10 @@ public final class EventDocument {
       this.dataTree = JsonNodeFactory.instance.objectNode();
     }
     this.dataTree = (ObjectNode) mapper.readTree(jsonStr);
+  }
+
+  public ObjectNode getDataTree(){
+    return this.dataTree;
   }
 
   public String toJsonString() throws JsonProcessingException {
@@ -183,6 +191,8 @@ public final class EventDocument {
 
     //workstation
     this.setWorkstation(Settings.getInstance().getWorkstationName());
+
+    EventDocumentFilterManager.getInstance().filter(this);
   }
 
   private String tryGetNodeAsString(String nodeName) {
