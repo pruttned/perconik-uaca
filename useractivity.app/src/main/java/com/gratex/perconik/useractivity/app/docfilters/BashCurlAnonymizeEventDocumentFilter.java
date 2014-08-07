@@ -11,7 +11,7 @@ import com.gratex.perconik.useractivity.app.EventDocument;
 public class BashCurlAnonymizeEventDocumentFilter implements EventDocumentFilter {
 
   private static final String COMMAND_LINE_FIELD = "commandLine";
-  static final Pattern IS_CURL_U_REGEX = Pattern.compile(".*curl.*\\s\\-[uU]\\s.*");
+  static final Pattern IS_CURL_U_REGEX = Pattern.compile(".*curl.*\\s\\-u\\s.*", Pattern.CASE_INSENSITIVE);
   static final Pattern CURL_U_REGEX = Pattern.compile("(?<=\\-[uU])\\s+[^\\s]+");
 
   @Override

@@ -12,7 +12,7 @@ import com.gratex.perconik.useractivity.app.UrlHelper;
 public class GitCloneAnonymizeEventDocumentFilter implements EventDocumentFilter {
 
   private static final String COMMAND_LINE_FIELD = "commandLine";
-  static final Pattern IS_GIT_CLONE_REGEX = Pattern.compile(".*git\\s+clone.*");
+  static final Pattern IS_GIT_CLONE_REGEX = Pattern.compile(".*git\\s+clone.*", Pattern.CASE_INSENSITIVE);
 
   @Override
   public void filter(EventDocument doc) {
