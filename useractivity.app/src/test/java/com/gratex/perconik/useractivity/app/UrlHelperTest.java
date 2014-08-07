@@ -14,6 +14,9 @@ public class UrlHelperTest{
     assertEquals(false, UrlHelper.isUrlWithUserInfo(" name@gitsrv01.hq.gratex.com/git/UniusNg  "));
     assertEquals(false, UrlHelper.isUrlWithUserInfo(" gitsrv01.hq.gratex.com/git/UniusNg  "));
     assertEquals(false, UrlHelper.isUrlWithUserInfo(" http://gitsrv01.hq.gratex.com/git/UniusNg  "));
+    assertEquals(false, UrlHelper.isUrlWithUserInfo("text user@server:project.git "));
+    assertEquals(false, UrlHelper.isUrlWithUserInfo("text   https://name:pwd@gitsrv01.hq.gratex.com/git/UniusNg  "));
+    assertEquals(false, UrlHelper.isUrlWithUserInfo("text https://name@gitsrv01.hq.gratex.com/git/UniusNg  "));
   }
 
   @Test
