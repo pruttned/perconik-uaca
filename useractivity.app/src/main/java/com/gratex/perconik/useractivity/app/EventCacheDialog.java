@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,12 +30,17 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 public final class EventCacheDialog extends JDialog {
 
   private static final long serialVersionUID = 3565081061317049889L;
-
+  private static final int PAGE_SIZE = 3;
+  
   final EventCache eventCache;
   final EventCommitJob eventCommitJob;
-
   JTable eventsTable;
   ArrayList<CachedEventViewModel> displayedEvents; //events currently displayed to the user
+  int pageIndex;
+  int lastPageIndex;
+  private JLabel pageLabel;
+  private JButton prevPageButton;
+  private JButton nextPageButton;
 
   public EventCacheDialog(JFrame parent, EventCache eventCache, EventCommitJob eventCommitJob) {
     super(parent, true);
@@ -49,7 +55,7 @@ public final class EventCacheDialog extends JDialog {
     this.addControls();
     this.setLocationRelativeTo(null);
 
-    this.refreshEvents();
+    this.refresh();
   }
 
   private final static class CachedEventViewModel {
@@ -100,6 +106,7 @@ public final class EventCacheDialog extends JDialog {
     this.add(topPanel);
 
     this.addEventsTable(topPanel);
+    this.addPageControls(topPanel);
     this.addButtons(topPanel);
   }
 
@@ -123,14 +130,33 @@ public final class EventCacheDialog extends JDialog {
     parent.add(new JScrollPane(this.eventsTable));
   }
 
-  void refreshEvents() {
+  void refresh() {
+    this.pageIndex = 0;
+    this.loadPage();
+  }
+
+  void goToNextPage() {
+    this.pageIndex++;
+    this.loadPage();
+  }
+  
+  void goToPrevPage() {
+    this.pageIndex--;
+    this.loadPage();
+  }
+  
+  private void loadPage() {
     Connection connection = null;
     EventCacheReader eventsReader = null;
+    
     try {
       connection = this.eventCache.openConnection();
-      eventsReader = this.eventCache.getEvents(connection);
+      eventsReader = this.eventCache.getEvents(connection, this.pageIndex, EventCacheDialog.PAGE_SIZE);
+      this.lastPageIndex = (int)Math.ceil((double)this.eventCache.getEventCount(connection) / (double)EventCacheDialog.PAGE_SIZE) - 1;
       this.displayedEvents = this.createViewModels(eventsReader);
       this.setEventsTableData();
+      this.updatePageControls();
+      
     } catch (SQLException ex) {
       MessageBox.showError(this, "Failed to retrieve events from the cache.", ex, "Failed retrieve events.");
     } finally {
@@ -142,7 +168,13 @@ public final class EventCacheDialog extends JDialog {
       }
     }
   }
-
+  
+  private void updatePageControls() {
+    this.prevPageButton.setEnabled(this.pageIndex > 0);
+    this.nextPageButton.setEnabled(this.pageIndex < this.lastPageIndex);
+    this.pageLabel.setText(String.format("%s / %s", this.pageIndex + 1, this.lastPageIndex + 1));
+  }
+  
   private ArrayList<CachedEventViewModel> createViewModels(EventCacheReader cachedEventsReader) throws SQLException {
     ArrayList<CachedEventViewModel> viewModels = new ArrayList<>();
     while (cachedEventsReader.next()) {
@@ -178,6 +210,33 @@ public final class EventCacheDialog extends JDialog {
     }
   }
 
+  private void addPageControls(JPanel panel) {
+    JPanel controlsPanel = new JPanel();
+    controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.X_AXIS));
+    panel.add(controlsPanel);
+    
+    //'prev page' button
+    this.prevPageButton = addButton(controlsPanel, "<< Previous Page", "Moves to the previous page", false, new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        EventCacheDialog.this.goToPrevPage();
+      }
+    });
+    this.prevPageButton.setEnabled(false);
+    
+    //'current page / last page' label
+    this.pageLabel = new JLabel("0/0");
+    controlsPanel.add(this.pageLabel);
+    controlsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+    
+    //'next page' button
+    this.nextPageButton = addButton(controlsPanel, "Next Page >>", "Moves to the next page", true, new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        EventCacheDialog.this.goToNextPage();
+      }
+    });
+    this.nextPageButton.setEnabled(false);
+  }
+  
   private void addButtons(JPanel panel) {
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
@@ -186,7 +245,7 @@ public final class EventCacheDialog extends JDialog {
     //'refresh' button
     addButton(buttonsPanel, "Refresh", "Reload events from the cache", true, new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        EventCacheDialog.this.refreshEvents();
+        EventCacheDialog.this.refresh();
       }
     });
 
@@ -205,7 +264,7 @@ public final class EventCacheDialog extends JDialog {
           }finally{
             eventCache.closeConnectionOrTrace(connection);
           }
-          EventCacheDialog.this.refreshEvents();
+          EventCacheDialog.this.refresh();
         } catch (SQLException ex) {
           MessageBox.showError(EventCacheDialog.this, "Failed to delete all of the selected events.", ex, "Delete selection failed");
         }
@@ -224,7 +283,7 @@ public final class EventCacheDialog extends JDialog {
             eventCache.closeConnectionOrTrace(connection);
           }
 
-          EventCacheDialog.this.refreshEvents();
+          EventCacheDialog.this.refresh();
         } catch (SQLException ex) {
           MessageBox.showError(EventCacheDialog.this, "Failed to delete all events.", ex, "Delete all failed");
         }
@@ -243,7 +302,7 @@ public final class EventCacheDialog extends JDialog {
 
           @Override
           protected void done() {
-            EventCacheDialog.this.refreshEvents();
+            EventCacheDialog.this.refresh();
           }
         }.execute();
       }
@@ -261,7 +320,7 @@ public final class EventCacheDialog extends JDialog {
 
           @Override
           protected void done() {
-            EventCacheDialog.this.refreshEvents();
+            EventCacheDialog.this.refresh();
           }
         }.execute();
       }
@@ -275,7 +334,7 @@ public final class EventCacheDialog extends JDialog {
     });
   }
 
-  private static void addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
+  private static JButton addButton(JPanel panel, String text, String toolTipText, boolean addMargin, ActionListener actionListener) {
     JButton button = new JButton(text);
     button.setToolTipText(toolTipText);
     button.setAlignmentY(CENTER_ALIGNMENT);
@@ -288,5 +347,7 @@ public final class EventCacheDialog extends JDialog {
     if (addMargin) {
       panel.add(Box.createRigidArea(new Dimension(5, 0)));
     }
+    
+    return button;
   }
 }

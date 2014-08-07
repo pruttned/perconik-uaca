@@ -253,8 +253,23 @@ public final class EventCache {
    * @throws SQLException
    */
   public EventCacheReader getEventsToCommit(Connection connection) throws SQLException {
+    return this.getEventsToCommit(connection, -1, -1);
+  }
+
+  /**
+   * Gets events from the cache that are old enough to be committed to the server.
+   * Thread safe.
+   * @throws SQLException
+   */
+  public EventCacheReader getEventsToCommit(Connection connection, int pageIndex, int pageSize) throws SQLException {
     long lastEventTimeToCommit = new Date().getTime() - Settings.getInstance().getEventAgeToCommit();
-    return this.executeQuery(connection, String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit));
+    String sql = String.format("SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS WHERE TIMESTAMP <= %s ORDER BY TIMESTAMP ASC", lastEventTimeToCommit);
+    
+    if(pageIndex != -1 && pageSize != -1) { //TODO: extract
+      sql += String.format(" LIMIT %s, %s", pageSize * pageIndex, pageSize);
+    }
+    
+    return this.executeQuery(connection, sql);
   }
 
   /**
@@ -263,9 +278,33 @@ public final class EventCache {
    * @throws SQLException
    */
   public EventCacheReader getEvents(Connection connection) throws SQLException {
-    return this.executeQuery(connection, "SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC");
+    return this.getEvents(connection, -1, -1);
   }
-
+  
+  /**
+   * Gets all events from the cache.
+   * Thread safe.
+   * @throws SQLException
+   */
+  public EventCacheReader getEvents(Connection connection, int pageIndex, int pageSize) throws SQLException {
+    String sql = "SELECT ID, EVENTID, TIMESTAMP, DATA FROM EVENTS ORDER BY TIMESTAMP DESC";
+    
+    if(pageIndex != -1 && pageSize != -1) { //TODO: extract
+      sql += String.format(" LIMIT %s, %s", pageSize * pageIndex, pageSize);
+    }
+    
+    return this.executeQuery(connection, sql);
+  }
+  
+  public int getEventCount(Connection connection) throws SQLException {
+    try(Statement statement = connection.createStatement()) {
+      try(ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM EVENTS")) {
+        resultSet.first();
+        return resultSet.getInt(1);
+      }
+    }
+  }
+  
   /**
    * Updates the user name in all events in the event cache to the current user name in the settings.
    * Thread safe.
