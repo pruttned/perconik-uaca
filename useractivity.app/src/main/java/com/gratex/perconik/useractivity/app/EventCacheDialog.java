@@ -30,7 +30,7 @@ import com.gratex.perconik.useractivity.app.dto.CachedEvent;
 public final class EventCacheDialog extends JDialog {
 
   private static final long serialVersionUID = 3565081061317049889L;
-  private static final int PAGE_SIZE = 3;
+  private static final int PAGE_SIZE = 1000;
   
   final EventCache eventCache;
   final EventCommitJob eventCommitJob;
