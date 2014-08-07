@@ -7,17 +7,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import com.gratex.perconik.useractivity.app.EventDocument;
-import com.gratex.perconik.useractivity.app.TypeUris;
 
 public class BashCurlAnonymizeEventDocumentFilter implements EventDocumentFilter {
 
   private static final String COMMAND_LINE_FIELD = "commandLine";
-  static final Pattern IS_CURL_U_REGEX = Pattern.compile("curl.*\\s\\-[uU]\\s.*");
+  static final Pattern IS_CURL_U_REGEX = Pattern.compile(".*curl.*\\s\\-[uU]\\s.*");
   static final Pattern CURL_U_REGEX = Pattern.compile("(?<=\\-[uU])\\s+[^\\s]+");
 
   @Override
   public void filter(EventDocument doc) {
-    if (TypeUris.BASH_COMMAND.equals(doc.getEventTypeUri())) {
+    //if (TypeUris.BASH_COMMAND.equals(doc.getEventTypeUri())) { //not set yet
       ObjectNode rootNode = doc.getDataTree();
 
       JsonNode commandLineNode = rootNode.findValue(COMMAND_LINE_FIELD);
@@ -29,5 +28,5 @@ public class BashCurlAnonymizeEventDocumentFilter implements EventDocumentFilter
         }
       }
     }
-  }
+  //}
 }

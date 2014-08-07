@@ -23,5 +23,6 @@ public class EventDocumentFilterManager {
     //TODO: dynamic registration
     this.eventDocumentFilters.add(new EventDocumentTextNodeFilter());
     this.eventDocumentFilters.add(new BashCurlAnonymizeEventDocumentFilter());
+    this.eventDocumentFilters.add(new GitCloneAnonymizeEventDocumentFilter());
   }
 }
