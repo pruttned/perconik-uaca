@@ -324,9 +324,12 @@ public final class EventCache {
     builder.append("TIMESTAMP BIGINT NOT NULL,"); //milliseconds
     builder.append("DATA VARCHAR NOT NULL)");
 
+    String indexSql = "CREATE INDEX IF NOT EXISTS INDEX_EVENTS_TIEMSTAMP ON EVENTS(TIMESTAMP DESC)";
+    
     Connection connection = this.openConnection();
     try {
       this.executeUpdate(connection, builder.toString());
+      this.executeUpdate(connection, indexSql);
     }
     finally {
       this.closeConnectionOrTrace(connection);
