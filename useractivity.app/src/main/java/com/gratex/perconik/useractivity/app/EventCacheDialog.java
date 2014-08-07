@@ -151,8 +151,11 @@ public final class EventCacheDialog extends JDialog {
     
     try {
       connection = this.eventCache.openConnection();
-      eventsReader = this.eventCache.getEvents(connection, this.pageIndex, EventCacheDialog.PAGE_SIZE);
+      
       this.lastPageIndex = (int)Math.ceil((double)this.eventCache.getEventCount(connection) / (double)EventCacheDialog.PAGE_SIZE) - 1;
+      this.pageIndex = Math.min(this.pageIndex, this.lastPageIndex);
+      
+      eventsReader = this.eventCache.getEvents(connection, this.pageIndex, EventCacheDialog.PAGE_SIZE);      
       this.displayedEvents = this.createViewModels(eventsReader);
       this.setEventsTableData();
       this.updatePageControls();
