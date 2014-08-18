@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public final class UrlHelper {
   //based on http://stackoverflow.com/a/2514986
   static final Pattern URL_WITH_USER_INFO_REGEX = Pattern.compile("^\\s*(((\\w+://).+@([\\w\\d\\.]+)(:[\\d]+){0,1}/*(.*))|([^\\s]+@([\\w\\d\\.]+):(.*)))");
-  static final Pattern USER_INFO_REGEX = Pattern.compile("((?<=://)[^@/]+@|(?<=^|\\s*|^)[^\\s/][^\\s@/]+@)");
+  static final Pattern USER_INFO_REGEX = Pattern.compile("((?<=://)[^@/]+@|(?<=^|\\s)[^\\s/][^\\s@/]+@)");
   //(?<=(://|^|\\s*))[^\\s][^@/]+@
   //(?<=://)[^@/]+@|
   /**
