@@ -124,7 +124,7 @@ public final class EventDocument {
    * @return timestamp or null
    */
   public XMLGregorianCalendar getTimestamp() {
-    JsonNode node = this.dataTree.findValue("timestamp");
+    JsonNode node = this.dataTree.get("timestamp");
     if (node == null) {
       return null;
     }
@@ -196,7 +196,7 @@ public final class EventDocument {
   }
 
   private String tryGetNodeAsString(String nodeName) {
-    JsonNode node = this.dataTree.findValue(nodeName);
+    JsonNode node = this.dataTree.get(nodeName);
     if (node == null) {
       return null;
     }
