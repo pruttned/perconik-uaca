@@ -30,7 +30,7 @@ public final class Settings {
     }
 
     this.workstationName = workstationName;
-    this.version = "2.0.11"; //TODO: find a standard way; maybe try to read it from pom.xml
+    this.version = "2.0.12"; //TODO: find a standard way; maybe try to read it from pom.xml
   }
 
   public static Settings getInstance() {
