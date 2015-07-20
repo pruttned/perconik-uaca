@@ -25,7 +25,7 @@ Section "User Activity" UserActivity
 	#adding files and folders
 	setOutPath $INSTDIR
 	File UACA.jar
-	File Run.vbs
+	File run.bat
 	setOutPath $INSTDIR\libs
 	File ..\libs\*.*
 	
@@ -33,15 +33,15 @@ Section "User Activity" UserActivity
 	#ExecWait 'netsh http add urlacl url=http://+:16375/ user=\Everyone'	
 	
 	#Adding UACA to startup
-	WriteRegStr HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity '"$SYSDIR\wscript.exe" "$INSTDIR\Run.vbs"'
+	WriteRegStr HKCU Software\Microsoft\Windows\CurrentVersion\Run PerConIkUserActivity "$INSTDIR\run.bat"
 	
 	#Adding UACA to start menu
 	CreateDirectory "$SMPROGRAMS\Gratex International\PerConIK\UserActivity"
-	CreateShortCut "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity.lnk" "$INSTDIR\Run.vbs"
+	CreateShortCut "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity.lnk" "$INSTDIR\run.bat"
 	CreateShortCut "$SMPROGRAMS\Gratex International\PerConIK\UserActivity\UserActivity-Uninstall.lnk" "$INSTDIR\perconik-uaca-win-uninstall.exe"
 	
 	#Run UACA after installation
-	Exec '"$SYSDIR\wscript.exe" "$INSTDIR\Run.vbs"'
+	Exec "$INSTDIR\run.bat"
 SectionEnd
 
 #------------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ Section "Uninstall"
 	
 	#removing files and folders
 	Delete $INSTDIR\UACA.jar
-	Delete $INSTDIR\Run.vbs
+	Delete $INSTDIR\run.bat
 	RMDir /r $INSTDIR\libs
 	RMDir $INSTDIR #remove the installation directory if it is empty
 	
