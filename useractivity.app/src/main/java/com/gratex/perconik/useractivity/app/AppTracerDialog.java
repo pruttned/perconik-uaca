@@ -133,7 +133,7 @@ public final class AppTracerDialog extends JDialog {
     panel.add(filterPanel);
 
     this.addFilterButton("Info", MessageSeverity.INFO, filterPanel);
-    this.addFilterButton("Event Commit", MessageSeverity.INFO_EVENT_COMMIT, filterPanel);
+    //this.addFilterButton("Event Commit", MessageSeverity.INFO_EVENT_COMMIT, filterPanel);
     this.addFilterButton("Warning", MessageSeverity.WARNING, filterPanel);
     this.addFilterButton("Error", MessageSeverity.ERROR, filterPanel);
   }
